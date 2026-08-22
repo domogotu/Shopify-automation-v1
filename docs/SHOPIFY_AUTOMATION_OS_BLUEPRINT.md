@@ -240,6 +240,14 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 
 ## Planned n8n Workflow Pack
 
+### Current implementation status
+
+- `00-environment-health-check-v1.json`: implemented foundation check.
+- `00-multi-agent-orchestrator-v1.json`: implemented plan-only router with twelve specialist paths.
+- `config/agents.json`: implemented versioned agent, memory-scope, tool, and approval registry.
+- `database/migrations/002_agent_memory_and_registry.sql`: implemented agent sessions, governed memory, context snapshots, feedback, policies, and tool permissions.
+- Live model and commerce execution remains intentionally disconnected until the shared Think–Authorize–Act core and approval tests are implemented.
+
 | ID | Workflow | Trigger | External writes |
 |---|---|---|---|
 | 00A | Agent Think/Authorize/Act Core | Internal sub-workflow | Policy-controlled tools + audit |

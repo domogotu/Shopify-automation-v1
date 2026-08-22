@@ -52,6 +52,70 @@ Every workflow that uses AI follows the same visible n8n sub-workflow. Business-
 - **CJdropshipping:** catalog lookup, variant mapping, order submission, and tracking tools; writes remain approval-gated at launch.
 - **Notifications:** owner alerts for approvals, high-risk cases, completion, and terminal failures.
 
+## Memory and Learning Architecture
+
+The system uses multiple memory types because a single chat-history table is not reliable enough for commerce automation.
+
+### Memory Types
+
+1. **Working memory**
+   - Short-lived context for the current n8n execution, agent plan, tool results, and unresolved questions.
+   - Expires automatically and is never treated as an approved business rule.
+
+2. **Entity memory**
+   - Durable facts about stores, Shopify products and variants, CJ products and variants, suppliers, customers, orders, shipments, tickets, campaigns, and external identifiers.
+   - Facts link to their source record and effective date.
+
+3. **Semantic memory**
+   - Searchable product facts, supplier documentation, policies, approved product language, shipping rules, and operating knowledge.
+   - PostgreSQL full-text search is the default; `pgvector` embeddings may supplement retrieval when enabled.
+
+4. **Episodic memory**
+   - Records what happened during a workflow: the plan, decision, tools used, outcome, error, recovery, cost, latency, and reviewer feedback.
+   - Used to identify recurring failures and successful operating patterns without granting new permissions.
+
+5. **Procedural memory**
+   - Versioned prompts, schemas, playbooks, risk thresholds, approval policies, tool permissions, and workflow versions.
+   - Only an authorized human or controlled deployment can change procedural memory.
+
+6. **Approval and audit memory**
+   - Immutable decisions showing who approved or denied an action, exactly what payload was reviewed, when it expires, and which external action consumed the approval.
+   - Approval records are never inferred from conversational memory.
+
+### Memory Write Gate
+
+Every proposed memory write is validated before persistence:
+
+- enforce `store_id` and resource scope;
+- classify sensitivity and remove unnecessary PII;
+- require a source reference and observed timestamp;
+- assign confidence, status, effective date, and optional expiry;
+- detect duplicates and contradictions with active facts;
+- keep unverified claims in `PROPOSED` state until verified;
+- create a new version instead of overwriting material history;
+- prohibit model-generated permissions, approvals, secrets, or fabricated customer/product facts.
+
+### Retrieval and Context Assembly
+
+1. Parse the task into store, actor, resource, action, and time scope.
+2. Retrieve exact relational facts first.
+3. Retrieve relevant semantic memories only from the same store and permitted sensitivity class.
+4. Rank by authority, source quality, freshness, confidence, and relevance.
+5. Detect conflicting or expired facts and route uncertainty to review.
+6. Build a compact context package with citations and token limits.
+7. Send only the minimum context required to the Think agent.
+
+The model must distinguish `verified_fact`, `policy`, `historical_outcome`, `unverified_claim`, and `recommendation`. Memory can improve recommendations but cannot override current Shopify/CJ state, active policies, or human approvals.
+
+### Learning Loop
+
+- Capture reviewer edits, approval/denial reasons, tool outcomes, delivery results, returns, refunds, support resolutions, and product performance.
+- Produce proposed lessons and prompt/policy changes on a schedule.
+- Test proposed changes against stored fixtures and recent workflows.
+- Require human approval before promoting a lesson into procedural memory.
+- Version every promoted prompt, schema, policy, and workflow so changes can be compared or rolled back.
+- Track whether a promoted change actually reduces error rate, review time, cost, or customer exceptions.
+
 ## System Modules
 
 1. **Supplier Product Intake**
@@ -144,6 +208,14 @@ Every workflow that uses AI follows the same visible n8n sub-workflow. Business-
 - `automation_runs`
 - `audit_events`
 - `alerts`
+- `memory_items`
+- `memory_links`
+- `memory_embeddings`
+- `memory_feedback`
+- `context_snapshots`
+- `prompt_versions`
+- `policy_versions`
+- `tool_permissions`
 
 All operational tables include `store_id`, timestamps, and external identifiers where applicable. Unique constraints protect Shopify order IDs, supplier order IDs, product handles, SKUs, and webhook event IDs from duplicate processing.
 
@@ -173,6 +245,9 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 | 00A | Agent Think/Authorize/Act Core | Internal sub-workflow | Policy-controlled tools + audit |
 | 00B | Configuration and Tool Registry | Internal sub-workflow | PostgreSQL read + audit |
 | 00C | Approval, No-Op, and Error Router | Internal sub-workflow | Sheets/PostgreSQL + notifications |
+| 00D | Memory Write and Contradiction Gate | Internal sub-workflow | PostgreSQL |
+| 00E | Scoped Memory Retrieval | Internal sub-workflow | PostgreSQL read + audit |
+| 00F | Learning Review and Promotion | Schedule/manual | Sheets/PostgreSQL + version registry |
 | 01 | Supplier Product Intake | Form/Webhook | Sheets + PostgreSQL |
 | 02 | Research and Risk Scoring | Intake event | Sheets + PostgreSQL |
 | 03 | AI Content Draft | Approved candidate | Sheets + PostgreSQL |
@@ -201,6 +276,7 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - environment-variable contract
 - shared n8n sub-workflows for configuration, database logging, AI routing, approvals, and errors
 - shared Think/Authorize/Act agent core with structured JSON schemas and PostgreSQL memory
+- scoped memory retrieval, governed memory writes, contradiction detection, and human-approved learning promotion
 
 ### Milestone 2 — Product Lifecycle
 
@@ -248,3 +324,5 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - Every Shopify variant must have a valid supplier mapping before sale.
 - Every webhook must be authenticated and idempotent.
 - Every external write must be auditable and safely retryable.
+- No memory may cross store boundaries or silently override an authoritative current record.
+- No model-generated lesson becomes a prompt, policy, permission, or workflow change without review, tests, and versioning.

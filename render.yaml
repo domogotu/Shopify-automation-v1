@@ -17,6 +17,8 @@ services:
         value: "10000"
       - key: N8N_PROTOCOL
         value: https
+      - key: N8N_LISTEN_ADDRESS
+        value: 0.0.0.0
       - key: N8N_HOST
         fromService:
           name: shopify-automation-n8n
@@ -83,7 +85,7 @@ envVarGroups:
       - key: DB_TYPE
         value: postgresdb
       - key: DB_POSTGRESDB_SCHEMA
-        value: n8n
+        value: public
       - key: EXECUTIONS_MODE
         value: regular
       - key: N8N_ENCRYPTION_KEY

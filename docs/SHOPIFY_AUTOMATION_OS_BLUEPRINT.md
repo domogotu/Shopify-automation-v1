@@ -246,6 +246,8 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - `00-multi-agent-orchestrator-v1.json`: implemented plan-only router with twelve specialist paths.
 - `config/agents.json`: implemented versioned agent, memory-scope, tool, and approval registry.
 - `database/migrations/002_agent_memory_and_registry.sql`: implemented agent sessions, governed memory, context snapshots, feedback, policies, and tool permissions.
+- `database/migrations/003_realtime_conversations.sql`: implemented conversations, messages, response jobs, and realtime tool-event records.
+- `00-realtime-question-gateway-v1.json`: implemented synchronous Claude question answering with specialist selection, action-risk detection, and grounded-response metadata.
 - Live model and commerce execution remains intentionally disconnected until the shared Think–Authorize–Act core and approval tests are implemented.
 
 | ID | Workflow | Trigger | External writes |
@@ -256,6 +258,7 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 | 00D | Memory Write and Contradiction Gate | Internal sub-workflow | PostgreSQL |
 | 00E | Scoped Memory Retrieval | Internal sub-workflow | PostgreSQL read + audit |
 | 00F | Learning Review and Promotion | Schedule/manual | Sheets/PostgreSQL + version registry |
+| 00G | Realtime Question Gateway | Webhook/manual | Claude response + conversation record |
 | 01 | Supplier Product Intake | Form/Webhook | Sheets + PostgreSQL |
 | 02 | Research and Risk Scoring | Intake event | Sheets + PostgreSQL |
 | 03 | AI Content Draft | Approved candidate | Sheets + PostgreSQL |

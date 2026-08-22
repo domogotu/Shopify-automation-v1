@@ -2,7 +2,7 @@ services:
   - type: web
     name: shopify-automation-n8n
     runtime: docker
-    plan: free
+    plan: standard
     region: oregon
     branch: main
     autoDeployTrigger: commit
@@ -79,7 +79,7 @@ envVarGroups:
       - key: NODE_ENV
         value: production
       - key: NODE_OPTIONS
-        value: --max-old-space-size=384
+        value: --max-old-space-size=1536
       - key: GENERIC_TIMEZONE
         value: America/Los_Angeles
       - key: TZ
@@ -99,7 +99,7 @@ envVarGroups:
       - key: N8N_DIAGNOSTICS_ENABLED
         value: "false"
       - key: N8N_RUNNERS_ENABLED
-        value: "false"
+        value: "true"
       - key: N8N_PERSONALIZATION_ENABLED
         value: "false"
       - key: N8N_VERSION_NOTIFICATIONS_ENABLED

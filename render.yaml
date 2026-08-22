@@ -93,7 +93,7 @@ envVarGroups:
       - key: BOOTSTRAP_WORKFLOWS
         value: "false"
       - key: SYNC_EXECUTIVE_WORKFLOW_ONCE
-        value: "false"
+        value: "true"
       - key: RUN_DATABASE_MIGRATIONS
         value: "false"
       - key: N8N_ENCRYPTION_KEY

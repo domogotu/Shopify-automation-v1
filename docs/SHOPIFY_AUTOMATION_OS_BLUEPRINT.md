@@ -28,6 +28,15 @@ Every workflow that uses AI follows the same visible n8n sub-workflow. Business-
 
 ChatGPT can recommend `NEEDS_INFORMATION`, `NEEDS_REVIEW`, `RECOMMEND`, or `REJECT`. It cannot grant permissions, approve high-risk actions, override store scope, invent evidence, or silently change policy.
 
+### Closed-loop review and correction
+
+- Supervisor sends cases back to specialists when evidence is missing, stale, conflicting, or incomplete.
+- Supervisor sends cases back to the executive when the request was misunderstood, scope is incomplete, or alternatives were not compared.
+- Human approval can return a case for revision; any payload change invalidates the previous approval.
+- Post-action verification retries bounded transient failures through the same idempotent envelope and returns unexpected results to supervisor review.
+- User feedback reopens evidence and memory review before a correction or lesson is promoted.
+- Loops have per-route and total-cycle limits. Repeated unchanged failures end in a safe no-operation and owner review.
+
 1. **Trigger and configuration**
    - A webhook, form, schedule, Shopify event, or internal workflow supplies a correlation ID and a typed task request.
    - A configuration node loads the store, environment, policies, risk thresholds, approved tools, model routing, prompt version, and output schema version.
@@ -272,6 +281,8 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - `config/chat-routing.json`: implemented ask, decide, view-memory, update-memory, feedback, and status routes.
 - `database/migrations/006_feedback_and_corrections.sql`: implemented feedback cases, governed memory corrections, and answer-quality reviews.
 - `docs/CHAT_ROUTING_AND_FEEDBACK.md`: implemented the user command and feedback-processing contract.
+- `config/review-loops.json`: implemented bounded evidence, planning, approval, execution, recovery, and feedback return paths.
+- `docs/CLOSED_LOOP_DECISIONS.md`: implemented loop reasons, controls, stop conditions, and final-output rules.
 - Live model and commerce execution remains intentionally disconnected until the shared Think–Authorize–Act core and approval tests are implemented.
 
 | ID | Workflow | Trigger | External writes |

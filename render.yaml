@@ -91,7 +91,7 @@ envVarGroups:
       - key: EXECUTIONS_MODE
         value: regular
       - key: BOOTSTRAP_WORKFLOWS
-        value: "true"
+        value: "false"
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
       - key: N8N_USER_MANAGEMENT_JWT_SECRET

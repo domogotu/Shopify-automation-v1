@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "max_total_decision_cycles": 5,
+  "loops": {
+    "evidence": {"from": "chatgpt_supervisor", "to": "specialist_agents", "max_cycles": 2, "reasons": ["missing_evidence", "stale_evidence", "conflicting_evidence", "wrong_specialist"]},
+    "planning": {"from": "chatgpt_supervisor", "to": "chatgpt_executive", "max_cycles": 2, "reasons": ["request_misunderstood", "alternatives_not_compared", "scope_incomplete"]},
+    "approval": {"from": "human_approval", "to": "chatgpt_executive", "max_cycles": 2, "reasons": ["changes_requested", "approval_expired", "payload_changed"]},
+    "execution": {"from": "post_action_verifier", "to": "act_runtime", "max_cycles": 2, "reasons": ["retryable_failure", "partial_completion"]},
+    "recovery": {"from": "post_action_verifier", "to": "chatgpt_supervisor", "max_cycles": 1, "reasons": ["unexpected_result", "unsafe_result", "non_retryable_failure"]},
+    "feedback": {"from": "user_feedback", "to": "evidence_and_memory_review", "max_cycles": 2, "reasons": ["incorrect_answer", "stale_memory", "missing_context", "unsafe_recommendation"]}
+  },
+  "stop_conditions": ["cycle_limit_reached", "same_failure_repeated", "required_data_unavailable", "permission_denied", "user_cancels", "unsafe_to_continue"],
+  "on_stop": "safe_no_operation_and_owner_review"
+}

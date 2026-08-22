@@ -8,7 +8,9 @@ else
   echo "Database migrations disabled; preserving existing schemas"
 fi
 
-if [ "${SYNC_EXECUTIVE_WORKFLOW_ONCE:-false}" = "true" ]; then
+# Temporary one-deploy repair: force only workflow 00 into the live n8n database.
+# Revert this block after Render confirms the import completed.
+if true; then
   echo "Synchronizing corrected executive workflow only"
   mkdir -p /tmp/shopify-automation-executive-sync
   cp /opt/shopify-automation/workflows/00-chatgpt-executive-supervisor-v1.json /tmp/shopify-automation-executive-sync/

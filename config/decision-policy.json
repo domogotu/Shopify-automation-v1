@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "executive_model_role": "ChatGPT Executive Orchestrator",
+  "supervisor_model_role": "ChatGPT Decision Supervisor",
+  "specialist_model_policy": "Specialists may use Claude or another approved provider, but must return the common evidence bundle.",
+  "decision_sequence": [
+    "understand_request",
+    "retrieve_scoped_memory",
+    "select_specialists",
+    "collect_specialist_evidence",
+    "compare_options",
+    "supervisor_review",
+    "deterministic_policy_gate",
+    "human_approval_when_required",
+    "authorized_execution",
+    "post_action_verification",
+    "audit_and_learning"
+  ],
+  "mandatory_human_approval": [
+    "PUBLISH_PRODUCT",
+    "SUBMIT_SUPPLIER_ORDER",
+    "REFUND",
+    "RESHIP",
+    "CANCEL_ORDER",
+    "SEND_CUSTOMER_MESSAGE",
+    "CHANGE_PRICE",
+    "CREATE_DISCOUNT",
+    "SEND_CAMPAIGN",
+    "AD_SPEND",
+    "CHANGE_POLICY",
+    "CHANGE_PERMISSION"
+  ],
+  "supervisor_checks": [
+    "request_was_understood",
+    "correct_specialists_were_selected",
+    "evidence_is_current_and_cited",
+    "conflicts_and_missing_information_are_visible",
+    "options_were_compared",
+    "financial_effect_was_considered",
+    "customer_and_operational_risk_was_considered",
+    "recommendation_follows_active_policy",
+    "required_approval_is_identified",
+    "proposed_action_is_idempotent_and_recoverable"
+  ],
+  "no_ai_authority": [
+    "grant_permissions",
+    "approve_high_risk_action",
+    "override_store_scope",
+    "override_current_authoritative_data",
+    "invent_evidence",
+    "silently_change_policy"
+  ]
+}

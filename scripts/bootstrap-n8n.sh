@@ -8,7 +8,13 @@ else
   echo "Database migrations disabled; preserving existing schemas"
 fi
 
-if [ "${SYNC_EXECUTIVE_WORKFLOW_ONCE:-false}" = "true" ]; then
+if [ "${SYNC_MEMORY_WORKFLOWS_ONCE:-false}" = "true" ]; then
+  echo "Synchronizing governed memory workflows"
+  mkdir -p /tmp/shopify-automation-memory-sync
+  cp /opt/shopify-automation/workflows/00D-memory-write-gate-v1.json /tmp/shopify-automation-memory-sync/
+  cp /opt/shopify-automation/workflows/00E-scoped-memory-retrieval-v1.json /tmp/shopify-automation-memory-sync/
+  n8n import:workflow --separate --input=/tmp/shopify-automation-memory-sync
+elif [ "${SYNC_EXECUTIVE_WORKFLOW_ONCE:-false}" = "true" ]; then
   echo "Synchronizing corrected executive workflow only"
   mkdir -p /tmp/shopify-automation-executive-sync
   cp /opt/shopify-automation/workflows/00-chatgpt-executive-supervisor-v1.json /tmp/shopify-automation-executive-sync/

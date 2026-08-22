@@ -17,12 +17,14 @@ Every workflow that uses AI follows the same visible n8n sub-workflow. Business-
 ### Executive decision hierarchy
 
 1. ChatGPT interprets the request and creates a structured executive plan.
+   Before planning, the user message is stored and relevant store-scoped conversation and verified memory are retrieved.
 2. ChatGPT selects one or more specialist agents and identifies the evidence each must return.
 3. Specialists analyze only their assigned scope and return cited evidence bundles; they do not authorize actions.
 4. ChatGPT independently reviews the combined reports, compares alternatives, identifies conflicts and missing information, and recommends the best supported option.
 5. Deterministic code checks evidence quality, permissions, active policy, risk, approval, payload hash, tool allowlist, idempotency, and recoverability.
 6. High-risk commerce actions require human approval even when ChatGPT recommends them.
 7. The authorized action is executed through the constrained Act runtime and then independently verified.
+8. The user answer, plan, specialist evidence, supervisor review, approval, action result, and verification outcome are returned to the memory write gate.
 
 ChatGPT can recommend `NEEDS_INFORMATION`, `NEEDS_REVIEW`, `RECOMMEND`, or `REJECT`. It cannot grant permissions, approve high-risk actions, override store scope, invent evidence, or silently change policy.
 
@@ -263,6 +265,10 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - `00-chatgpt-executive-supervisor-v1.json`: implemented two-pass ChatGPT planning and independent decision review followed by a deterministic gate.
 - `config/decision-policy.json`: implemented the decision sequence, mandatory approvals, supervisor checks, and prohibited AI authority.
 - `database/migrations/004_executive_decisions.sql`: implemented decision cases, executive plans, specialist reports, supervisor reviews, and outcomes.
+- `00D-memory-write-gate-v1.json`: implemented redaction, conversation persistence, governed memory-candidate persistence, and memory-write receipts.
+- `00E-scoped-memory-retrieval-v1.json`: implemented recent-conversation and verified store-scoped memory retrieval with cited context packages.
+- `config/memory-policy.json`: implemented retention, exclusions, memory write requirements, retrieval order, and cross-store denial.
+- `database/migrations/005_memory_access_and_retention.sql`: implemented memory access logs, retention rules, and summaries.
 - Live model and commerce execution remains intentionally disconnected until the shared Think–Authorize–Act core and approval tests are implemented.
 
 | ID | Workflow | Trigger | External writes |

@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "default_agent": "approval_compliance",
+  "agents": {
+    "product_discovery": {
+      "description": "Finds, validates, deduplicates, and scores product candidates.",
+      "intents": ["find_product", "research_product", "score_product", "compare_products"],
+      "memory_scopes": ["supplier_products", "product_candidates", "product_scores", "historical_outcomes"],
+      "read_tools": ["cj_catalog_read", "shopify_catalog_read", "postgres_read", "web_research"],
+      "write_tools": ["postgres_product_candidate_write", "sheets_product_review_write"],
+      "approval_types": []
+    },
+    "supplier_cj": {
+      "description": "Manages CJ catalog evidence, variant mappings, supplier orders, and tracking.",
+      "intents": ["check_supplier", "map_variant", "submit_supplier_order", "check_tracking"],
+      "memory_scopes": ["suppliers", "supplier_products", "supplier_variants", "supplier_variant_mappings", "shipments"],
+      "read_tools": ["cj_catalog_read", "cj_order_read", "postgres_read"],
+      "write_tools": ["cj_order_write", "postgres_supplier_write", "sheets_exception_write"],
+      "approval_types": ["SUPPLIER_ORDER", "SUPPLIER_MAPPING_OVERRIDE"]
+    },
+    "product_content": {
+      "description": "Creates grounded product copy, SEO fields, tags, image briefs, and alt text.",
+      "intents": ["write_product_content", "rewrite_product_content", "create_seo", "create_image_brief"],
+      "memory_scopes": ["verified_product_facts", "approved_content", "brand_policy", "content_feedback"],
+      "read_tools": ["postgres_read", "shopify_catalog_read", "cj_catalog_read"],
+      "write_tools": ["postgres_content_draft_write", "sheets_content_review_write"],
+      "approval_types": ["CONTENT"]
+    },
+    "pricing_profit": {
+      "description": "Calculates landed cost, contribution profit, price recommendations, and margin alerts.",
+      "intents": ["calculate_price", "check_margin", "reprice", "analyze_profit"],
+      "memory_scopes": ["price_snapshots", "supplier_costs", "fees", "pricing_policy"],
+      "read_tools": ["postgres_read", "shopify_catalog_read", "cj_catalog_read"],
+      "write_tools": ["postgres_price_snapshot_write", "sheets_pricing_review_write", "shopify_price_write"],
+      "approval_types": ["PRICE_CHANGE"]
+    },
+    "shopify_catalog": {
+      "description": "Creates Shopify drafts, updates approved catalog fields, and publishes approved products.",
+      "intents": ["create_draft", "update_product", "publish_product", "pause_product"],
+      "memory_scopes": ["shopify_products", "shopify_variants", "supplier_variant_mappings", "approvals"],
+      "read_tools": ["shopify_catalog_read", "postgres_read"],
+      "write_tools": ["shopify_draft_write", "shopify_catalog_write", "shopify_publication_write", "postgres_shopify_write"],
+      "approval_types": ["PRODUCT", "PUBLISH", "CATALOG_CHANGE"]
+    },
+    "order_fulfillment": {
+      "description": "Processes verified Shopify order events, exceptions, supplier submission, tracking, and fulfillment.",
+      "intents": ["process_order", "check_order", "fulfill_order", "resolve_shipping_exception"],
+      "memory_scopes": ["orders", "order_lines", "fulfillments", "shipments", "order_exceptions"],
+      "read_tools": ["shopify_order_read", "cj_order_read", "postgres_read"],
+      "write_tools": ["postgres_order_write", "cj_order_write", "shopify_fulfillment_write", "sheets_exception_write"],
+      "approval_types": ["SUPPLIER_ORDER", "FULFILLMENT_EXCEPTION"]
+    },
+    "customer_support": {
+      "description": "Classifies support requests and drafts evidence-grounded replies and proposed resolutions.",
+      "intents": ["support_request", "draft_reply", "refund_request", "reship_request", "cancel_request"],
+      "memory_scopes": ["support_tickets", "support_messages", "orders", "shipments", "support_policy"],
+      "read_tools": ["shopify_order_read", "postgres_read", "cj_order_read"],
+      "write_tools": ["postgres_support_write", "sheets_support_review_write", "customer_message_write", "shopify_refund_write"],
+      "approval_types": ["SUPPORT_MESSAGE", "REFUND", "RESHIP", "CANCELLATION", "POLICY_EXCEPTION"]
+    },
+    "marketing": {
+      "description": "Drafts approved retention, social, email, and product-promotion campaigns.",
+      "intents": ["create_campaign", "create_social_content", "create_email", "create_discount"],
+      "memory_scopes": ["campaign_drafts", "approved_content", "product_performance", "marketing_policy"],
+      "read_tools": ["shopify_analytics_read", "postgres_read"],
+      "write_tools": ["postgres_campaign_write", "sheets_campaign_review_write", "marketing_send_write", "shopify_discount_write"],
+      "approval_types": ["CAMPAIGN", "DISCOUNT", "MARKETING_SEND", "AD_SPEND"]
+    },
+    "finance": {
+      "description": "Tracks sales, costs, refunds, fees, estimated profit, and reconciliation exceptions.",
+      "intents": ["financial_summary", "profit_report", "reconcile_order", "cost_alert"],
+      "memory_scopes": ["orders", "price_snapshots", "refunds", "fees", "daily_metrics"],
+      "read_tools": ["shopify_finance_read", "postgres_read", "cj_order_read"],
+      "write_tools": ["postgres_metrics_write", "sheets_metrics_write", "sheets_exception_write"],
+      "approval_types": []
+    },
+    "research": {
+      "description": "Performs cited product, competitor, trend, policy, and supplier research.",
+      "intents": ["deep_research", "competitor_research", "trend_research", "policy_research"],
+      "memory_scopes": ["research_evidence", "product_candidates", "supplier_documents"],
+      "read_tools": ["web_research", "postgres_read", "shopify_catalog_read", "cj_catalog_read"],
+      "write_tools": ["postgres_research_write", "sheets_product_review_write"],
+      "approval_types": []
+    },
+    "analytics": {
+      "description": "Produces cited operating metrics, anomaly alerts, forecasts, and owner briefs.",
+      "intents": ["analytics", "daily_metrics", "weekly_brief", "detect_anomaly", "forecast"],
+      "memory_scopes": ["daily_metrics", "automation_runs", "orders", "shipments", "support_tickets"],
+      "read_tools": ["shopify_analytics_read", "postgres_read"],
+      "write_tools": ["postgres_metrics_write", "sheets_metrics_write", "owner_notification_write"],
+      "approval_types": []
+    },
+    "approval_compliance": {
+      "description": "Validates permissions, approvals, policies, schemas, risk, idempotency, and audit requirements.",
+      "intents": ["approve_action", "review_action", "compliance_check", "unknown"],
+      "memory_scopes": ["approvals", "policy_versions", "tool_permissions", "audit_events"],
+      "read_tools": ["postgres_read", "sheets_approval_read"],
+      "write_tools": ["postgres_approval_write", "sheets_approval_write", "owner_notification_write"],
+      "approval_types": ["ANY_HIGH_RISK_ACTION"]
+    }
+  }
+}

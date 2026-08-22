@@ -1,5 +1,8 @@
 FROM n8nio/n8n:latest
 
-# Keep the first staging image identical to the official n8n runtime.
-# Current n8n v2 images intentionally omit OS package managers such as apk,
-# so business-schema migrations are applied as a separate controlled step.
+COPY workflows /opt/shopify-automation/workflows
+COPY scripts/bootstrap-n8n.sh /opt/shopify-automation/bootstrap-n8n.sh
+
+# Current n8n v2 images intentionally omit OS package managers. The bootstrap
+# uses only n8n's supported CLI and the shell already included in the image.
+ENTRYPOINT ["/bin/sh", "/opt/shopify-automation/bootstrap-n8n.sh"]

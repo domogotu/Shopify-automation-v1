@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "tool-success-complete",
+      "description": "Successful tool call with required content",
+      "input": {
+        "tool_call_id": "test-001",
+        "tool_key": "shopify.read_product",
+        "operation": "read",
+        "execution_status": "SUCCESS",
+        "required_fields": [
+          "id",
+          "title"
+        ],
+        "normalized_result": {
+          "id": "gid://shopify/Product/1",
+          "title": "Mock product"
+        },
+        "source_reference": "mock://shopify/product/1"
+      },
+      "expected": {
+        "safe_for_agent_use": true,
+        "content_status": "VALID"
+      }
+    },
+    {
+      "id": "tool-success-empty",
+      "description": "Green execution with missing content must fail closed",
+      "input": {
+        "tool_call_id": "test-002",
+        "tool_key": "shopify.read_product",
+        "operation": "read",
+        "execution_status": "SUCCESS",
+        "required_fields": [
+          "id",
+          "title"
+        ],
+        "normalized_result": {},
+        "source_reference": "mock://empty"
+      },
+      "expected": {
+        "safe_for_agent_use": false,
+        "content_status": "INVALID"
+      }
+    },
+    {
+      "id": "tool-error-no-fabrication",
+      "description": "Tool error cannot be converted into a successful business fact",
+      "input": {
+        "tool_call_id": "test-003",
+        "tool_key": "supplier.submit_order",
+        "operation": "write",
+        "execution_status": "ERROR",
+        "required_fields": [
+          "order_id",
+          "status"
+        ],
+        "normalized_result": null,
+        "source_reference": "mock://tool-error"
+      },
+      "expected": {
+        "safe_for_agent_use": false,
+        "content_status": "TOOL_ERROR"
+      }
+    },
+    {
+      "id": "approval-missing",
+      "description": "Irreversible action without approval must route to human review",
+      "input": {
+        "tool_call_id": "test-004",
+        "tool_key": "shopify.publish_product",
+        "operation": "write",
+        "execution_status": "NOT_RUN",
+        "required_fields": [
+          "approval_id"
+        ],
+        "normalized_result": {
+          "approval_id": null
+        },
+        "source_reference": "mock://approval-missing"
+      },
+      "expected": {
+        "safe_for_agent_use": false,
+        "content_status": "APPROVAL_REQUIRED"
+      }
+    }
+  ]
+}

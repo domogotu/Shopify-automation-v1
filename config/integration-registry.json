@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "default_state": "INACTIVE",
+  "global_controls": {
+    "kill_switch": "SYSTEM_KILL_SWITCH",
+    "database_migrations": "RUN_DATABASE_MIGRATIONS",
+    "workflow_bootstrap": "BOOTSTRAP_WORKFLOWS"
+  },
+  "integrations": [
+    {
+      "key": "openai_executive",
+      "provider": "OpenAI",
+      "workflows": [
+        "00 - ChatGPT Executive and Decision Supervisor v1"
+      ],
+      "required_env": [
+        "OPENAI_API_KEY",
+        "OPENAI_ORCHESTRATOR_MODEL",
+        "OPENAI_SUPERVISOR_MODEL"
+      ],
+      "risk": "analysis_only",
+      "readiness": "credentials_required"
+    },
+    {
+      "key": "anthropic_realtime",
+      "provider": "Anthropic",
+      "workflows": [
+        "00 - Realtime Shopify Question Gateway v1"
+      ],
+      "required_env": [
+        "ANTHROPIC_API_KEY",
+        "AI_SPECIALIST_PRIMARY_MODEL"
+      ],
+      "risk": "analysis_only",
+      "readiness": "credentials_required"
+    },
+    {
+      "key": "postgres_memory",
+      "provider": "Render PostgreSQL",
+      "workflows": [
+        "00D - Governed Memory Write Gate v1",
+        "00E - Scoped Memory Retrieval v1",
+        "00J - System Architect Improvement Intake v1",
+        "00K - Tool Result Content Validator v1"
+      ],
+      "required_n8n_credentials": [
+        "Postgres"
+      ],
+      "required_flags": {
+        "RUN_DATABASE_MIGRATIONS": "true during approved migration only"
+      },
+      "risk": "persistent_data",
+      "readiness": "migration_and_credential_required"
+    },
+    {
+      "key": "agentmail",
+      "provider": "AgentMail",
+      "workflows": [
+        "13A - AgentMail Inbound Webhook v1",
+        "13B - AgentMail Approved Reply v1"
+      ],
+      "required_env": [
+        "AGENTMAIL_WEBHOOK_SECRET",
+        "AGENTMAIL_API_KEY"
+      ],
+      "risk": "external_message",
+      "readiness": "test_inbox_and_approval_required"
+    },
+    {
+      "key": "shopify",
+      "provider": "Shopify",
+      "workflows": [],
+      "required_n8n_credentials": [
+        "Shopify"
+      ],
+      "required_flags": {
+        "SYSTEM_KILL_SWITCH": "true",
+        "AUTO_PUBLISH_PRODUCTS": "false",
+        "AUTO_SUBMIT_SUPPLIER_ORDERS": "false",
+        "AUTO_PROCESS_REFUNDS": "false"
+      },
+      "risk": "commerce_action",
+      "readiness": "intentionally_disconnected"
+    },
+    {
+      "key": "google_sheets",
+      "provider": "Google Sheets",
+      "workflows": [],
+      "required_n8n_credentials": [
+        "Google Sheets OAuth2"
+      ],
+      "risk": "review_mirror",
+      "readiness": "not_yet_wired"
+    }
+  ]
+}

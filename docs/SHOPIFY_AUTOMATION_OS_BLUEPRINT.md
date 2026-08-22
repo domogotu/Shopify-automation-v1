@@ -10,6 +10,48 @@
 - **Supplier system:** CJdropshipping first. Supplier product/variant mappings are preserved separately from public Shopify copy.
 - **Safety model:** Human approval for publishing, supplier ordering, material price changes, refunds, discounts, customer-facing exception messages, and advertising spend.
 
+## Shared Agent Orchestration Pattern
+
+Every workflow that uses AI follows the same visible n8n sub-workflow. Business-specific workflows call this shared agent core rather than duplicating model and safety logic.
+
+1. **Trigger and configuration**
+   - A webhook, form, schedule, Shopify event, or internal workflow supplies a correlation ID and a typed task request.
+   - A configuration node loads the store, environment, policies, risk thresholds, approved tools, model routing, prompt version, and output schema version.
+   - Secrets remain in n8n credentials or environment variables and never enter prompts, workflow exports, Sheets, or logs.
+
+2. **Think agent — read-only planning**
+   - Claude is the primary reasoning model. The fallback runs only for retryable availability, timeout, or rate-limit failures.
+   - The Think agent may retrieve verified context from Shopify, CJ, PostgreSQL, Google Sheets, and approved reference data, but it cannot perform external writes.
+   - PostgreSQL memory is scoped by `store_id`, workflow, resource, and conversation. Retention, PII minimization, and deletion rules apply; memory is never shared across stores.
+   - A structured-output parser requires a versioned JSON plan containing: `task`, `facts`, `assumptions`, `missing_information`, `risk_level`, `proposed_actions`, `required_tools`, `requires_approval`, and `evidence_refs`.
+
+3. **Deterministic authorization and risk gate**
+   - Code and database policy—not the model—decide whether a proposed action is permitted.
+   - The gate verifies actor role, store scope, approval type, approval token, risk threshold, tool allowlist, action limits, payload hash, and idempotency key.
+   - Allowed read-only or explicitly low-risk actions continue. Approval-required actions enter the Google Sheets/PostgreSQL approval queue. Denied, incomplete, stale, or unsafe plans end in a recorded no-operation state.
+
+4. **Act agent — constrained execution**
+   - The Act agent receives only the validated plan, minimum required context, approved tool set, and short-lived authorization envelope.
+   - Tools are individually allowlisted: Shopify Admin GraphQL, CJ supplier API/assisted queue, PostgreSQL, Google Sheets, email/helpdesk, and owner notifications.
+   - Each write uses an idempotency key, precondition checks, bounded retries, and a compensating or manual recovery path.
+   - A second structured-output parser requires: `status`, `actions_attempted`, `actions_completed`, `external_ids`, `evidence_refs`, `errors`, `retryable`, `approval_id`, and `next_step`.
+
+5. **Branching, notification, and recovery**
+   - Success routes to the appropriate business workflow and audit log.
+   - Approval-required routes to the mobile review queue and owner notification.
+   - Denied or no-change routes to a safe No Operation node with a reason code.
+   - Retryable errors route to bounded retry; terminal errors route to the central error handler.
+   - Every canvas includes documentation notes for purpose, input contract, prompt version, output schema, permissions, owner, and recovery procedure.
+
+### Shared Tool Connections
+
+- **Claude primary + fallback:** model router with retry classification and cost/latency logging.
+- **PostgreSQL memory and state:** durable context, approvals, idempotency, workflow runs, and audit events.
+- **Google Sheets:** human review and configuration surface; never the authority for permissions.
+- **Shopify GraphQL:** product, order, fulfillment, customer, publication, and refund tools with operation-specific scopes.
+- **CJdropshipping:** catalog lookup, variant mapping, order submission, and tracking tools; writes remain approval-gated at launch.
+- **Notifications:** owner alerts for approvals, high-risk cases, completion, and terminal failures.
+
 ## System Modules
 
 1. **Supplier Product Intake**
@@ -128,6 +170,9 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 
 | ID | Workflow | Trigger | External writes |
 |---|---|---|---|
+| 00A | Agent Think/Authorize/Act Core | Internal sub-workflow | Policy-controlled tools + audit |
+| 00B | Configuration and Tool Registry | Internal sub-workflow | PostgreSQL read + audit |
+| 00C | Approval, No-Op, and Error Router | Internal sub-workflow | Sheets/PostgreSQL + notifications |
 | 01 | Supplier Product Intake | Form/Webhook | Sheets + PostgreSQL |
 | 02 | Research and Risk Scoring | Intake event | Sheets + PostgreSQL |
 | 03 | AI Content Draft | Approved candidate | Sheets + PostgreSQL |
@@ -155,6 +200,7 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - Google Sheets workbook schema
 - environment-variable contract
 - shared n8n sub-workflows for configuration, database logging, AI routing, approvals, and errors
+- shared Think/Authorize/Act agent core with structured JSON schemas and PostgreSQL memory
 
 ### Milestone 2 — Product Lifecycle
 
@@ -202,4 +248,3 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - Every Shopify variant must have a valid supplier mapping before sale.
 - Every webhook must be authenticated and idempotent.
 - Every external write must be auditable and safely retryable.
-

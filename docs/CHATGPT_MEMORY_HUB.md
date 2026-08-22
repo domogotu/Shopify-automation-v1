@@ -10,6 +10,8 @@
 6. Give ChatGPT a compact cited context package.
 7. Store the executive plan, specialist reports, supervisor review, user-facing answer, approval decision, execution result, and verification outcome.
 8. Convert repeated history into summaries while retaining required audit records.
+9. Classify durable memory into one primary and optional secondary governed categories.
+10. Route unmatched subjects to category review and propose new categories when repeated evidence justifies them.
 
 ## What is remembered
 
@@ -44,3 +46,7 @@ Both workflows require the production PostgreSQL credential to be attached after
 ## Important distinction
 
 Memory helps ChatGPT remember context, but it is not automatically current. Before making a decision about inventory, price, order status, tracking, supplier availability, approval, or policy, the system checks the authoritative live record. A remembered fact that conflicts with current data is marked stale and cannot authorize an action.
+
+## Expandable category system
+
+`config/memory-taxonomy.json` and migration `007_dynamic_memory_taxonomy.sql` add an expandable hierarchy over governed memories. A memory can be found through multiple categories without copying the underlying record. The system can propose new categories, aliases, merges, splits, moves, and archives, while high-impact structural changes require review. See `docs/DYNAMIC_MEMORY_CATEGORIES.md`.

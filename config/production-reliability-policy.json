@@ -1,0 +1,74 @@
+{
+  "version": "1.0.0",
+  "default_mode": "OBSERVE_AND_RECOMMEND",
+  "event_processing": {
+    "durable_queue_required": true,
+    "transactional_outbox_required": true,
+    "dead_letter_queue_required": true,
+    "idempotency_required_for_every_external_write": true,
+    "webhook_deduplication_required": true,
+    "reconciliation_required": true,
+    "unknown_write_outcome_action": "PAUSE_AND_RECONCILE"
+  },
+  "database": {
+    "postgresql_authoritative": true,
+    "row_level_security_required": true,
+    "force_row_level_security_for_app_roles": true,
+    "least_privilege_roles_required": true,
+    "point_in_time_recovery_required": true,
+    "encrypted_backups_required": true,
+    "restore_drill_schedule": "monthly",
+    "migration_rollback_or_forward_recovery_required": true
+  },
+  "observability": {
+    "standard": "OpenTelemetry",
+    "signals": ["traces", "metrics", "logs"],
+    "correlation_id_required": true,
+    "redact_sensitive_attributes": true,
+    "alert_on": [
+      "signature_failure",
+      "dead_letter_created",
+      "approval_bypass_attempt",
+      "content_assertion_failure",
+      "verification_mismatch",
+      "queue_backlog",
+      "credential_expiry",
+      "cost_budget_exceeded",
+      "backup_or_restore_failure"
+    ]
+  },
+  "rollout": {
+    "feature_flags_required": true,
+    "stages": ["OFF", "OBSERVE", "DRAFT", "APPROVAL_REQUIRED", "CANARY", "AUTOMATED"],
+    "production_default": "OFF",
+    "kill_switch_required": true,
+    "automatic_rollback_required": true
+  },
+  "ai_quality": {
+    "representative_eval_set_required": true,
+    "adversarial_and_prompt_injection_tests_required": true,
+    "tool_failure_fixtures_required": true,
+    "citation_and_freshness_tests_required": true,
+    "model_or_prompt_change_requires_regression_eval": true,
+    "cost_and_latency_budgets_required": true
+  },
+  "data_protection": {
+    "secret_manager_required": true,
+    "attachment_malware_scan_required": true,
+    "pii_minimization_required": true,
+    "retention_and_deletion_jobs_required": true,
+    "audit_log_tamper_protection_required": true
+  },
+  "launch_blockers": [
+    "unverified_webhook",
+    "missing_idempotency",
+    "missing_content_assertion",
+    "missing_human_gate_for_high_risk_action",
+    "missing_row_level_security",
+    "missing_backup_restore_test",
+    "missing_kill_switch",
+    "failed_security_or_regression_eval",
+    "unbounded_retry",
+    "unmonitored_external_write"
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "default_conversation_retention_days": 365,
   "working_memory_retention_days": 7,
   "episodic_memory_retention_days": 730,
@@ -33,6 +33,11 @@
     "semantic_memory",
     "proposed_or_unverified_memory"
   ],
+  "category_policy": "config/memory-taxonomy.json",
+  "require_primary_category": true,
+  "allow_secondary_categories": true,
+  "uncategorized_route": "UNCATEGORIZED_REVIEW",
+  "category_changes_must_be_audited": true,
   "cross_store_access": "deny",
   "proposed_memory_can_authorize_action": false,
   "expired_memory_can_authorize_action": false

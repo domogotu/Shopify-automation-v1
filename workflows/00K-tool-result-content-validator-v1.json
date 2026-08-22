@@ -1,0 +1,48 @@
+{
+  "name": "00K - Tool Result Content Validator v1",
+  "nodes": [
+    {
+      "parameters": {"inputSource":"passthrough"},
+      "id": "90000000-0000-4000-8000-000000000001",
+      "name": "Called After Every Tool",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 260]
+    },
+    {
+      "parameters": {"jsCode":"const required=['correlation_id','tool_call_id','tool_key','operation','tool_result'];for(const key of required){if($json[key]===undefined||$json[key]===null||$json[key]==='')throw new Error(`${key} is required`);}const result=$json.tool_result;const expected=Array.isArray($json.required_fields)?$json.required_fields:[];const data=result&&typeof result==='object'&&result.data&&typeof result.data==='object'?result.data:null;const status=String(result?.status||'INVALID_RESPONSE');const errors=Array.isArray(result?.errors)?result.errors:result?.errors?[result.errors]:[];const missing=expected.filter(field=>{const parts=String(field).split('.');let value=data;for(const part of parts){if(value===null||value===undefined||!Object.prototype.hasOwnProperty.call(value,part))return true;value=value[part];}return value===null||value===undefined||value==='';});const source=String(result?.source_reference||'');const observed=String(result?.observed_at||'');const success=status==='SUCCESS'&&errors.length===0&&data!==null&&missing.length===0&&source!==''&&observed!=='';const retryable=['RETRYABLE_ERROR','TIMEOUT'].includes(status);const contentStatus=success?'VALID':status==='EMPTY_VALID'?'EMPTY_VALID':status==='TIMEOUT'?'TIMEOUT':status==='UNAUTHORIZED'?'UNAUTHORIZED':errors.length?'ERROR':'INVALID';const failureReason=success?null:[status!=='SUCCESS'?`status=${status}`:null,errors.length?`errors=${errors.length}`:null,data===null?'data_missing':null,missing.length?`missing=${missing.join(',')}`:null,!source?'source_missing':null,!observed?'observed_at_missing':null].filter(Boolean).join('; ');return [{json:{...$json,normalized_result:data,tool_status:status,content_status:contentStatus,missing_fields:missing,errors,safe_for_agent_use:success,retryable,requires_human:!success&&!retryable,failure_reason:failureReason,attempt:Math.max(1,Number($json.attempt||result?.attempt||1)),source_reference:source||null,observed_at:observed||null}}];"},
+      "id": "90000000-0000-4000-8000-000000000002",
+      "name": "Assert Result Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [250, 260]
+    },
+    {
+      "parameters": {"operation":"executeQuery","query":"INSERT INTO tool_result_assertions (store_id, correlation_id, tool_call_id, tool_key, operation, execution_status, content_status, attempt, required_fields, missing_fields, assertions, normalized_result, source_reference, observed_at, safe_for_agent_use, failure_reason) VALUES ((SELECT id FROM stores WHERE shop_domain = NULLIF($1,'') AND active = true), $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb, $11::jsonb, $12::jsonb, $13, $14::timestamptz, $15, $16) ON CONFLICT (tool_call_id, attempt) DO UPDATE SET execution_status=EXCLUDED.execution_status, content_status=EXCLUDED.content_status, missing_fields=EXCLUDED.missing_fields, assertions=EXCLUDED.assertions, normalized_result=EXCLUDED.normalized_result, source_reference=EXCLUDED.source_reference, observed_at=EXCLUDED.observed_at, safe_for_agent_use=EXCLUDED.safe_for_agent_use, failure_reason=EXCLUDED.failure_reason RETURNING id AS assertion_id, safe_for_agent_use, content_status;","options":{"queryReplacement":"={{ [$json.store_domain||'',$json.correlation_id,$json.tool_call_id,$json.tool_key,$json.operation,$json.execution_status||null,$json.content_status,$json.attempt,JSON.stringify($json.required_fields||[]),JSON.stringify($json.missing_fields||[]),JSON.stringify($json.content_assertions||[]),JSON.stringify($json.normalized_result),$json.source_reference,$json.observed_at,$json.safe_for_agent_use,$json.failure_reason] }}"}},
+      "id": "90000000-0000-4000-8000-000000000003",
+      "name": "Audit Content Assertion",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [500, 260]
+    },
+    {
+      "parameters": {"jsCode":"const checked=$('Assert Result Content').first().json;return [{json:{status:checked.safe_for_agent_use?'VALIDATED_TOOL_RESULT':checked.retryable?'RETRY_REQUIRED':'HUMAN_REVIEW_REQUIRED',correlation_id:checked.correlation_id,tool_call_id:checked.tool_call_id,assertion_id:$json.assertion_id,safe_for_agent_use:checked.safe_for_agent_use,retryable:checked.retryable,requires_human:checked.requires_human,content_status:checked.content_status,failure_reason:checked.failure_reason,data:checked.safe_for_agent_use?checked.normalized_result:null}}];"},
+      "id": "90000000-0000-4000-8000-000000000004",
+      "name": "Return Validated Envelope",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [750, 260]
+    }
+  ],
+  "connections": {
+    "Called After Every Tool":{"main":[[{"node":"Assert Result Content","type":"main","index":0}]]},
+    "Assert Result Content":{"main":[[{"node":"Audit Content Assertion","type":"main","index":0}]]},
+    "Audit Content Assertion":{"main":[[{"node":"Return Validated Envelope","type":"main","index":0}]]}
+  },
+  "pinData": {},
+  "settings": {"executionOrder":"v1","saveManualExecutions":true,"saveExecutionProgress":true,"saveDataErrorExecution":"all","saveDataSuccessExecution":"all","timezone":"America/Los_Angeles"},
+  "staticData": null,
+  "tags": ["shopify-automation-os","tool-validation","fail-closed","audit"],
+  "triggerCount": 0,
+  "versionId": "90000000-0000-4000-8000-000000000100"
+}

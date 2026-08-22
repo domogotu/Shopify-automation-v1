@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "taxonomy_mode": "dynamic_governed_hierarchy",
+  "root_categories": [
+    "finance",
+    "business",
+    "ecommerce",
+    "federal_contracting",
+    "legal_compliance",
+    "marketing",
+    "projects",
+    "learning",
+    "personal_context"
+  ],
+  "classification": {
+    "allow_multiple_categories": true,
+    "require_primary_category": true,
+    "maximum_categories_per_item": 8,
+    "minimum_assignment_confidence": 0.72,
+    "below_threshold_action": "UNCATEGORIZED_REVIEW",
+    "use_aliases": true,
+    "use_semantic_similarity": true,
+    "preserve_original_source_scope": true
+  },
+  "new_category_policy": {
+    "enabled": true,
+    "minimum_repeated_unmatched_items": 3,
+    "duplicate_similarity_threshold": 0.88,
+    "allowed_depth": 6,
+    "default_status": "PROPOSED",
+    "auto_create": {
+      "enabled": true,
+      "maximum_risk": "LOW",
+      "minimum_confidence": 0.92,
+      "requires_existing_approved_parent": true
+    },
+    "human_review_required_for": [
+      "new_root_category",
+      "category_merge",
+      "category_split",
+      "category_delete",
+      "sensitive_category",
+      "permission_change",
+      "retention_change"
+    ]
+  },
+  "retrieval": {
+    "search_selected_category": true,
+    "include_descendants": true,
+    "include_cross_category_links": true,
+    "include_uncategorized_when_requested": true,
+    "rank_by": [
+      "authority",
+      "freshness",
+      "category_relevance",
+      "semantic_similarity",
+      "confidence"
+    ]
+  },
+  "maintenance": {
+    "detect_duplicates": true,
+    "detect_orphans": true,
+    "detect_overloaded_categories": true,
+    "suggest_merge_and_split": true,
+    "never_reclassify_verified_memory_without_audit": true,
+    "review_schedule": "weekly"
+  }
+}

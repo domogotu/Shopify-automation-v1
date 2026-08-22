@@ -1,0 +1,248 @@
+services:
+  - type: web
+    name: shopify-automation-n8n
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    envVars:
+      - fromGroup: shopify-automation-common
+      - key: SERVICE_MODE
+        value: main
+      - key: N8N_PORT
+        value: "10000"
+      - key: N8N_PROTOCOL
+        value: https
+      - key: N8N_HOST
+        fromService:
+          name: shopify-automation-n8n
+          type: web
+          property: host
+      - key: PGHOST
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: database
+      - key: PGUSER
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: user
+      - key: PGPASSWORD
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: password
+      - key: DB_POSTGRESDB_HOST
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: host
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: port
+      - key: DB_POSTGRESDB_DATABASE
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: database
+      - key: DB_POSTGRESDB_USER
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: password
+      - key: REDIS_HOST
+        fromDatabase:
+          name: shopify-automation-redis
+          property: host
+      - key: REDIS_PORT
+        fromDatabase:
+          name: shopify-automation-redis
+          property: port
+      - key: REDIS_PASSWORD
+        fromDatabase:
+          name: shopify-automation-redis
+          property: password
+      - key: QUEUE_BULL_REDIS_HOST
+        fromDatabase:
+          name: shopify-automation-redis
+          property: host
+      - key: QUEUE_BULL_REDIS_PORT
+        fromDatabase:
+          name: shopify-automation-redis
+          property: port
+      - key: QUEUE_BULL_REDIS_PASSWORD
+        fromDatabase:
+          name: shopify-automation-redis
+          property: password
+
+  - type: worker
+    name: shopify-automation-worker
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - fromGroup: shopify-automation-common
+      - key: SERVICE_MODE
+        value: worker
+      - key: PGHOST
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: database
+      - key: PGUSER
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: user
+      - key: PGPASSWORD
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: password
+      - key: DB_POSTGRESDB_HOST
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: host
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: port
+      - key: DB_POSTGRESDB_DATABASE
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: database
+      - key: DB_POSTGRESDB_USER
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromDatabase:
+          name: shopify-automation-postgres
+          property: password
+      - key: REDIS_HOST
+        fromDatabase:
+          name: shopify-automation-redis
+          property: host
+      - key: REDIS_PORT
+        fromDatabase:
+          name: shopify-automation-redis
+          property: port
+      - key: REDIS_PASSWORD
+        fromDatabase:
+          name: shopify-automation-redis
+          property: password
+      - key: QUEUE_BULL_REDIS_HOST
+        fromDatabase:
+          name: shopify-automation-redis
+          property: host
+      - key: QUEUE_BULL_REDIS_PORT
+        fromDatabase:
+          name: shopify-automation-redis
+          property: port
+      - key: QUEUE_BULL_REDIS_PASSWORD
+        fromDatabase:
+          name: shopify-automation-redis
+          property: password
+
+databases:
+  - name: shopify-automation-postgres
+    databaseName: shopify_automation
+    user: automation
+    plan: free
+    postgresMajorVersion: "16"
+    ipAllowList: []
+
+  - name: shopify-automation-redis
+    plan: free
+    maxmemoryPolicy: noeviction
+    ipAllowList: []
+
+envVarGroups:
+  - name: shopify-automation-common
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GENERIC_TIMEZONE
+        value: America/Los_Angeles
+      - key: TZ
+        value: America/Los_Angeles
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_SCHEMA
+        value: n8n
+      - key: EXECUTIONS_MODE
+        value: queue
+      - key: N8N_WORKER_CONCURRENCY
+        value: "5"
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true
+      - key: N8N_USER_MANAGEMENT_JWT_SECRET
+        generateValue: true
+      - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+        value: "true"
+      - key: N8N_DIAGNOSTICS_ENABLED
+        value: "false"
+      - key: N8N_PERSONALIZATION_ENABLED
+        value: "false"
+      - key: N8N_VERSION_NOTIFICATIONS_ENABLED
+        value: "false"
+      - key: N8N_SECURE_COOKIE
+        value: "true"
+      - key: EXECUTIONS_TIMEOUT
+        value: "300"
+      - key: EXECUTIONS_DATA_PRUNE
+        value: "true"
+      - key: EXECUTIONS_DATA_MAX_AGE
+        value: "336"
+      - key: N8N_DEFAULT_BINARY_DATA_MODE
+        value: database
+      - key: NODE_FUNCTION_ALLOW_BUILTIN
+        value: crypto
+      - key: SHOPIFY_STORE_DOMAIN
+        value: c6w6yz-rz.myshopify.com
+      - key: SHOPIFY_STORE_NAME
+        value: My Store 4
+      - key: SHOPIFY_API_VERSION
+        value: "2026-07"
+      - key: CJ_ACCOUNT_ID
+        value: CJ5748386
+      - key: CJ_API_ENABLED
+        value: "false"
+      - key: AUTO_PUBLISH_PRODUCTS
+        value: "false"
+      - key: AUTO_SUBMIT_SUPPLIER_ORDERS
+        value: "false"
+      - key: AUTO_SEND_SUPPORT_MESSAGES
+        value: "false"
+      - key: AUTO_PROCESS_REFUNDS
+        value: "false"
+      - key: AUTO_CREATE_DISCOUNTS
+        value: "false"
+      - key: AUTO_LAUNCH_CAMPAIGNS
+        value: "false"
+      - key: SYSTEM_KILL_SWITCH
+        value: "true"
+
+previews:
+  generation: none

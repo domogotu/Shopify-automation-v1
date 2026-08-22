@@ -1,0 +1,41 @@
+{
+  "name": "00 - Environment Health Check v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "4cb7fc25-c3b6-4e02-a843-8296a72f51e7",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const required = ['SHOPIFY_STORE_DOMAIN','SHOPIFY_API_VERSION','GOOGLE_SHEETS_WORKBOOK_ID','AI_PRIMARY_PROVIDER','AI_PRIMARY_MODEL'];\nconst safety = ['AUTO_PUBLISH_PRODUCTS','AUTO_SUBMIT_SUPPLIER_ORDERS','AUTO_SEND_SUPPORT_MESSAGES','AUTO_PROCESS_REFUNDS','AUTO_CREATE_DISCOUNTS','AUTO_LAUNCH_CAMPAIGNS'];\nconst missing = required.filter((key) => !$env[key] || String($env[key]).startsWith('replace-'));\nconst unsafe = safety.filter((key) => String($env[key]).toLowerCase() !== 'false');\nconst correlationId = $execution.id ? `health-${$execution.id}` : `health-${Date.now()}`;\nreturn [{ json: { status: missing.length || unsafe.length ? 'BLOCKED' : 'READY', correlation_id: correlationId, checked_at: new Date().toISOString(), required_configuration: { total: required.length, missing }, safety_gates: { total: safety.length, unsafe }, secrets_checked: false, next_action: missing.length ? 'Configure missing values' : unsafe.length ? 'Restore safe launch defaults' : 'Run database and integration checks' } }];"
+      },
+      "id": "a7d915df-21fc-403e-8974-282fe0d828fc",
+      "name": "Validate Configuration",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{"node": "Validate Configuration", "type": "main", "index": 0}]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
+  "staticData": null,
+  "tags": ["shopify-automation-os", "foundation", "health-check"],
+  "triggerCount": 0,
+  "versionId": "616f5eb2-325d-4254-b2da-a440fa20f665"
+}

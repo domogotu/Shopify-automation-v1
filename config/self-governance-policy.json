@@ -1,0 +1,93 @@
+{
+  "version": "1.1.0",
+  "system": "system_architect_and_improvement_governor",
+  "enabled": true,
+  "observe_sources": [
+    "workflow_failures",
+    "verification_failures",
+    "user_feedback",
+    "stale_memory",
+    "uncategorized_information",
+    "repeated_manual_work",
+    "missing_capability_requests",
+    "provider_api_changes",
+    "policy_and_regulation_changes",
+    "cost_and_performance_metrics"
+  ],
+  "allowed_autonomous_actions": [
+    "detect_gap",
+    "open_improvement_case",
+    "collect_evidence",
+    "draft_design",
+    "draft_workflow_json",
+    "draft_database_migration",
+    "draft_test_cases",
+    "run_sandbox_tests",
+    "compare_candidate_versions",
+    "recommend_rollback"
+  ],
+  "human_approval_required": [
+    "activate_new_agent",
+    "activate_new_workflow",
+    "change_production_prompt",
+    "change_policy",
+    "change_permission",
+    "change_approval_requirement",
+    "apply_database_migration",
+    "connect_new_external_service",
+    "add_or_rotate_credentials",
+    "increase_spending_limit",
+    "enable_external_write",
+    "deploy_to_production",
+    "delete_or_merge_system_component"
+  ],
+  "prohibited": [
+    "self_grant_permissions",
+    "bypass_human_approval",
+    "modify_audit_history",
+    "read_or_expose_secrets",
+    "deploy_untested_change",
+    "silently_replace_verified_memory",
+    "silently_expand_external_scope",
+    "disable_safety_controls",
+    "remove_rollback_path"
+  ],
+  "promotion_gates": [
+    "tool_results_content_validated",
+    "evidence_complete",
+    "duplicate_capability_check_passed",
+    "architecture_review_passed",
+    "security_review_passed",
+    "representative_tests_passed",
+    "regression_tests_passed",
+    "cost_limit_passed",
+    "rollback_tested",
+    "human_approval_valid",
+    "version_and_audit_record_created"
+  ],
+  "tool_result_policy": "config/tool-result-contract.json",
+  "workflow_editing": {
+    "actual_workflow_context_allowed": true,
+    "approved_methods": ["n8n_mcp", "n8n_as_code", "versioned_workflow_json"],
+    "default_destination": "DRAFT_REGISTRY",
+    "direct_production_edit": false,
+    "single_review_inbox": "SYSTEM_CHANGE_REVIEW"
+  },
+  "rollout": {
+    "sequence": ["DRAFT", "SANDBOX", "SHADOW", "CANARY", "PRODUCTION"],
+    "automatic_rollback_on": [
+      "security_failure",
+      "policy_violation",
+      "unexpected_external_write",
+      "error_rate_threshold_exceeded",
+      "quality_regression",
+      "cost_threshold_exceeded"
+    ]
+  },
+  "review_schedule": {
+    "failure_and_security": "continuous",
+    "stale_sources_and_api_changes": "daily",
+    "quality_cost_and_categories": "weekly",
+    "full_architecture_review": "monthly"
+  }
+}

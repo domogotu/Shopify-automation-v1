@@ -1,5 +1,11 @@
 {
   "version": "1.0.0",
+  "executive_controller": {
+    "orchestrator": "chatgpt",
+    "supervisor": "chatgpt",
+    "specialist_default": "claude",
+    "final_authorization": "deterministic_policy_and_human_approval"
+  },
   "default_agent": "approval_compliance",
   "agents": {
     "product_discovery": {

@@ -1,0 +1,136 @@
+name: shopify-automation-os
+
+x-n8n-common: &n8n-common
+  image: ${N8N_IMAGE:-n8nio/n8n:latest}
+  restart: unless-stopped
+  env_file:
+    - ./config/.env
+  environment:
+    DB_TYPE: postgresdb
+    DB_POSTGRESDB_HOST: postgres
+    DB_POSTGRESDB_PORT: 5432
+    DB_POSTGRESDB_DATABASE: ${POSTGRES_DATABASE:-shopify_automation}
+    DB_POSTGRESDB_USER: ${POSTGRES_USER:-automation}
+    DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+    DB_POSTGRESDB_SCHEMA: n8n
+    EXECUTIONS_MODE: queue
+    QUEUE_BULL_REDIS_HOST: redis
+    QUEUE_BULL_REDIS_PORT: 6379
+    QUEUE_BULL_REDIS_PASSWORD: ${REDIS_PASSWORD}
+    GENERIC_TIMEZONE: ${APP_TIMEZONE:-America/Los_Angeles}
+    TZ: ${APP_TIMEZONE:-America/Los_Angeles}
+    N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+    N8N_USER_MANAGEMENT_JWT_SECRET: ${N8N_USER_MANAGEMENT_JWT_SECRET}
+    N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+    N8N_DIAGNOSTICS_ENABLED: "false"
+    N8N_PERSONALIZATION_ENABLED: "false"
+    N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+    N8N_SECURE_COOKIE: ${N8N_SECURE_COOKIE:-false}
+    WEBHOOK_URL: ${WEBHOOK_URL:-http://localhost:5678/}
+    EXECUTIONS_TIMEOUT: ${EXECUTIONS_TIMEOUT:-300}
+    EXECUTIONS_DATA_PRUNE: ${EXECUTIONS_DATA_PRUNE:-true}
+    EXECUTIONS_DATA_MAX_AGE: ${EXECUTIONS_DATA_MAX_AGE:-336}
+    NODE_FUNCTION_ALLOW_BUILTIN: crypto
+    AUTO_PUBLISH_PRODUCTS: "false"
+    AUTO_SUBMIT_SUPPLIER_ORDERS: "false"
+    AUTO_SEND_SUPPORT_MESSAGES: "false"
+    AUTO_PROCESS_REFUNDS: "false"
+    AUTO_CREATE_DISCOUNTS: "false"
+    AUTO_LAUNCH_CAMPAIGNS: "false"
+    SYSTEM_KILL_SWITCH: "true"
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    migrate:
+      condition: service_completed_successfully
+  networks:
+    - automation
+
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:-pgvector/pgvector:pg17}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE:-shopify_automation}
+      POSTGRES_USER: ${POSTGRES_USER:-automation}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-automation} -d ${POSTGRES_DATABASE:-shopify_automation}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - automation
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:7.4-alpine}
+    restart: unless-stopped
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass '$${REDIS_PASSWORD}'"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a '$${REDIS_PASSWORD}' ping | grep PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - automation
+
+  migrate:
+    image: ${POSTGRES_IMAGE:-pgvector/pgvector:pg17}
+    restart: "no"
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DATABASE:-shopify_automation}
+      PGUSER: ${POSTGRES_USER:-automation}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      SHOPIFY_STORE_DOMAIN: ${SHOPIFY_STORE_DOMAIN:-c6w6yz-rz.myshopify.com}
+      SHOPIFY_STORE_NAME: ${SHOPIFY_STORE_NAME:-My Store 4}
+    volumes:
+      - ./database/migrations:/migrations:ro
+      - ./database/seeds:/seeds:ro
+      - ./scripts/apply-migrations.sh:/scripts/apply-migrations.sh:ro
+    entrypoint: ["sh", "/scripts/apply-migrations.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - automation
+
+  n8n-main:
+    <<: *n8n-common
+    command: start
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/files/workflows:ro
+      - ./config:/files/config:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:5678/healthz >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  n8n-worker:
+    <<: *n8n-common
+    command: worker --concurrency=${N8N_WORKER_CONCURRENCY:-5}
+    volumes:
+      - n8n_worker_data:/home/node/.n8n
+
+volumes:
+  postgres_data:
+  redis_data:
+  n8n_data:
+  n8n_worker_data:
+
+networks:
+  automation:
+    driver: bridge

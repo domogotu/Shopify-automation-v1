@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "provider": "AgentMail",
+  "api_base_url": "https://api.agentmail.to/v0",
+  "inbound_event": "message.received",
+  "webhook_verification": {
+    "required": true,
+    "scheme": "svix_hmac_sha256",
+    "required_headers": ["svix-id", "svix-signature", "svix-timestamp"],
+    "maximum_clock_skew_seconds": 300,
+    "raw_body_required": true
+  },
+  "threading": {
+    "store_thread_id": true,
+    "store_message_id": true,
+    "reply_endpoint_uses": "message_id",
+    "thread_lookup_uses": "thread_id"
+  },
+  "inbound": {
+    "deduplicate_by": "event_id",
+    "allowed_event_types": ["message.received", "message.sent", "message.delivered", "message.bounced", "message.complained", "message.rejected"],
+    "unknown_sender_action": "TRIAGE",
+    "attachment_action": "QUARANTINE_SCAN_BEFORE_USE"
+  },
+  "outbound": {
+    "customer_facing_approval_required_at_launch": true,
+    "required_before_send": ["validated_recipient", "approved_content", "valid_thread_and_message", "payload_bound_approval", "idempotency_key"],
+    "post_send_verification": ["message_id_present", "thread_id_matches", "delivery_event_or_status_check"]
+  }
+}

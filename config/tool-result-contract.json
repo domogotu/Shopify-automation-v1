@@ -1,0 +1,76 @@
+{
+  "version": "1.0.0",
+  "default_behavior": "FAIL_CLOSED",
+  "execution_success_is_not_content_success": true,
+  "required_envelope": [
+    "tool_call_id",
+    "tool_key",
+    "operation",
+    "status",
+    "observed_at",
+    "attempt",
+    "data",
+    "errors",
+    "source_reference"
+  ],
+  "allowed_statuses": [
+    "SUCCESS",
+    "EMPTY_VALID",
+    "RETRYABLE_ERROR",
+    "PERMANENT_ERROR",
+    "UNAUTHORIZED",
+    "INVALID_RESPONSE",
+    "TIMEOUT"
+  ],
+  "success_requirements": {
+    "status_must_equal": "SUCCESS",
+    "errors_must_be_empty": true,
+    "data_must_match_operation_schema": true,
+    "required_fields_must_be_present": true,
+    "source_reference_required": true,
+    "observed_at_required": true,
+    "content_assertions_must_pass": true
+  },
+  "retry": {
+    "statuses": ["RETRYABLE_ERROR", "TIMEOUT"],
+    "maximum_attempts": 3,
+    "backoff": "exponential_with_jitter",
+    "same_idempotency_key": true,
+    "after_exhaustion": "HUMAN_REVIEW"
+  },
+  "agent_rules": [
+    "never_infer_missing_tool_output",
+    "never_convert_error_to_success",
+    "never_claim_external_state_without_verified_result",
+    "never_use_empty_data_as_positive_evidence",
+    "cite_tool_call_id_for_material_claims"
+  ],
+  "change_classes": {
+    "REVERSIBLE_LOW_RISK": {
+      "examples": ["draft_document", "draft_workflow", "sandbox_test", "nonproduction_annotation"],
+      "auto_apply_allowed": true,
+      "verification_required": true
+    },
+    "REVERSIBLE_MEDIUM_RISK": {
+      "examples": ["shadow_workflow", "canary_read_only_connector", "temporary_alert_rule"],
+      "auto_apply_allowed": false,
+      "approval_required": true,
+      "rollback_required": true
+    },
+    "IRREVERSIBLE_OR_HIGH_RISK": {
+      "examples": ["production_write", "database_migration", "permission_change", "credential_change", "spending_change", "delete_component"],
+      "auto_apply_allowed": false,
+      "approval_required": true,
+      "independent_review_required": true,
+      "verification_required": true,
+      "rollback_or_recovery_plan_required": true
+    }
+  },
+  "approval_inbox": "SYSTEM_CHANGE_REVIEW",
+  "verification": {
+    "read_after_write_required": true,
+    "compare_intended_to_actual": true,
+    "status_only_verification_prohibited": true,
+    "mismatch_action": "ROLLBACK_OR_HUMAN_REVIEW"
+  }
+}

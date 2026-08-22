@@ -269,6 +269,9 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - `00E-scoped-memory-retrieval-v1.json`: implemented recent-conversation and verified store-scoped memory retrieval with cited context packages.
 - `config/memory-policy.json`: implemented retention, exclusions, memory write requirements, retrieval order, and cross-store denial.
 - `database/migrations/005_memory_access_and_retention.sql`: implemented memory access logs, retention rules, and summaries.
+- `config/chat-routing.json`: implemented ask, decide, view-memory, update-memory, feedback, and status routes.
+- `database/migrations/006_feedback_and_corrections.sql`: implemented feedback cases, governed memory corrections, and answer-quality reviews.
+- `docs/CHAT_ROUTING_AND_FEEDBACK.md`: implemented the user command and feedback-processing contract.
 - Live model and commerce execution remains intentionally disconnected until the shared Think–Authorize–Act core and approval tests are implemented.
 
 | ID | Workflow | Trigger | External writes |

@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "default_route": "ask",
+  "routes": {
+    "ask": {"commands": ["/ask"], "target": "realtime_question_gateway"},
+    "decide": {"commands": ["/decide", "/analyze"], "target": "chatgpt_executive_supervisor"},
+    "view_memory": {"commands": ["/memory", "/remembered"], "target": "scoped_memory_retrieval"},
+    "update_memory": {"commands": ["/remember", "/correct-memory", "/forget"], "target": "memory_write_gate"},
+    "feedback": {"commands": ["/feedback", "/correct-answer"], "target": "feedback_review"},
+    "status": {"commands": ["/status", "/progress"], "target": "automation_status"}
+  },
+  "feedback_ratings": ["HELPFUL", "PARTLY_HELPFUL", "NOT_HELPFUL", "INCORRECT", "UNSAFE"],
+  "feedback_never_auto_promotes": true
+}

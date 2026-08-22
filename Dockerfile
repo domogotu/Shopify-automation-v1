@@ -1,4 +1,4 @@
-FROM n8nio/n8n:latest
+FROM n8nio/n8n:2.35.7
 
 COPY workflows /opt/shopify-automation/workflows
 COPY database /opt/shopify-automation/database

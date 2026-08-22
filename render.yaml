@@ -94,8 +94,10 @@ envVarGroups:
         value: "false"
       - key: SYNC_EXECUTIVE_WORKFLOW_ONCE
         value: "false"
+      - key: SYNC_MEMORY_WORKFLOWS_ONCE
+        value: "true"
       - key: RUN_DATABASE_MIGRATIONS
-        value: "false"
+        value: "true"
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
       - key: N8N_USER_MANAGEMENT_JWT_SECRET

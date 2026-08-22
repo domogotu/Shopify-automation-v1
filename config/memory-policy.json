@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "default_conversation_retention_days": 365,
+  "working_memory_retention_days": 7,
+  "episodic_memory_retention_days": 730,
+  "audit_memory_retention_days": 2555,
+  "store_raw_user_messages": true,
+  "store_raw_assistant_messages": true,
+  "store_tool_results": "verified_fields_and_source_references_only",
+  "never_store": [
+    "api_keys",
+    "passwords",
+    "access_tokens",
+    "payment_card_numbers",
+    "security_answers",
+    "unnecessary_customer_personal_data"
+  ],
+  "memory_write_requirements": [
+    "store_scope",
+    "source_reference",
+    "observed_timestamp",
+    "sensitivity_classification",
+    "confidence",
+    "status",
+    "content_hash"
+  ],
+  "retrieval_order": [
+    "current_authoritative_records",
+    "active_policy",
+    "verified_entity_memory",
+    "relevant_conversation_history",
+    "episodic_outcomes",
+    "semantic_memory",
+    "proposed_or_unverified_memory"
+  ],
+  "cross_store_access": "deny",
+  "proposed_memory_can_authorize_action": false,
+  "expired_memory_can_authorize_action": false
+}

@@ -5,7 +5,7 @@ services:
     plan: free
     region: oregon
     branch: main
-    autoDeploy: true
+    autoDeployTrigger: commit
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /healthz
@@ -62,108 +62,6 @@ services:
         fromDatabase:
           name: shopify-automation-postgres
           property: password
-      - key: REDIS_HOST
-        fromDatabase:
-          name: shopify-automation-redis
-          property: host
-      - key: REDIS_PORT
-        fromDatabase:
-          name: shopify-automation-redis
-          property: port
-      - key: REDIS_PASSWORD
-        fromDatabase:
-          name: shopify-automation-redis
-          property: password
-      - key: QUEUE_BULL_REDIS_HOST
-        fromDatabase:
-          name: shopify-automation-redis
-          property: host
-      - key: QUEUE_BULL_REDIS_PORT
-        fromDatabase:
-          name: shopify-automation-redis
-          property: port
-      - key: QUEUE_BULL_REDIS_PASSWORD
-        fromDatabase:
-          name: shopify-automation-redis
-          property: password
-
-  - type: worker
-    name: shopify-automation-worker
-    runtime: docker
-    plan: free
-    region: oregon
-    branch: main
-    autoDeploy: true
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    envVars:
-      - fromGroup: shopify-automation-common
-      - key: SERVICE_MODE
-        value: worker
-      - key: PGHOST
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: host
-      - key: PGPORT
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: port
-      - key: PGDATABASE
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: database
-      - key: PGUSER
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: user
-      - key: PGPASSWORD
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: password
-      - key: DB_POSTGRESDB_HOST
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: host
-      - key: DB_POSTGRESDB_PORT
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: port
-      - key: DB_POSTGRESDB_DATABASE
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: database
-      - key: DB_POSTGRESDB_USER
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: user
-      - key: DB_POSTGRESDB_PASSWORD
-        fromDatabase:
-          name: shopify-automation-postgres
-          property: password
-      - key: REDIS_HOST
-        fromDatabase:
-          name: shopify-automation-redis
-          property: host
-      - key: REDIS_PORT
-        fromDatabase:
-          name: shopify-automation-redis
-          property: port
-      - key: REDIS_PASSWORD
-        fromDatabase:
-          name: shopify-automation-redis
-          property: password
-      - key: QUEUE_BULL_REDIS_HOST
-        fromDatabase:
-          name: shopify-automation-redis
-          property: host
-      - key: QUEUE_BULL_REDIS_PORT
-        fromDatabase:
-          name: shopify-automation-redis
-          property: port
-      - key: QUEUE_BULL_REDIS_PASSWORD
-        fromDatabase:
-          name: shopify-automation-redis
-          property: password
 
 databases:
   - name: shopify-automation-postgres
@@ -171,11 +69,6 @@ databases:
     user: automation
     plan: free
     postgresMajorVersion: "16"
-    ipAllowList: []
-
-  - name: shopify-automation-redis
-    plan: free
-    maxmemoryPolicy: noeviction
     ipAllowList: []
 
 envVarGroups:
@@ -192,9 +85,7 @@ envVarGroups:
       - key: DB_POSTGRESDB_SCHEMA
         value: n8n
       - key: EXECUTIONS_MODE
-        value: queue
-      - key: N8N_WORKER_CONCURRENCY
-        value: "5"
+        value: regular
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
       - key: N8N_USER_MANAGEMENT_JWT_SECRET
@@ -245,4 +136,4 @@ envVarGroups:
         value: "true"
 
 previews:
-  generation: none
+  generation: "off"

@@ -7,7 +7,10 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [260, 300]
+      "position": [
+        260,
+        300
+      ]
     },
     {
       "parameters": {
@@ -17,12 +20,23 @@
       "name": "Validate Configuration",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [500, 300]
+      "position": [
+        500,
+        300
+      ]
     }
   ],
   "connections": {
     "Manual Trigger": {
-      "main": [[{"node": "Validate Configuration", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Validate Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "pinData": {},
@@ -35,7 +49,6 @@
     "timezone": "America/Los_Angeles"
   },
   "staticData": null,
-  "tags": ["shopify-automation-os", "foundation", "health-check"],
   "triggerCount": 0,
   "versionId": "616f5eb2-325d-4254-b2da-a440fa20f665"
 }

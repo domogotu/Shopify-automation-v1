@@ -2,12 +2,20 @@
   "name": "00 - ChatGPT Executive and Decision Supervisor v1",
   "nodes": [
     {
-      "parameters": {"httpMethod":"POST","path":"shopify-executive-v1","responseMode":"lastNode","options":{}},
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "shopify-executive-v1",
+        "responseMode": "lastNode",
+        "options": {}
+      },
       "id": "20000000-0000-4000-8000-000000000001",
       "name": "Executive Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [0, 180],
+      "position": [
+        0,
+        180
+      ],
       "webhookId": "shopify-executive-v1"
     },
     {
@@ -16,88 +24,269 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 380]
+      "position": [
+        0,
+        380
+      ]
     },
     {
-      "parameters": {"jsCode":"return [{json:{store_domain:$env.SHOPIFY_STORE_DOMAIN || 'c6w6yz-rz.myshopify.com',actor_id:'manual-owner',session_id:'executive-test',message:'Should I publish this product now?',resource_type:'product_candidate',resource_id:'test-candidate'}}];"},
+      "parameters": {
+        "jsCode": "return [{json:{store_domain:$env.SHOPIFY_STORE_DOMAIN || 'c6w6yz-rz.myshopify.com',actor_id:'manual-owner',session_id:'executive-test',message:'Should I publish this product now?',resource_type:'product_candidate',resource_id:'test-candidate'}}];"
+      },
       "id": "20000000-0000-4000-8000-000000000003",
       "name": "Manual Decision Request",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [220, 380]
+      "position": [
+        220,
+        380
+      ]
     },
     {
-      "parameters": {"jsCode":"const input=$json.body ?? $json;const message=String(input.message || '').trim();if(!message)throw new Error('message is required');if(message.length>8000)throw new Error('message exceeds 8000 characters');const store=String(input.store_domain || $env.SHOPIFY_STORE_DOMAIN || '').trim();if(!store)throw new Error('store_domain is required');return [{json:{store_domain:store,actor_id:String(input.actor_id || 'unknown'),session_id:String(input.session_id || `session-${Date.now()}`),message,resource_type:input.resource_type || null,resource_id:input.resource_id || null,correlation_id:String(input.correlation_id || `decision-${$execution.id || Date.now()}`),received_at:new Date().toISOString(),started_ms:Date.now(),execution_mode:'ANALYZE_ONLY'}}];"},
+      "parameters": {
+        "jsCode": "const input=$json.body ?? $json;const message=String(input.message || '').trim();if(!message)throw new Error('message is required');if(message.length>8000)throw new Error('message exceeds 8000 characters');const store=String(input.store_domain || $env.SHOPIFY_STORE_DOMAIN || '').trim();if(!store)throw new Error('store_domain is required');return [{json:{store_domain:store,actor_id:String(input.actor_id || 'unknown'),session_id:String(input.session_id || `session-${Date.now()}`),message,resource_type:input.resource_type || null,resource_id:input.resource_id || null,correlation_id:String(input.correlation_id || `decision-${$execution.id || Date.now()}`),received_at:new Date().toISOString(),started_ms:Date.now(),execution_mode:'ANALYZE_ONLY'}}];"
+      },
       "id": "20000000-0000-4000-8000-000000000004",
       "name": "Validate Decision Request",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [480, 260]
+      "position": [
+        480,
+        260
+      ]
     },
     {
-      "parameters": {"jsCode":"const schema={type:'object',additionalProperties:false,required:['request_summary','selected_agents','questions_to_answer','required_memory_scopes','required_tools','known_facts','assumptions','missing_information','candidate_actions','risk_level','requires_human_approval','stop_conditions'],properties:{request_summary:{type:'string'},selected_agents:{type:'array',items:{type:'string'}},questions_to_answer:{type:'array',items:{type:'string'}},required_memory_scopes:{type:'array',items:{type:'string'}},required_tools:{type:'array',items:{type:'string'}},known_facts:{type:'array',items:{type:'string'}},assumptions:{type:'array',items:{type:'string'}},missing_information:{type:'array',items:{type:'string'}},candidate_actions:{type:'array',items:{type:'string'}},risk_level:{type:'string',enum:['LOW','MEDIUM','HIGH','CRITICAL']},requires_human_approval:{type:'boolean'},stop_conditions:{type:'array',items:{type:'string'}}}};const instructions=['You are the ChatGPT Executive Orchestrator for Shopify Automation OS.','Understand the request, identify uncertainty, and select only relevant specialist agents from: product_discovery, supplier_cj, product_content, pricing_profit, shopify_catalog, order_fulfillment, customer_support, marketing, finance, research, analytics, approval_compliance.','Do not make a final commerce decision yet.','Do not invent store facts or claim tools ran.','Publishing, supplier orders, refunds, reships, cancellations, customer messages, price changes, discounts, campaigns, ad spend, policy changes, and permission changes require human approval.','Return only the required structured plan.'].join(' ');return [{json:{...$json,executive_request:{model:$env.OPENAI_ORCHESTRATOR_MODEL,instructions,input:JSON.stringify({store_domain:$json.store_domain,actor_id:$json.actor_id,message:$json.message,resource_type:$json.resource_type,resource_id:$json.resource_id}),reasoning:{effort:'medium'},text:{format:{type:'json_schema',name:'executive_plan',strict:true,schema}}}}}];"},
+      "parameters": {
+        "jsCode": "const schema={type:'object',additionalProperties:false,required:['request_summary','selected_agents','questions_to_answer','required_memory_scopes','required_tools','known_facts','assumptions','missing_information','candidate_actions','risk_level','requires_human_approval','stop_conditions'],properties:{request_summary:{type:'string'},selected_agents:{type:'array',items:{type:'string'}},questions_to_answer:{type:'array',items:{type:'string'}},required_memory_scopes:{type:'array',items:{type:'string'}},required_tools:{type:'array',items:{type:'string'}},known_facts:{type:'array',items:{type:'string'}},assumptions:{type:'array',items:{type:'string'}},missing_information:{type:'array',items:{type:'string'}},candidate_actions:{type:'array',items:{type:'string'}},risk_level:{type:'string',enum:['LOW','MEDIUM','HIGH','CRITICAL']},requires_human_approval:{type:'boolean'},stop_conditions:{type:'array',items:{type:'string'}}}};const instructions=['You are the ChatGPT Executive Orchestrator for Shopify Automation OS.','Understand the request, identify uncertainty, and select only relevant specialist agents from: product_discovery, supplier_cj, product_content, pricing_profit, shopify_catalog, order_fulfillment, customer_support, marketing, finance, research, analytics, approval_compliance.','Do not make a final commerce decision yet.','Do not invent store facts or claim tools ran.','Publishing, supplier orders, refunds, reships, cancellations, customer messages, price changes, discounts, campaigns, ad spend, policy changes, and permission changes require human approval.','Return only the required structured plan.'].join(' ');return [{json:{...$json,executive_request:{model:$env.OPENAI_ORCHESTRATOR_MODEL,instructions,input:JSON.stringify({store_domain:$json.store_domain,actor_id:$json.actor_id,message:$json.message,resource_type:$json.resource_type,resource_id:$json.resource_id}),reasoning:{effort:'medium'},text:{format:{type:'json_schema',name:'executive_plan',strict:true,schema}}}}}];"
+      },
       "id": "20000000-0000-4000-8000-000000000005",
       "name": "Prepare Executive Plan",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [730, 260]
+      "position": [
+        730,
+        260
+      ]
     },
     {
-      "parameters": {"method":"POST","url":"https://api.openai.com/v1/responses","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"=Bearer {{$env.OPENAI_API_KEY}}"},{"name":"Content-Type","value":"application/json"}]},"sendBody":true,"contentType":"raw","rawContentType":"application/json","body":"={{ JSON.stringify($json.executive_request) }}","options":{"timeout":45000}},
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.OPENAI_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.executive_request) }}",
+        "options": {
+          "timeout": 45000
+        }
+      },
       "id": "20000000-0000-4000-8000-000000000006",
       "name": "ChatGPT Executive Brain",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [980, 260]
+      "position": [
+        980,
+        260
+      ]
     },
     {
-      "parameters": {"jsCode":"const original=$('Prepare Executive Plan').first().json;const texts=($json.output || []).flatMap(item=>item.content || []).filter(part=>part.type==='output_text').map(part=>part.text);if(!texts.length)throw new Error('Executive response contained no structured text');let plan;try{plan=JSON.parse(texts.join(''));}catch(error){throw new Error('Executive plan was not valid JSON');}const allowed=new Set(['product_discovery','supplier_cj','product_content','pricing_profit','shopify_catalog','order_fulfillment','customer_support','marketing','finance','research','analytics','approval_compliance']);const selected=(plan.selected_agents || []).filter(agent=>allowed.has(agent));if(!selected.length)selected.push('approval_compliance');const specialist_reports=selected.map(agent=>({agent_key:agent,status:'NOT_CONNECTED',facts:[],findings:[],options:[],risks:['Specialist tool workflow is not connected yet'],source_refs:[],missing_information:['Live specialist evidence unavailable'],recommendation:{status:'DEFER'}}));return [{json:{...original,executive_response_id:$json.id,executive_plan:{...plan,selected_agents:selected},specialist_reports}}];"},
+      "parameters": {
+        "jsCode": "const original=$('Prepare Executive Plan').first().json;const texts=($json.output || []).flatMap(item=>item.content || []).filter(part=>part.type==='output_text').map(part=>part.text);if(!texts.length)throw new Error('Executive response contained no structured text');let plan;try{plan=JSON.parse(texts.join(''));}catch(error){throw new Error('Executive plan was not valid JSON');}const allowed=new Set(['product_discovery','supplier_cj','product_content','pricing_profit','shopify_catalog','order_fulfillment','customer_support','marketing','finance','research','analytics','approval_compliance']);const selected=(plan.selected_agents || []).filter(agent=>allowed.has(agent));if(!selected.length)selected.push('approval_compliance');const specialist_reports=selected.map(agent=>({agent_key:agent,status:'NOT_CONNECTED',facts:[],findings:[],options:[],risks:['Specialist tool workflow is not connected yet'],source_refs:[],missing_information:['Live specialist evidence unavailable'],recommendation:{status:'DEFER'}}));return [{json:{...original,executive_response_id:$json.id,executive_plan:{...plan,selected_agents:selected},specialist_reports}}];"
+      },
       "id": "20000000-0000-4000-8000-000000000007",
       "name": "Collect Specialist Reports",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1230, 260]
+      "position": [
+        1230,
+        260
+      ]
     },
     {
-      "parameters": {"jsCode":"const schema={type:'object',additionalProperties:false,required:['decision_status','evidence_quality','confidence','selected_option','rationale','rejected_options','unresolved_conflicts','missing_information','policy_checks','requires_human_approval','safe_to_execute','recommended_next_step','post_action_verification'],properties:{decision_status:{type:'string',enum:['RECOMMEND','NEEDS_INFORMATION','NEEDS_REVIEW','REJECT']},evidence_quality:{type:'string',enum:['INSUFFICIENT','PARTIAL','CURRENT_AND_CITED']},confidence:{type:'number',minimum:0,maximum:1},selected_option:{type:['string','null']},rationale:{type:'string'},rejected_options:{type:'array',items:{type:'string'}},unresolved_conflicts:{type:'array',items:{type:'string'}},missing_information:{type:'array',items:{type:'string'}},policy_checks:{type:'array',items:{type:'string'}},requires_human_approval:{type:'boolean'},safe_to_execute:{type:'boolean'},recommended_next_step:{type:'string'},post_action_verification:{type:'array',items:{type:'string'}}}};const instructions=['You are the ChatGPT Decision Supervisor for Shopify Automation OS.','Independently review the original request, executive plan, and every specialist report.','Check whether the right agents were selected, evidence is current and cited, conflicts are visible, alternatives were compared, financial and customer effects were considered, active policy is followed, approval is identified, and execution can be recovered.','Never mark safe_to_execute true when specialist evidence is missing, stale, conflicting, uncited, or NOT_CONNECTED.','Never approve a high-risk action. High-risk actions require deterministic authorization and human approval.','Return only the required structured review.'].join(' ');return [{json:{...$json,supervisor_request:{model:$env.OPENAI_SUPERVISOR_MODEL,instructions,input:JSON.stringify({request:{message:$json.message,store_domain:$json.store_domain,resource_type:$json.resource_type,resource_id:$json.resource_id},executive_plan:$json.executive_plan,specialist_reports:$json.specialist_reports}),reasoning:{effort:'high'},text:{format:{type:'json_schema',name:'supervisor_review',strict:true,schema}}}}}];"},
+      "parameters": {
+        "jsCode": "const schema={type:'object',additionalProperties:false,required:['decision_status','evidence_quality','confidence','selected_option','rationale','rejected_options','unresolved_conflicts','missing_information','policy_checks','requires_human_approval','safe_to_execute','recommended_next_step','post_action_verification'],properties:{decision_status:{type:'string',enum:['RECOMMEND','NEEDS_INFORMATION','NEEDS_REVIEW','REJECT']},evidence_quality:{type:'string',enum:['INSUFFICIENT','PARTIAL','CURRENT_AND_CITED']},confidence:{type:'number',minimum:0,maximum:1},selected_option:{type:['string','null']},rationale:{type:'string'},rejected_options:{type:'array',items:{type:'string'}},unresolved_conflicts:{type:'array',items:{type:'string'}},missing_information:{type:'array',items:{type:'string'}},policy_checks:{type:'array',items:{type:'string'}},requires_human_approval:{type:'boolean'},safe_to_execute:{type:'boolean'},recommended_next_step:{type:'string'},post_action_verification:{type:'array',items:{type:'string'}}}};const instructions=['You are the ChatGPT Decision Supervisor for Shopify Automation OS.','Independently review the original request, executive plan, and every specialist report.','Check whether the right agents were selected, evidence is current and cited, conflicts are visible, alternatives were compared, financial and customer effects were considered, active policy is followed, approval is identified, and execution can be recovered.','Never mark safe_to_execute true when specialist evidence is missing, stale, conflicting, uncited, or NOT_CONNECTED.','Never approve a high-risk action. High-risk actions require deterministic authorization and human approval.','Return only the required structured review.'].join(' ');return [{json:{...$json,supervisor_request:{model:$env.OPENAI_SUPERVISOR_MODEL,instructions,input:JSON.stringify({request:{message:$json.message,store_domain:$json.store_domain,resource_type:$json.resource_type,resource_id:$json.resource_id},executive_plan:$json.executive_plan,specialist_reports:$json.specialist_reports}),reasoning:{effort:'high'},text:{format:{type:'json_schema',name:'supervisor_review',strict:true,schema}}}}}];"
+      },
       "id": "20000000-0000-4000-8000-000000000008",
       "name": "Prepare Supervisor Review",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1480, 260]
+      "position": [
+        1480,
+        260
+      ]
     },
     {
-      "parameters": {"method":"POST","url":"https://api.openai.com/v1/responses","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"=Bearer {{$env.OPENAI_API_KEY}}"},{"name":"Content-Type","value":"application/json"}]},"sendBody":true,"contentType":"raw","rawContentType":"application/json","body":"={{ JSON.stringify($json.supervisor_request) }}","options":{"timeout":60000}},
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.OPENAI_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.supervisor_request) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
       "id": "20000000-0000-4000-8000-000000000009",
       "name": "ChatGPT Decision Supervisor",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1730, 260]
+      "position": [
+        1730,
+        260
+      ]
     },
     {
-      "parameters": {"jsCode":"const original=$('Prepare Supervisor Review').first().json;const texts=($json.output || []).flatMap(item=>item.content || []).filter(part=>part.type==='output_text').map(part=>part.text);if(!texts.length)throw new Error('Supervisor response contained no structured text');let review;try{review=JSON.parse(texts.join(''));}catch(error){throw new Error('Supervisor review was not valid JSON');}const approvalActions=['publish','supplier order','refund','reship','cancel','customer message','price','discount','campaign','ad spend','policy','permission'];const requestLower=original.message.toLowerCase();const mandatoryApproval=approvalActions.some(term=>requestLower.includes(term)) || review.requires_human_approval;const evidencePass=review.evidence_quality==='CURRENT_AND_CITED' && review.confidence>=0.85 && !(review.unresolved_conflicts || []).length && !(review.missing_information || []).length;const policyAllows=review.safe_to_execute===true && evidencePass && !mandatoryApproval;let status='NEEDS_INFORMATION';let next='Connect the selected specialist tools and collect current cited evidence';if(mandatoryApproval){status='AWAITING_HUMAN_APPROVAL';next='Create an approval record after evidence is complete';}else if(policyAllows){status='AUTHORIZED_FOR_CONSTRAINED_ACT';next='Send an idempotent action envelope to the allowed tool';}else if(review.decision_status==='REJECT'){status='REJECTED';next=review.recommended_next_step;}return [{json:{status,correlation_id:original.correlation_id,session_id:original.session_id,store_domain:original.store_domain,request:original.message,executive_plan:original.executive_plan,specialists_consulted:original.executive_plan.selected_agents,specialist_reports:original.specialist_reports,supervisor_review:review,deterministic_gate:{evidence_pass:evidencePass,mandatory_human_approval:mandatoryApproval,policy_allows_execution:policyAllows,execution_mode:'ANALYZE_ONLY'},next_action:next,chatgpt_reviewed:true,external_action_taken:false,executive_response_id:original.executive_response_id,supervisor_response_id:$json.id,latency_ms:Date.now()-original.started_ms,completed_at:new Date().toISOString()}}];"},
+      "parameters": {
+        "jsCode": "const original=$('Prepare Supervisor Review').first().json;const texts=($json.output || []).flatMap(item=>item.content || []).filter(part=>part.type==='output_text').map(part=>part.text);if(!texts.length)throw new Error('Supervisor response contained no structured text');let review;try{review=JSON.parse(texts.join(''));}catch(error){throw new Error('Supervisor review was not valid JSON');}const approvalActions=['publish','supplier order','refund','reship','cancel','customer message','price','discount','campaign','ad spend','policy','permission'];const requestLower=original.message.toLowerCase();const mandatoryApproval=approvalActions.some(term=>requestLower.includes(term)) || review.requires_human_approval;const evidencePass=review.evidence_quality==='CURRENT_AND_CITED' && review.confidence>=0.85 && !(review.unresolved_conflicts || []).length && !(review.missing_information || []).length;const policyAllows=review.safe_to_execute===true && evidencePass && !mandatoryApproval;let status='NEEDS_INFORMATION';let next='Connect the selected specialist tools and collect current cited evidence';if(mandatoryApproval){status='AWAITING_HUMAN_APPROVAL';next='Create an approval record after evidence is complete';}else if(policyAllows){status='AUTHORIZED_FOR_CONSTRAINED_ACT';next='Send an idempotent action envelope to the allowed tool';}else if(review.decision_status==='REJECT'){status='REJECTED';next=review.recommended_next_step;}return [{json:{status,correlation_id:original.correlation_id,session_id:original.session_id,store_domain:original.store_domain,request:original.message,executive_plan:original.executive_plan,specialists_consulted:original.executive_plan.selected_agents,specialist_reports:original.specialist_reports,supervisor_review:review,deterministic_gate:{evidence_pass:evidencePass,mandatory_human_approval:mandatoryApproval,policy_allows_execution:policyAllows,execution_mode:'ANALYZE_ONLY'},next_action:next,chatgpt_reviewed:true,external_action_taken:false,executive_response_id:original.executive_response_id,supervisor_response_id:$json.id,latency_ms:Date.now()-original.started_ms,completed_at:new Date().toISOString()}}];"
+      },
       "id": "20000000-0000-4000-8000-000000000010",
       "name": "Deterministic Decision Gate",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1980, 260]
+      "position": [
+        1980,
+        260
+      ]
     }
   ],
   "connections": {
-    "Executive Webhook":{"main":[[{"node":"Validate Decision Request","type":"main","index":0}]]},
-    "Manual Trigger":{"main":[[{"node":"Manual Decision Request","type":"main","index":0}]]},
-    "Manual Decision Request":{"main":[[{"node":"Validate Decision Request","type":"main","index":0}]]},
-    "Validate Decision Request":{"main":[[{"node":"Prepare Executive Plan","type":"main","index":0}]]},
-    "Prepare Executive Plan":{"main":[[{"node":"ChatGPT Executive Brain","type":"main","index":0}]]},
-    "ChatGPT Executive Brain":{"main":[[{"node":"Collect Specialist Reports","type":"main","index":0}]]},
-    "Collect Specialist Reports":{"main":[[{"node":"Prepare Supervisor Review","type":"main","index":0}]]},
-    "Prepare Supervisor Review":{"main":[[{"node":"ChatGPT Decision Supervisor","type":"main","index":0}]]},
-    "ChatGPT Decision Supervisor":{"main":[[{"node":"Deterministic Decision Gate","type":"main","index":0}]]}
+    "Executive Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Decision Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Manual Decision Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Decision Request": {
+      "main": [
+        [
+          {
+            "node": "Validate Decision Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Decision Request": {
+      "main": [
+        [
+          {
+            "node": "Prepare Executive Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Executive Plan": {
+      "main": [
+        [
+          {
+            "node": "ChatGPT Executive Brain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatGPT Executive Brain": {
+      "main": [
+        [
+          {
+            "node": "Collect Specialist Reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Specialist Reports": {
+      "main": [
+        [
+          {
+            "node": "Prepare Supervisor Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Supervisor Review": {
+      "main": [
+        [
+          {
+            "node": "ChatGPT Decision Supervisor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatGPT Decision Supervisor": {
+      "main": [
+        [
+          {
+            "node": "Deterministic Decision Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "pinData": {},
-  "settings": {"executionOrder":"v1","saveManualExecutions":true,"saveExecutionProgress":true,"saveDataErrorExecution":"all","saveDataSuccessExecution":"all","timezone":"America/Los_Angeles"},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
   "staticData": null,
-  "tags": ["shopify-automation-os","openai","executive","supervisor","analyze-only"],
   "triggerCount": 1,
   "versionId": "20000000-0000-4000-8000-000000000100"
 }

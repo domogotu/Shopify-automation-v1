@@ -2,12 +2,20 @@
   "name": "00 - Shopify Multi-Agent Orchestrator v1",
   "nodes": [
     {
-      "parameters": {"httpMethod": "POST", "path": "shopify-agent-v1", "responseMode": "lastNode", "options": {}},
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "shopify-agent-v1",
+        "responseMode": "lastNode",
+        "options": {}
+      },
       "id": "00000000-0000-4000-8000-000000000001",
       "name": "Agent Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [0, 180],
+      "position": [
+        0,
+        180
+      ],
       "webhookId": "shopify-agent-v1"
     },
     {
@@ -16,94 +24,759 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 380]
+      "position": [
+        0,
+        380
+      ]
     },
     {
-      "parameters": {"jsCode": "return [{json:{store_domain:$env.SHOPIFY_STORE_DOMAIN || 'c6w6yz-rz.myshopify.com',actor_id:'manual-owner',channel:'manual',message:'show me products that need review',intent:'find_product',resource_type:'product_candidate'}}];"},
+      "parameters": {
+        "jsCode": "return [{json:{store_domain:$env.SHOPIFY_STORE_DOMAIN || 'c6w6yz-rz.myshopify.com',actor_id:'manual-owner',channel:'manual',message:'show me products that need review',intent:'find_product',resource_type:'product_candidate'}}];"
+      },
       "id": "00000000-0000-4000-8000-000000000003",
       "name": "Manual Test Input",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [220, 380]
+      "position": [
+        220,
+        380
+      ]
     },
     {
-      "parameters": {"jsCode": "const input=$json.body ?? $json;const allowed=['store_domain','actor_id','channel','message','intent','resource_type','resource_id','approval_id'];const clean={};for(const key of allowed){if(input[key]!==undefined)clean[key]=input[key];}clean.store_domain=clean.store_domain || $env.SHOPIFY_STORE_DOMAIN;clean.actor_id=clean.actor_id || 'unknown';clean.channel=clean.channel || 'webhook';clean.message=String(clean.message || '').slice(0,8000);clean.intent=String(clean.intent || 'unknown').toLowerCase();clean.correlation_id=input.correlation_id || `agent-${$execution.id || Date.now()}`;clean.received_at=new Date().toISOString();if(!clean.store_domain)throw new Error('store_domain is required');return [{json:clean}];"},
+      "parameters": {
+        "jsCode": "const input=$json.body ?? $json;const allowed=['store_domain','actor_id','channel','message','intent','resource_type','resource_id','approval_id'];const clean={};for(const key of allowed){if(input[key]!==undefined)clean[key]=input[key];}clean.store_domain=clean.store_domain || $env.SHOPIFY_STORE_DOMAIN;clean.actor_id=clean.actor_id || 'unknown';clean.channel=clean.channel || 'webhook';clean.message=String(clean.message || '').slice(0,8000);clean.intent=String(clean.intent || 'unknown').toLowerCase();clean.correlation_id=input.correlation_id || `agent-${$execution.id || Date.now()}`;clean.received_at=new Date().toISOString();if(!clean.store_domain)throw new Error('store_domain is required');return [{json:clean}];"
+      },
       "id": "00000000-0000-4000-8000-000000000004",
       "name": "Normalize and Scope Request",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [470, 260]
+      "position": [
+        470,
+        260
+      ]
     },
     {
-      "parameters": {"jsCode": "const intentMap={find_product:'product_discovery',research_product:'product_discovery',score_product:'product_discovery',check_supplier:'supplier_cj',map_variant:'supplier_cj',submit_supplier_order:'supplier_cj',check_tracking:'supplier_cj',write_product_content:'product_content',rewrite_product_content:'product_content',create_seo:'product_content',calculate_price:'pricing_profit',check_margin:'pricing_profit',reprice:'pricing_profit',analyze_profit:'pricing_profit',create_draft:'shopify_catalog',update_product:'shopify_catalog',publish_product:'shopify_catalog',pause_product:'shopify_catalog',process_order:'order_fulfillment',check_order:'order_fulfillment',fulfill_order:'order_fulfillment',support_request:'customer_support',draft_reply:'customer_support',refund_request:'customer_support',reship_request:'customer_support',cancel_request:'customer_support',create_campaign:'marketing',create_social_content:'marketing',create_email:'marketing',create_discount:'marketing',financial_summary:'finance',profit_report:'finance',reconcile_order:'finance',deep_research:'research',competitor_research:'research',trend_research:'research',analytics:'analytics',daily_metrics:'analytics',weekly_brief:'analytics',detect_anomaly:'analytics',approve_action:'approval_compliance',review_action:'approval_compliance',compliance_check:'approval_compliance'};const selected=intentMap[$json.intent] || 'approval_compliance';const highRisk=['submit_supplier_order','publish_product','reprice','refund_request','reship_request','cancel_request','create_discount','create_campaign'];return [{json:{...$json,selected_agent:selected,risk_level:highRisk.includes($json.intent)?'HIGH':'LOW',requires_approval:highRisk.includes($json.intent),orchestrator_version:'1.0.0',execution_mode:'PLAN_ONLY'}}];"},
+      "parameters": {
+        "jsCode": "const intentMap={find_product:'product_discovery',research_product:'product_discovery',score_product:'product_discovery',check_supplier:'supplier_cj',map_variant:'supplier_cj',submit_supplier_order:'supplier_cj',check_tracking:'supplier_cj',write_product_content:'product_content',rewrite_product_content:'product_content',create_seo:'product_content',calculate_price:'pricing_profit',check_margin:'pricing_profit',reprice:'pricing_profit',analyze_profit:'pricing_profit',create_draft:'shopify_catalog',update_product:'shopify_catalog',publish_product:'shopify_catalog',pause_product:'shopify_catalog',process_order:'order_fulfillment',check_order:'order_fulfillment',fulfill_order:'order_fulfillment',support_request:'customer_support',draft_reply:'customer_support',refund_request:'customer_support',reship_request:'customer_support',cancel_request:'customer_support',create_campaign:'marketing',create_social_content:'marketing',create_email:'marketing',create_discount:'marketing',financial_summary:'finance',profit_report:'finance',reconcile_order:'finance',deep_research:'research',competitor_research:'research',trend_research:'research',analytics:'analytics',daily_metrics:'analytics',weekly_brief:'analytics',detect_anomaly:'analytics',approve_action:'approval_compliance',review_action:'approval_compliance',compliance_check:'approval_compliance'};const selected=intentMap[$json.intent] || 'approval_compliance';const highRisk=['submit_supplier_order','publish_product','reprice','refund_request','reship_request','cancel_request','create_discount','create_campaign'];return [{json:{...$json,selected_agent:selected,risk_level:highRisk.includes($json.intent)?'HIGH':'LOW',requires_approval:highRisk.includes($json.intent),orchestrator_version:'1.0.0',execution_mode:'PLAN_ONLY'}}];"
+      },
       "id": "00000000-0000-4000-8000-000000000005",
       "name": "Intent Router and Risk Precheck",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [720, 260]
+      "position": [
+        720,
+        260
+      ]
     },
     {
-      "parameters": {"rules":{"values":[{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"product_discovery","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"supplier_cj","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"product_content","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"pricing_profit","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"shopify_catalog","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"order_fulfillment","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"customer_support","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"marketing","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"finance","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"research","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.selected_agent }}","rightValue":"analytics","operator":{"type":"string","operation":"equals"}}],"combinator":"and"}}]},"options":{"fallbackOutput":"extra"}},
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "product_discovery",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "supplier_cj",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "product_content",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "pricing_profit",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "shopify_catalog",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "order_fulfillment",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "customer_support",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "marketing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "finance",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "research",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.selected_agent }}",
+                    "rightValue": "analytics",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
       "id": "00000000-0000-4000-8000-000000000006",
       "name": "Route to Specialist",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
-      "position": [970, 260]
+      "position": [
+        970,
+        260
+      ]
     },
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000010","name":"Product Discovery Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,-340]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000011","name":"Supplier and CJ Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,-220]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000012","name":"Product Content Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,-100]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000013","name":"Pricing and Profit Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,20]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000014","name":"Shopify Catalog Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,140]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000015","name":"Order and Fulfillment Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,260]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000016","name":"Customer Support Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,380]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000017","name":"Marketing Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,500]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000018","name":"Finance Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,620]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000019","name":"Research Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,740]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000020","name":"Analytics Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,860]},
-    {"parameters":{},"id":"00000000-0000-4000-8000-000000000021","name":"Approval and Compliance Agent","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[1230,980]},
     {
-      "parameters": {"mode":"append","numberInputs":12,"options":{}},
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000010",
+      "name": "Product Discovery Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        -340
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000011",
+      "name": "Supplier and CJ Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        -220
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000012",
+      "name": "Product Content Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        -100
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000013",
+      "name": "Pricing and Profit Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        20
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000014",
+      "name": "Shopify Catalog Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        140
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000015",
+      "name": "Order and Fulfillment Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000016",
+      "name": "Customer Support Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        380
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000017",
+      "name": "Marketing Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000018",
+      "name": "Finance Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        620
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000019",
+      "name": "Research Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        740
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000020",
+      "name": "Analytics Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        860
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00000000-0000-4000-8000-000000000021",
+      "name": "Approval and Compliance Agent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1230,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "append",
+        "numberInputs": 12,
+        "options": {}
+      },
       "id": "00000000-0000-4000-8000-000000000022",
       "name": "Rejoin Specialist Routes",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
-      "position": [1510, 260]
+      "position": [
+        1510,
+        260
+      ]
     },
     {
-      "parameters": {"jsCode":"const contracts={product_discovery:{memory:['supplier_products','product_candidates','product_scores'],tools:['cj_catalog_read','shopify_catalog_read','postgres_read'],approval:[]},supplier_cj:{memory:['suppliers','supplier_variants','shipments'],tools:['cj_catalog_read','cj_order_read','postgres_read'],approval:['SUPPLIER_ORDER']},product_content:{memory:['verified_product_facts','approved_content','brand_policy'],tools:['postgres_read','shopify_catalog_read'],approval:['CONTENT']},pricing_profit:{memory:['price_snapshots','supplier_costs','pricing_policy'],tools:['postgres_read','shopify_catalog_read','cj_catalog_read'],approval:['PRICE_CHANGE']},shopify_catalog:{memory:['shopify_products','shopify_variants','approvals'],tools:['shopify_catalog_read','postgres_read'],approval:['PRODUCT','PUBLISH']},order_fulfillment:{memory:['orders','fulfillments','shipments'],tools:['shopify_order_read','cj_order_read','postgres_read'],approval:['SUPPLIER_ORDER']},customer_support:{memory:['support_tickets','orders','shipments'],tools:['shopify_order_read','postgres_read'],approval:['SUPPORT_MESSAGE','REFUND','RESHIP']},marketing:{memory:['campaign_drafts','product_performance','marketing_policy'],tools:['shopify_analytics_read','postgres_read'],approval:['CAMPAIGN','DISCOUNT','MARKETING_SEND']},finance:{memory:['orders','price_snapshots','daily_metrics'],tools:['shopify_finance_read','postgres_read'],approval:[]},research:{memory:['research_evidence','product_candidates'],tools:['web_research','postgres_read'],approval:[]},analytics:{memory:['daily_metrics','automation_runs','orders'],tools:['shopify_analytics_read','postgres_read'],approval:[]},approval_compliance:{memory:['approvals','policy_versions','tool_permissions'],tools:['postgres_read','sheets_approval_read'],approval:['ANY_HIGH_RISK_ACTION']}};const contract=contracts[$json.selected_agent] || contracts.approval_compliance;return [{json:{status:'ROUTED',correlation_id:$json.correlation_id,store_domain:$json.store_domain,selected_agent:$json.selected_agent,intent:$json.intent,risk_level:$json.risk_level,requires_approval:$json.requires_approval,execution_mode:'PLAN_ONLY',agent_contract:{memory_scopes:contract.memory,allowed_read_tools:contract.tools,required_approval_types:contract.approval,think_schema:'agent_plan.v1',act_schema:'action_result.v1'},next_action:'Connect this route to 00A Agent Think-Authorize-Act Core'}}];"},
+      "parameters": {
+        "jsCode": "const contracts={product_discovery:{memory:['supplier_products','product_candidates','product_scores'],tools:['cj_catalog_read','shopify_catalog_read','postgres_read'],approval:[]},supplier_cj:{memory:['suppliers','supplier_variants','shipments'],tools:['cj_catalog_read','cj_order_read','postgres_read'],approval:['SUPPLIER_ORDER']},product_content:{memory:['verified_product_facts','approved_content','brand_policy'],tools:['postgres_read','shopify_catalog_read'],approval:['CONTENT']},pricing_profit:{memory:['price_snapshots','supplier_costs','pricing_policy'],tools:['postgres_read','shopify_catalog_read','cj_catalog_read'],approval:['PRICE_CHANGE']},shopify_catalog:{memory:['shopify_products','shopify_variants','approvals'],tools:['shopify_catalog_read','postgres_read'],approval:['PRODUCT','PUBLISH']},order_fulfillment:{memory:['orders','fulfillments','shipments'],tools:['shopify_order_read','cj_order_read','postgres_read'],approval:['SUPPLIER_ORDER']},customer_support:{memory:['support_tickets','orders','shipments'],tools:['shopify_order_read','postgres_read'],approval:['SUPPORT_MESSAGE','REFUND','RESHIP']},marketing:{memory:['campaign_drafts','product_performance','marketing_policy'],tools:['shopify_analytics_read','postgres_read'],approval:['CAMPAIGN','DISCOUNT','MARKETING_SEND']},finance:{memory:['orders','price_snapshots','daily_metrics'],tools:['shopify_finance_read','postgres_read'],approval:[]},research:{memory:['research_evidence','product_candidates'],tools:['web_research','postgres_read'],approval:[]},analytics:{memory:['daily_metrics','automation_runs','orders'],tools:['shopify_analytics_read','postgres_read'],approval:[]},approval_compliance:{memory:['approvals','policy_versions','tool_permissions'],tools:['postgres_read','sheets_approval_read'],approval:['ANY_HIGH_RISK_ACTION']}};const contract=contracts[$json.selected_agent] || contracts.approval_compliance;return [{json:{status:'ROUTED',correlation_id:$json.correlation_id,store_domain:$json.store_domain,selected_agent:$json.selected_agent,intent:$json.intent,risk_level:$json.risk_level,requires_approval:$json.requires_approval,execution_mode:'PLAN_ONLY',agent_contract:{memory_scopes:contract.memory,allowed_read_tools:contract.tools,required_approval_types:contract.approval,think_schema:'agent_plan.v1',act_schema:'action_result.v1'},next_action:'Connect this route to 00A Agent Think-Authorize-Act Core'}}];"
+      },
       "id": "00000000-0000-4000-8000-000000000023",
       "name": "Build Safe Agent Contract",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1760, 260]
+      "position": [
+        1760,
+        260
+      ]
     }
   ],
   "connections": {
-    "Agent Webhook":{"main":[[{"node":"Normalize and Scope Request","type":"main","index":0}]]},
-    "Manual Trigger":{"main":[[{"node":"Manual Test Input","type":"main","index":0}]]},
-    "Manual Test Input":{"main":[[{"node":"Normalize and Scope Request","type":"main","index":0}]]},
-    "Normalize and Scope Request":{"main":[[{"node":"Intent Router and Risk Precheck","type":"main","index":0}]]},
-    "Intent Router and Risk Precheck":{"main":[[{"node":"Route to Specialist","type":"main","index":0}]]},
-    "Route to Specialist":{"main":[[{"node":"Product Discovery Agent","type":"main","index":0}],[{"node":"Supplier and CJ Agent","type":"main","index":0}],[{"node":"Product Content Agent","type":"main","index":0}],[{"node":"Pricing and Profit Agent","type":"main","index":0}],[{"node":"Shopify Catalog Agent","type":"main","index":0}],[{"node":"Order and Fulfillment Agent","type":"main","index":0}],[{"node":"Customer Support Agent","type":"main","index":0}],[{"node":"Marketing Agent","type":"main","index":0}],[{"node":"Finance Agent","type":"main","index":0}],[{"node":"Research Agent","type":"main","index":0}],[{"node":"Analytics Agent","type":"main","index":0}],[{"node":"Approval and Compliance Agent","type":"main","index":0}]]},
-    "Product Discovery Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":0}]]},
-    "Supplier and CJ Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":1}]]},
-    "Product Content Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":2}]]},
-    "Pricing and Profit Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":3}]]},
-    "Shopify Catalog Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":4}]]},
-    "Order and Fulfillment Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":5}]]},
-    "Customer Support Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":6}]]},
-    "Marketing Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":7}]]},
-    "Finance Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":8}]]},
-    "Research Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":9}]]},
-    "Analytics Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":10}]]},
-    "Approval and Compliance Agent":{"main":[[{"node":"Rejoin Specialist Routes","type":"main","index":11}]]},
-    "Rejoin Specialist Routes":{"main":[[{"node":"Build Safe Agent Contract","type":"main","index":0}]]}
+    "Agent Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize and Scope Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Manual Test Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Test Input": {
+      "main": [
+        [
+          {
+            "node": "Normalize and Scope Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize and Scope Request": {
+      "main": [
+        [
+          {
+            "node": "Intent Router and Risk Precheck",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Router and Risk Precheck": {
+      "main": [
+        [
+          {
+            "node": "Route to Specialist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to Specialist": {
+      "main": [
+        [
+          {
+            "node": "Product Discovery Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Supplier and CJ Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Product Content Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pricing and Profit Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Shopify Catalog Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Order and Fulfillment Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Customer Support Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marketing Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finance Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Analytics Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Approval and Compliance Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Discovery Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supplier and CJ Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Product Content Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Pricing and Profit Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Shopify Catalog Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Order and Fulfillment Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Customer Support Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "Marketing Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "Finance Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 8
+          }
+        ]
+      ]
+    },
+    "Research Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 9
+          }
+        ]
+      ]
+    },
+    "Analytics Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 10
+          }
+        ]
+      ]
+    },
+    "Approval and Compliance Agent": {
+      "main": [
+        [
+          {
+            "node": "Rejoin Specialist Routes",
+            "type": "main",
+            "index": 11
+          }
+        ]
+      ]
+    },
+    "Rejoin Specialist Routes": {
+      "main": [
+        [
+          {
+            "node": "Build Safe Agent Contract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "pinData": {},
-  "settings": {"executionOrder":"v1","saveManualExecutions":true,"saveExecutionProgress":true,"saveDataErrorExecution":"all","saveDataSuccessExecution":"all","timezone":"America/Los_Angeles"},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
   "staticData": null,
-  "tags": ["shopify-automation-os","foundation","multi-agent","plan-only"],
   "triggerCount": 1,
   "versionId": "00000000-0000-4000-8000-000000000100"
 }

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-if [ "${BOOTSTRAP_WORKFLOWS:-false}" = "true" ]; then
+if [ "${FORCE_BOOTSTRAP_WORKFLOWS:-false}" = "true" ] || [ "${BOOTSTRAP_WORKFLOWS:-false}" = "true" ]; then
   echo "Importing governed Shopify Automation workflows"
   n8n import:workflow --separate --input=/opt/shopify-automation/workflows
 else

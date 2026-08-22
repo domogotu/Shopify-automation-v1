@@ -5,7 +5,7 @@
 - **Workflow engine:** Portable n8n workflows; compatible with n8n Cloud and self-hosted n8n.
 - **Review surface:** Google Sheets for mobile-friendly product, pricing, content, support, and exception approvals.
 - **System of record:** PostgreSQL for durable operational state, idempotency, audit events, retries, and analytics.
-- **AI routing:** Claude primary; configurable fallback provider. AI output is draft-only unless a policy explicitly authorizes automatic action.
+- **AI routing:** ChatGPT is the executive orchestrator and decision supervisor. Claude is the default specialist model, with a configurable retryable fallback. AI output is advisory until deterministic policy and required human approval authorize an action.
 - **Commerce system:** Shopify Admin GraphQL API. Products are created as `DRAFT` by default.
 - **Supplier system:** CJdropshipping first. Supplier product/variant mappings are preserved separately from public Shopify copy.
 - **Safety model:** Human approval for publishing, supplier ordering, material price changes, refunds, discounts, customer-facing exception messages, and advertising spend.
@@ -13,6 +13,18 @@
 ## Shared Agent Orchestration Pattern
 
 Every workflow that uses AI follows the same visible n8n sub-workflow. Business-specific workflows call this shared agent core rather than duplicating model and safety logic.
+
+### Executive decision hierarchy
+
+1. ChatGPT interprets the request and creates a structured executive plan.
+2. ChatGPT selects one or more specialist agents and identifies the evidence each must return.
+3. Specialists analyze only their assigned scope and return cited evidence bundles; they do not authorize actions.
+4. ChatGPT independently reviews the combined reports, compares alternatives, identifies conflicts and missing information, and recommends the best supported option.
+5. Deterministic code checks evidence quality, permissions, active policy, risk, approval, payload hash, tool allowlist, idempotency, and recoverability.
+6. High-risk commerce actions require human approval even when ChatGPT recommends them.
+7. The authorized action is executed through the constrained Act runtime and then independently verified.
+
+ChatGPT can recommend `NEEDS_INFORMATION`, `NEEDS_REVIEW`, `RECOMMEND`, or `REJECT`. It cannot grant permissions, approve high-risk actions, override store scope, invent evidence, or silently change policy.
 
 1. **Trigger and configuration**
    - A webhook, form, schedule, Shopify event, or internal workflow supplies a correlation ID and a typed task request.
@@ -248,6 +260,9 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 - `database/migrations/002_agent_memory_and_registry.sql`: implemented agent sessions, governed memory, context snapshots, feedback, policies, and tool permissions.
 - `database/migrations/003_realtime_conversations.sql`: implemented conversations, messages, response jobs, and realtime tool-event records.
 - `00-realtime-question-gateway-v1.json`: implemented synchronous Claude question answering with specialist selection, action-risk detection, and grounded-response metadata.
+- `00-chatgpt-executive-supervisor-v1.json`: implemented two-pass ChatGPT planning and independent decision review followed by a deterministic gate.
+- `config/decision-policy.json`: implemented the decision sequence, mandatory approvals, supervisor checks, and prohibited AI authority.
+- `database/migrations/004_executive_decisions.sql`: implemented decision cases, executive plans, specialist reports, supervisor reviews, and outcomes.
 - Live model and commerce execution remains intentionally disconnected until the shared Think–Authorize–Act core and approval tests are implemented.
 
 | ID | Workflow | Trigger | External writes |
@@ -259,6 +274,7 @@ Sheets are a controlled review interface, not the authoritative database. Every 
 | 00E | Scoped Memory Retrieval | Internal sub-workflow | PostgreSQL read + audit |
 | 00F | Learning Review and Promotion | Schedule/manual | Sheets/PostgreSQL + version registry |
 | 00G | Realtime Question Gateway | Webhook/manual | Claude response + conversation record |
+| 00H | ChatGPT Executive and Supervisor | Webhook/internal | Decision records + approval routing |
 | 01 | Supplier Product Intake | Form/Webhook | Sheets + PostgreSQL |
 | 02 | Research and Risk Scoring | Intake event | Sheets + PostgreSQL |
 | 03 | AI Content Draft | Approved candidate | Sheets + PostgreSQL |

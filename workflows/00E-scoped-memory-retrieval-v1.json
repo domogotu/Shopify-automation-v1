@@ -1,0 +1,48 @@
+{
+  "name": "00E - Scoped Memory Retrieval v1",
+  "nodes": [
+    {
+      "parameters": {"inputSource":"passthrough"},
+      "id": "40000000-0000-4000-8000-000000000001",
+      "name": "Called by Parent Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 260]
+    },
+    {
+      "parameters": {"jsCode":"for(const key of ['store_domain','actor_id','correlation_id','agent_key','purpose']){if(!$json[key])throw new Error(`${key} is required`);}return [{json:{...$json,session_id:String($json.session_id || ''),resource_type:String($json.resource_type || ''),resource_id:String($json.resource_id || ''),query:String($json.query || '').slice(0,2000),max_items:Math.max(1,Math.min(50,Number($json.max_items || 20))),allowed_sensitivity:Array.isArray($json.allowed_sensitivity)?$json.allowed_sensitivity:['PUBLIC','INTERNAL'],requested_scopes:Array.isArray($json.requested_scopes)?$json.requested_scopes:[]}}];"},
+      "id": "40000000-0000-4000-8000-000000000002",
+      "name": "Validate Memory Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [250, 260]
+    },
+    {
+      "parameters": {"operation":"executeQuery","query":"WITH selected_store AS (\n  SELECT id FROM stores WHERE shop_domain = $1 AND active = true\n), current_conversation AS (\n  SELECT c.id FROM conversations c JOIN selected_store s ON s.id=c.store_id WHERE c.external_session_id=$2 LIMIT 1\n), recent_messages AS (\n  SELECT 'conversation'::text AS source_type, m.id::text AS source_id, m.created_at AS observed_at, 1.0::numeric AS confidence, jsonb_build_object('role',m.role,'content',m.content,'agent',m.selected_agent_key) AS content\n  FROM conversation_messages m JOIN current_conversation c ON c.id=m.conversation_id\n  ORDER BY m.created_at DESC LIMIT 12\n), scoped_memory AS (\n  SELECT 'memory'::text AS source_type, mi.id::text AS source_id, mi.source_observed_at AS observed_at, mi.confidence, jsonb_build_object('kind',mi.kind,'resource_type',mi.resource_type,'resource_id',mi.resource_id,'memory_key',mi.memory_key,'status',mi.status,'content',mi.content,'source_type',mi.source_type,'source_id',mi.source_id,'expires_at',mi.expires_at) AS content\n  FROM memory_items mi JOIN selected_store s ON s.id=mi.store_id\n  WHERE mi.status='VERIFIED'\n    AND (mi.expires_at IS NULL OR mi.expires_at > now())\n    AND mi.sensitivity = ANY($6::text[])\n    AND ($3='' OR mi.resource_type=$3)\n    AND ($4='' OR mi.resource_id=$4)\n    AND ($5='' OR mi.content::text ILIKE '%' || $5 || '%' OR mi.memory_key ILIKE '%' || $5 || '%')\n  ORDER BY mi.confidence DESC, mi.source_observed_at DESC LIMIT $7\n)\nSELECT * FROM (SELECT * FROM recent_messages UNION ALL SELECT * FROM scoped_memory) context ORDER BY observed_at DESC LIMIT $7;","options":{"queryReplacement":"={{ [$json.store_domain,$json.session_id,$json.resource_type,$json.resource_id,$json.query,$json.allowed_sensitivity,$json.max_items] }}"}},
+      "id": "40000000-0000-4000-8000-000000000003",
+      "name": "Retrieve Scoped Memory",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [500, 260]
+    },
+    {
+      "parameters": {"jsCode":"const request=$('Validate Memory Request').first().json;const records=$input.all().map(item=>item.json);const context=records.map(row=>({source_type:row.source_type,source_id:row.source_id,observed_at:row.observed_at,confidence:Number(row.confidence),content:row.content}));return [{json:{status:'MEMORY_RETRIEVED',correlation_id:request.correlation_id,agent_key:request.agent_key,purpose:request.purpose,store_domain:request.store_domain,context,count:context.length,authoritative_current_data_required:true,notice:'Memory supplements but never overrides current authoritative Shopify, CJ, policy, or approval data.'}}];"},
+      "id": "40000000-0000-4000-8000-000000000004",
+      "name": "Build Cited Context Package",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [750, 260]
+    }
+  ],
+  "connections": {
+    "Called by Parent Workflow":{"main":[[{"node":"Validate Memory Request","type":"main","index":0}]]},
+    "Validate Memory Request":{"main":[[{"node":"Retrieve Scoped Memory","type":"main","index":0}]]},
+    "Retrieve Scoped Memory":{"main":[[{"node":"Build Cited Context Package","type":"main","index":0}]]}
+  },
+  "pinData": {},
+  "settings": {"executionOrder":"v1","saveManualExecutions":true,"saveExecutionProgress":true,"saveDataErrorExecution":"all","saveDataSuccessExecution":"all","timezone":"America/Los_Angeles"},
+  "staticData": null,
+  "tags": ["shopify-automation-os","memory","postgresql","retrieval"],
+  "triggerCount": 0,
+  "versionId": "40000000-0000-4000-8000-000000000100"
+}

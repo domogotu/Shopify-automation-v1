@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TYPE memory_status AS ENUM ('PROPOSED','VERIFIED','SUPERSEDED','EXPIRED','REJECTED');
 CREATE TYPE memory_kind AS ENUM ('WORKING','ENTITY','SEMANTIC','EPISODIC','PROCEDURAL','APPROVAL');
 
@@ -121,5 +119,3 @@ CREATE TABLE tool_permissions (
   updated_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (agent_key, tool_key, operation)
 );
-
-COMMIT;

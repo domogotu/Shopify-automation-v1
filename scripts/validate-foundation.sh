@@ -21,11 +21,18 @@ for migration in "$root_dir"/database/migrations/*.sql; do
     echo "Migration sequence error: expected $expected, found $(basename "$migration")"
     failures=$((failures + 1))
   fi
-  if ! grep -q '^BEGIN;' "$migration" || ! grep -q '^COMMIT;' "$migration"; then
-    echo "Migration missing transaction boundary: $(basename "$migration")"
+  if grep -q '^BEGIN;' "$migration" || grep -q '^COMMIT;' "$migration"; then
+    echo "Migration contains embedded transaction boundary: $(basename "$migration")"
     failures=$((failures + 1))
   fi
   expected=$((expected + 1))
+done
+
+for required in "await client.query('BEGIN')" "await client.query('COMMIT')" "await client.query('ROLLBACK')" "pg_advisory_lock" "checksum_sha256"; do
+  if ! grep -Fq "$required" "$root_dir/scripts/migrate-database.mjs"; then
+    echo "Database migrator missing safety control: $required"
+    failures=$((failures + 1))
+  fi
 done
 
 for key in N8N_ENCRYPTION_KEY N8N_USER_MANAGEMENT_JWT_SECRET POSTGRES_PASSWORD REDIS_PASSWORD SYSTEM_KILL_SWITCH; do

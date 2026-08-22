@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TYPE improvement_case_status AS ENUM (
   'DETECTED','EVIDENCE_REQUIRED','DESIGNING','READY_FOR_REVIEW','APPROVED',
   'REJECTED','SANDBOX','SHADOW','CANARY','PRODUCTION','ROLLED_BACK','CLOSED'
@@ -108,5 +106,3 @@ CREATE TABLE system_evolution_log (
 
 CREATE INDEX system_evolution_log_time_idx
   ON system_evolution_log (created_at DESC);
-
-COMMIT;

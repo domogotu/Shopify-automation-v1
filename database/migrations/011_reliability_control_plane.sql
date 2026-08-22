@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE webhook_receipts (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   store_id uuid REFERENCES stores(id) ON DELETE CASCADE,
@@ -99,5 +97,3 @@ CREATE TABLE service_level_measurements (
 
 CREATE INDEX service_level_measurements_time_idx
   ON service_level_measurements (service_key, metric_name, observed_at DESC);
-
-COMMIT;

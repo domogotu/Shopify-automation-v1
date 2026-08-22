@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE feedback_cases (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   store_id uuid NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
@@ -48,5 +46,3 @@ CREATE TABLE answer_quality_reviews (
 
 CREATE INDEX feedback_cases_queue_idx ON feedback_cases (store_id, status, created_at DESC);
 CREATE INDEX memory_corrections_status_idx ON memory_corrections (store_id, status, created_at DESC);
-
-COMMIT;

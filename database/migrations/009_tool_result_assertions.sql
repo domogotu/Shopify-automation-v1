@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE tool_result_assertions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   store_id uuid REFERENCES stores(id) ON DELETE CASCADE,
@@ -39,5 +37,3 @@ CREATE TABLE system_change_verifications (
   verified_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now()
 );
-
-COMMIT;

@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TYPE knowledge_category_status AS ENUM ('PROPOSED','ACTIVE','ARCHIVED','REJECTED');
 CREATE TYPE category_proposal_action AS ENUM ('CREATE','RENAME','MOVE','MERGE','SPLIT','ARCHIVE');
 CREATE TYPE category_proposal_status AS ENUM ('PENDING','AUTO_APPROVED','APPROVED','REJECTED','APPLIED');
@@ -99,5 +97,3 @@ CREATE TABLE category_change_log (
 
 CREATE INDEX category_change_log_store_time_idx
   ON category_change_log (store_id, created_at DESC);
-
-COMMIT;

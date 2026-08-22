@@ -92,6 +92,8 @@ envVarGroups:
         value: regular
       - key: BOOTSTRAP_WORKFLOWS
         value: "false"
+      - key: RUN_DATABASE_MIGRATIONS
+        value: "false"
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
       - key: N8N_USER_MANAGEMENT_JWT_SECRET

@@ -1,6 +1,4 @@
-BEGIN;
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 CREATE TYPE approval_status AS ENUM ('PENDING','APPROVED','REJECTED','EXPIRED','CANCELLED');
 CREATE TYPE candidate_status AS ENUM ('DISCOVERED','REVIEW','SAMPLE_REQUIRED','APPROVED','REJECTED','PAUSED','RETIRED');
@@ -362,5 +360,3 @@ CREATE INDEX idx_exceptions_open ON order_exceptions(store_id, status, severity)
 CREATE INDEX idx_runs_correlation ON automation_runs(correlation_id);
 CREATE INDEX idx_audit_resource ON audit_events(store_id, resource_type, resource_id, created_at DESC);
 CREATE INDEX idx_alerts_open ON alerts(store_id, status, severity, created_at DESC);
-
-COMMIT;

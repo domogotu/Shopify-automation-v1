@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE memory_access_log (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   store_id uuid NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
@@ -57,5 +55,3 @@ VALUES
   ('EPISODIC', 730, 'SUMMARIZE'),
   ('PROCEDURAL', 2555, 'ARCHIVE'),
   ('APPROVAL', 2555, 'ARCHIVE');
-
-COMMIT;

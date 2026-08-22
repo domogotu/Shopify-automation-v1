@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE decision_cases (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   store_id uuid NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
@@ -92,5 +90,3 @@ CREATE TABLE decision_outcomes (
 CREATE INDEX decision_cases_status_idx ON decision_cases (store_id, status, created_at DESC);
 CREATE INDEX specialist_reports_case_idx ON specialist_reports (decision_case_id, agent_key);
 CREATE INDEX supervisor_reviews_case_idx ON supervisor_reviews (decision_case_id, created_at DESC);
-
-COMMIT;

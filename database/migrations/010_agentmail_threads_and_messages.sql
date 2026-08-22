@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE agentmail_threads (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   store_id uuid NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
@@ -59,5 +57,3 @@ CREATE TABLE agentmail_send_attempts (
   updated_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (store_id, idempotency_key)
 );
-
-COMMIT;

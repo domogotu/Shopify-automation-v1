@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE conversations (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   store_id uuid NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
@@ -76,5 +74,3 @@ CREATE TABLE realtime_tool_events (
 
 CREATE INDEX realtime_tool_events_correlation_idx
   ON realtime_tool_events (store_id, correlation_id, started_at);
-
-COMMIT;

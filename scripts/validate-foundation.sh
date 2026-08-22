@@ -11,7 +11,7 @@ for file in "$root_dir"/config/*.json "$root_dir"/workflows/*.json; do
   fi
 done
 
-node "$root_dir/scripts/validate-workflow-code.js" || failures=$((failures + 1))
+node "$root_dir/scripts/validate-workflow-code.js" || failures=$((failures + 1))\nnode "$root_dir/scripts/audit-integrations.mjs" || failures=$((failures + 1))
 
 expected=1
 for migration in "$root_dir"/database/migrations/*.sql; do

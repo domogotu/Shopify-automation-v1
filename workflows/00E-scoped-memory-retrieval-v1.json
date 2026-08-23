@@ -42,11 +42,12 @@
       "position": [
         500,
         260
-      ]
+      ],
+      "alwaysOutputData": true
     },
     {
       "parameters": {
-        "jsCode": "const request=$('Validate Memory Request').first().json;const records=$input.all().map(item=>item.json);const context=records.map(row=>({source_type:row.source_type,source_id:row.source_id,observed_at:row.observed_at,confidence:Number(row.confidence),content:row.content}));return [{json:{status:'MEMORY_RETRIEVED',correlation_id:request.correlation_id,agent_key:request.agent_key,purpose:request.purpose,store_domain:request.store_domain,context,count:context.length,authoritative_current_data_required:true,notice:'Memory supplements but never overrides current authoritative Shopify, CJ, policy, or approval data.'}}];"
+        "jsCode": "const request=$('Validate Memory Request').first().json;const records=$input.all().map(item=>item.json).filter(row=>row.source_type && row.source_id);const context=records.map(row=>({source_type:row.source_type,source_id:row.source_id,observed_at:row.observed_at,confidence:Number(row.confidence),content:row.content}));return [{json:{status:'MEMORY_RETRIEVED',correlation_id:request.correlation_id,agent_key:request.agent_key,purpose:request.purpose,store_domain:request.store_domain,context,count:context.length,authoritative_current_data_required:true,notice:'Memory supplements but never overrides current authoritative Shopify, CJ, policy, or approval data.'}}];"
       },
       "id": "40000000-0000-4000-8000-000000000004",
       "name": "Build Cited Context Package",

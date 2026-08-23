@@ -2,6 +2,12 @@
 
 This repository contains the governed Shopify automation system: n8n workflows, PostgreSQL schemas, Redis-backed queue processing, memory and knowledge controls, ChatGPT executive supervision, Claude specialists, Shopify/CJ operations, AgentMail email handling, approvals, verification, and controlled system improvement.
 
+## Reeds Technology master architecture
+
+Shopify Automation OS is the first operational adapter and proof environment for the broader **Reeds Technology owner-governed intelligence ecosystem**. Dominique Reed remains the sole root authority. The master architecture includes universal identity, personal digital-life adapters, governed memory, goals and planning, multi-model specialist agents, tool intelligence, verified actions, controlled learning, future Reeds software and hardware, and mandatory privacy, budget, safety, and approval gates.
+
+The locked Version 1.0 architecture, complete capability inventory, connection model, governing principles, and phased roadmap are maintained in [Reeds Technology — Owner-Governed Intelligence Ecosystem](docs/REEDS_TECHNOLOGY_MASTER_ARCHITECTURE.md).
+
 ## Current build state
 
 Milestone 1 provides a staging foundation. External writes remain disabled. The stack includes:

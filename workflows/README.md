@@ -52,10 +52,11 @@ See `docs/SHOPIFY_AUTOMATION_OS_BLUEPRINT.md` for the complete 18-workflow plan.
 - `00K-tool-result-content-validator-v1.json` validates the content of every tool response, records the assertion, and returns either safe data, an explicit retry, or human review.
 - `13A-agentmail-inbound-webhook-v1.json` verifies AgentMail's signed raw webhook, extracts `thread_id` and `message_id`, and returns a deduplicatable inbound-email envelope for storage and triage.
 - `13B-agentmail-approved-reply-v1.json` sends a payload-bound approved reply to the specific AgentMail `message_id`, then validates that the response returns a message ID in the expected thread.
+- `00A-universal-event-envelope-v1.json` starts Phase 1 by normalizing every inbound request into a shared event envelope, persisting it idempotently, and recording the first authority audit record before identity, policy, memory, planning, or tool execution.
 
-The specialist nodes in the orchestrator are intentionally No Operation nodes until the shared Think–Authorize–Act sub-workflow, memory retrieval, memory write gate, and approval router are connected and tested. See `docs/MULTI_AGENT_SYSTEM.md`.
+The specialist nodes in the orchestrator are intentionally No Operation nodes until the shared Think-Authorize-Act sub-workflow, memory retrieval, memory write gate, and approval router are connected and tested. See `docs/MULTI_AGENT_SYSTEM.md`.
 
-## Phase 0 — Reeds Technology Architecture
+## Phase 0 - Reeds Technology Architecture
 
 The eleven `NN-architecture-*-phase0.json` workflows make the complete owner-governed ecosystem visible in n8n without claiming unavailable capabilities. They are architectural maps, not production dispatchers. Every component is explicitly marked `OPERATIONAL`, `PLANNED`, `REQUIRES CREDENTIALS`, `REQUIRES HARDWARE`, or `FUTURE RESEARCH`.
 
@@ -67,3 +68,13 @@ Each architecture workflow contains:
 - an architecture safety notice explaining that the map performs no external action.
 
 Phase 0 workflows contain no credentials, HTTP requests, database operations, or sub-workflow execution. Existing operational workflows remain separate and unchanged.
+
+## Phase 1 - Universal Foundation
+
+`00A-universal-event-envelope-v1.json` is the first operational Phase 1 front gate. Parent workflows should call it before memory retrieval or model work. It requires `store_domain`, `message`, `actor_id`, `source_type`, and `request_type`, then produces a stable `event_id`, `correlation_id`, `session_id`, `risk_level`, `execution_mode`, and `next_action`.
+
+The backing tables are created by `012_universal_event_envelope.sql`:
+
+- `universal_event_envelopes` stores accepted event contracts idempotently by `correlation_id`;
+- `authority_audit_records` records the first authority decision for the envelope;
+- `policy_decision_records` reserves the durable policy-decision ledger for the next Phase 1 gate.

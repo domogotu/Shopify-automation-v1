@@ -1,0 +1,111 @@
+{
+  "name": "00A - Universal Event Envelope v1",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "00a00000-0000-4000-8000-000000000001",
+      "name": "Called by Parent Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input={...$json};const now=new Date().toISOString();const text=(value)=>value===undefined||value===null?'':String(value).trim();const eventId=text(input.event_id)||`evt_${Date.now()}_${Math.random().toString(16).slice(2,10)}`;const correlationId=text(input.correlation_id)||eventId;const sourceType=text(input.source_type||input.channel||input.provider)||'manual';const sourceId=text(input.source_id||input.webhook_id)||eventId;const actorId=text(input.actor_id||input.user_id||input.owner_id)||'dominique';const storeDomain=text(input.store_domain||input.shop_domain||input.shopify_domain);const sessionId=text(input.session_id)||`${actorId}:default`;const requestType=text(input.request_type||input.intent||input.type)||'general_request';const message=text(input.message||input.text||input.prompt||input.body?.message);const resourceType=text(input.resource_type)||'general';const resourceId=text(input.resource_id)||null;const executionMode=text(input.execution_mode)||'MANUAL';const riskText=`${requestType} ${resourceType} ${message}`.toLowerCase();let riskLevel=text(input.risk_level).toUpperCase();if(!['LOW','MEDIUM','HIGH','CRITICAL'].includes(riskLevel)){riskLevel=/kill|credential|password|secret|classified|cui|itar|physical|vehicle|drone/.test(riskText)?'CRITICAL':/spend|payment|refund|order|submit|send|publish|production|deploy|delete/.test(riskText)?'HIGH':'MEDIUM';}const missing=[];if(!storeDomain)missing.push('store_domain');if(!message)missing.push('message');if(!actorId)missing.push('actor_id');if(!sourceType)missing.push('source_type');if(!requestType)missing.push('request_type');if(missing.length){throw new Error(`Universal event envelope missing required field(s): ${missing.join(', ')}`);}const envelope={event_id:eventId,correlation_id:correlationId,received_at:text(input.received_at)||now,source_type:sourceType,source_id:sourceId,actor_id:actorId,store_domain:storeDomain,session_id:sessionId,request_type:requestType,message,resource_type:resourceType,resource_id:resourceId,risk_level:riskLevel,execution_mode:executionMode,identity_status:'UNRESOLVED',policy_status:'PENDING',envelope_status:'ACCEPTED',payload_json:JSON.stringify(input)};return [{json:{...input,...envelope}}];"
+      },
+      "id": "00a00000-0000-4000-8000-000000000002",
+      "name": "Normalize Universal Event Envelope",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH selected_store AS (\n  SELECT id FROM automation_os.stores WHERE shop_domain = $4 AND active = true\n), stored_envelope AS (\n  INSERT INTO automation_os.universal_event_envelopes (\n    store_id, event_id, correlation_id, received_at, source_type, source_id,\n    actor_id, store_domain, session_id, request_type, message, resource_type,\n    resource_id, risk_level, execution_mode, identity_status, policy_status,\n    envelope_status, payload\n  )\n  VALUES (\n    (SELECT id FROM selected_store), $1, $2, $3::timestamptz, $5, $6,\n    $7, $4, $8, $9, $10, $11, NULLIF($12,''),\n    CAST($13 AS automation_os.universal_risk_level), $14, $15, $16,\n    CAST($17 AS automation_os.universal_event_status), $18::jsonb\n  )\n  ON CONFLICT (correlation_id) DO UPDATE SET\n    received_at = EXCLUDED.received_at,\n    source_type = EXCLUDED.source_type,\n    source_id = EXCLUDED.source_id,\n    actor_id = EXCLUDED.actor_id,\n    store_domain = EXCLUDED.store_domain,\n    session_id = EXCLUDED.session_id,\n    request_type = EXCLUDED.request_type,\n    message = EXCLUDED.message,\n    resource_type = EXCLUDED.resource_type,\n    resource_id = EXCLUDED.resource_id,\n    risk_level = EXCLUDED.risk_level,\n    execution_mode = EXCLUDED.execution_mode,\n    payload = EXCLUDED.payload\n  RETURNING id, store_id, event_id, correlation_id, risk_level, envelope_status\n), authority_audit AS (\n  INSERT INTO automation_os.authority_audit_records (\n    store_id, envelope_id, correlation_id, actor_id, authority_stage, decision, reason, evidence\n  )\n  SELECT store_id, id, correlation_id, $7, 'UNIVERSAL_EVENT_ENVELOPE',\n    CASE WHEN store_id IS NULL THEN 'REVIEW' ELSE 'ACCEPTED' END,\n    CASE WHEN store_id IS NULL THEN 'Store domain did not resolve to an active store' ELSE 'Envelope accepted for identity and policy evaluation' END,\n    jsonb_build_object('source_type',$5,'request_type',$9,'execution_mode',$14)\n  FROM stored_envelope\n  RETURNING id\n)\nSELECT\n  se.id AS envelope_id,\n  se.store_id,\n  se.event_id,\n  se.correlation_id,\n  se.risk_level,\n  se.envelope_status,\n  (se.store_id IS NOT NULL) AS store_resolved,\n  (SELECT id FROM authority_audit LIMIT 1) AS authority_audit_id\nFROM stored_envelope se;",
+        "options": {
+          "queryReplacement": "={{ [$json.event_id,$json.correlation_id,$json.received_at,$json.store_domain,$json.source_type,$json.source_id,$json.actor_id,$json.session_id,$json.request_type,$json.message,$json.resource_type,$json.resource_id || '',$json.risk_level,$json.execution_mode,$json.identity_status,$json.policy_status,$json.envelope_status,$json.payload_json] }}"
+        }
+      },
+      "id": "00a00000-0000-4000-8000-000000000003",
+      "name": "Persist Universal Event Envelope",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        560,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const request=$('Normalize Universal Event Envelope').first().json;const storeResolved=$json.store_resolved===true||$json.store_resolved==='true';return [{json:{status:storeResolved?'ENVELOPE_ACCEPTED':'ENVELOPE_NEEDS_REVIEW',event_id:$json.event_id,correlation_id:$json.correlation_id,envelope_id:$json.envelope_id,store_id:$json.store_id,store_domain:request.store_domain,store_resolved:storeResolved,actor_id:request.actor_id,session_id:request.session_id,source_type:request.source_type,source_id:request.source_id,request_type:request.request_type,resource_type:request.resource_type,resource_id:request.resource_id,risk_level:$json.risk_level,identity_status:request.identity_status,policy_status:request.policy_status,authority_audit_id:$json.authority_audit_id,next_action:storeResolved?'RUN_IDENTITY_RESOLVER':'HUMAN_REVIEW_STORE_SCOPE'}}];"
+      },
+      "id": "00a00000-0000-4000-8000-000000000004",
+      "name": "Return Envelope Receipt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        260
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Called by Parent Workflow": {
+      "main": [
+        [
+          {
+            "node": "Normalize Universal Event Envelope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Universal Event Envelope": {
+      "main": [
+        [
+          {
+            "node": "Persist Universal Event Envelope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persist Universal Event Envelope": {
+      "main": [
+        [
+          {
+            "node": "Return Envelope Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
+  "versionId": "00a00000-0000-4000-8000-000000000101",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "30000000-0000-4000-8000-00000000000a"
+}

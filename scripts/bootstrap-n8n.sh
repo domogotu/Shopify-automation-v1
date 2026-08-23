@@ -8,7 +8,17 @@ else
   echo "Database migrations disabled; preserving existing schemas"
 fi
 
-if [ "${SYNC_MEMORY_WORKFLOWS_ONCE:-false}" = "true" ]; then
+if [ "${SYNC_PHASE0_ARCHITECTURE_ONCE:-false}" = "true" ]; then
+  echo "Importing Reeds Technology Phase 0 architecture workflows"
+  mkdir -p /tmp/reeds-technology-phase0-sync
+  cp /opt/shopify-automation/workflows/[0-9][0-9]-architecture-*-phase0.json /tmp/reeds-technology-phase0-sync/
+  phase0_count="$(find /tmp/reeds-technology-phase0-sync -maxdepth 1 -type f -name '*-phase0.json' | wc -l | tr -d ' ')"
+  if [ "$phase0_count" -ne 11 ]; then
+    echo "Expected 11 Phase 0 architecture workflows, found $phase0_count"
+    exit 1
+  fi
+  n8n import:workflow --separate --input=/tmp/reeds-technology-phase0-sync
+elif [ "${SYNC_MEMORY_WORKFLOWS_ONCE:-false}" = "true" ]; then
   echo "Synchronizing governed memory workflows"
   mkdir -p /tmp/shopify-automation-memory-sync
   cp /opt/shopify-automation/workflows/00D-memory-write-gate-v1.json /tmp/shopify-automation-memory-sync/

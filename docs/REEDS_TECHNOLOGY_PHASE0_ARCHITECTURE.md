@@ -53,3 +53,9 @@ Phase 0 architecture workflows:
 6. Phase 5 — physical systems through mandatory physical-action gates.
 
 No later phase may bypass Dominique's root authority, deterministic policy gates, audit requirements, kill switch, or explicit approval requirements.
+
+## Controlled n8n import
+
+Set `SYNC_PHASE0_ARCHITECTURE_ONCE=true` for exactly one deployment. Startup copies only the eleven `*-phase0.json` files into an isolated temporary directory, verifies the count is exactly eleven, and imports that directory. It does not import or replace the executive, memory, Shopify, AgentMail, or reliability workflows.
+
+After the deployment log reports `Successfully imported 11 workflows.`, immediately restore `SYNC_PHASE0_ARCHITECTURE_ONCE=false` and deploy again. Leaving the switch enabled risks duplicate architecture canvases on a later restart.

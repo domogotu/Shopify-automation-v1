@@ -96,6 +96,8 @@ envVarGroups:
         value: "false"
       - key: SYNC_MEMORY_WORKFLOWS_ONCE
         value: "false"
+      - key: SYNC_PHASE0_ARCHITECTURE_ONCE
+        value: "false"
       - key: RUN_DATABASE_MIGRATIONS
         value: "false"
       - key: N8N_ENCRYPTION_KEY

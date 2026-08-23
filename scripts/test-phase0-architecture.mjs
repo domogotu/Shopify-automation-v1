@@ -5,11 +5,16 @@ import process from 'node:process';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const dir = path.join(root, 'workflows');
+const bootstrap = fs.readFileSync(path.join(root, 'scripts', 'bootstrap-n8n.sh'), 'utf8');
+const render = fs.readFileSync(path.join(root, 'render.yaml'), 'utf8');
 const files = fs.readdirSync(dir).filter(name => /^\d{2}-architecture-.*-phase0\.json$/.test(name)).sort();
 const requiredStatuses = ['OPERATIONAL','PLANNED','REQUIRES CREDENTIALS','REQUIRES HARDWARE','FUTURE RESEARCH'];
 const errors = [];
 
 if (files.length !== 11) errors.push(`Expected 11 Phase 0 workflows, found ${files.length}`);
+if (!bootstrap.includes('SYNC_PHASE0_ARCHITECTURE_ONCE')) errors.push('Bootstrap is missing the dedicated Phase 0 import switch');
+if (!bootstrap.includes('Expected 11 Phase 0 architecture workflows')) errors.push('Bootstrap does not verify the Phase 0 import count');
+if (!/- key:\s*SYNC_PHASE0_ARCHITECTURE_ONCE\s*\n\s*value:\s*["']?false["']?/i.test(render)) errors.push('Phase 0 import switch must default to false');
 for (const file of files) {
   const workflow = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
   const nodes = workflow.nodes ?? [];

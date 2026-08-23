@@ -1,0 +1,356 @@
+{
+  "name": "10 — Security and Continuity [PHASE 0]",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 10 — Security and Continuity\n\nApply mandatory privacy, credential, audit, release, continuity and emergency controls across every domain.\n\n**PHASE 0 ARCHITECTURE MAP** — This workflow documents contracts and status. Architecture nodes are inert and do not call APIs, access credentials, spend funds, send messages, change production, or control hardware.",
+        "height": 260,
+        "width": 620,
+        "color": 5
+      },
+      "id": "a0000011-0000-4000-8000-000000000001",
+      "name": "Architecture Safety Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000002",
+      "name": "Inspect Architecture",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{\"status\":\"ARCHITECTURE_VISIBLE\",\"phase\":\"PHASE_0\",\"workflow\":\"10 — Security and Continuity\",\"purpose\":\"Apply mandatory privacy, credential, audit, release, continuity and emergency controls across every domain.\",\"operational_execution\":false,\"notice\":\"Architecture map only. Inert component nodes do not claim live capability.\",\"components\":[{\"status\":\"PLANNED\",\"name\":\"Human Approval Gate\",\"expected_input\":\"privileged_action\",\"expected_output\":\"signed_decision\",\"permissions_and_boundaries\":\"Dominique or delegated policy authority\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"payload-bound approval\"},{\"status\":\"PLANNED\",\"name\":\"Spending Gate\",\"expected_input\":\"financial_action\",\"expected_output\":\"budget_decision\",\"permissions_and_boundaries\":\"hard budget and vendor limits\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"ledger and approval evidence\"},{\"status\":\"PLANNED\",\"name\":\"External Message Gate\",\"expected_input\":\"outbound_message\",\"expected_output\":\"send_decision\",\"permissions_and_boundaries\":\"recipient and content approval\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"provider receipt\"},{\"status\":\"PLANNED\",\"name\":\"Production Change Gate\",\"expected_input\":\"release_candidate\",\"expected_output\":\"release_decision\",\"permissions_and_boundaries\":\"tests, review and rollback\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"versioned release record\"},{\"status\":\"PLANNED\",\"name\":\"Privacy and Data Gate\",\"expected_input\":\"data_operation\",\"expected_output\":\"privacy_decision\",\"permissions_and_boundaries\":\"classification, purpose and retention\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"privacy policy evaluation\"},{\"status\":\"PLANNED\",\"name\":\"Physical Action Gate\",\"expected_input\":\"physical_action\",\"expected_output\":\"physical_decision\",\"permissions_and_boundaries\":\"human approval and emergency stop\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"signed authorization\"},{\"status\":\"PLANNED\",\"name\":\"Security and Rate Limits\",\"expected_input\":\"request\",\"expected_output\":\"throttled_authorization\",\"permissions_and_boundaries\":\"abuse, anomaly and quota controls\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"HIGH\",\"verification_method\":\"rate-limit record\"},{\"status\":\"PLANNED\",\"name\":\"Credential Scope\",\"expected_input\":\"tool_request\",\"expected_output\":\"credential_capability\",\"permissions_and_boundaries\":\"secret isolation and least privilege\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"HIGH\",\"verification_method\":\"credential scope assertion\"},{\"status\":\"OPERATIONAL\",\"name\":\"Audit Requirement\",\"expected_input\":\"decision_or_action\",\"expected_output\":\"immutable_audit_record\",\"permissions_and_boundaries\":\"correlation and provenance\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"audit identifier\"},{\"status\":\"OPERATIONAL\",\"name\":\"Kill Switch\",\"expected_input\":\"action_request\",\"expected_output\":\"allow_or_block\",\"permissions_and_boundaries\":\"fail closed by default\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"environment assertion\"},{\"status\":\"PLANNED\",\"name\":\"Backups and Replication\",\"expected_input\":\"governed_data\",\"expected_output\":\"recovery_copy\",\"permissions_and_boundaries\":\"encryption and retention\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"restore test\"},{\"status\":\"PLANNED\",\"name\":\"Health and Observability\",\"expected_input\":\"system_telemetry\",\"expected_output\":\"health_status\",\"permissions_and_boundaries\":\"sensitive-data redaction\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"metric and log checks\"},{\"status\":\"FUTURE RESEARCH\",\"name\":\"Failover and Offline Mode\",\"expected_input\":\"availability_event\",\"expected_output\":\"continuity_state\",\"permissions_and_boundaries\":\"safe degraded operation\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"failover exercise\"}]}}];"
+      },
+      "id": "a0000011-0000-4000-8000-000000000003",
+      "name": "Architecture Manifest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000010",
+      "name": "[PLANNED] Human Approval Gate",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000011",
+      "name": "[PLANNED] Spending Gate",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000012",
+      "name": "[PLANNED] External Message Gate",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000013",
+      "name": "[PLANNED] Production Change Gate",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000014",
+      "name": "[PLANNED] Privacy and Data Gate",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000015",
+      "name": "[PLANNED] Physical Action Gate",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000016",
+      "name": "[PLANNED] Security and Rate Limits",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000017",
+      "name": "[PLANNED] Credential Scope",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000018",
+      "name": "[OPERATIONAL] Audit Requirement",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000019",
+      "name": "[OPERATIONAL] Kill Switch",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000020",
+      "name": "[PLANNED] Backups and Replication",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000021",
+      "name": "[PLANNED] Health and Observability",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000011-0000-4000-8000-000000000022",
+      "name": "[FUTURE RESEARCH] Failover and Offline Mode",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Inspect Architecture": {
+      "main": [
+        [
+          {
+            "node": "Architecture Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Architecture Manifest": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Human Approval Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Human Approval Gate": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Spending Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Spending Gate": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] External Message Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] External Message Gate": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Production Change Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Production Change Gate": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Privacy and Data Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Privacy and Data Gate": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Physical Action Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Physical Action Gate": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Security and Rate Limits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Security and Rate Limits": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Credential Scope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Credential Scope": {
+      "main": [
+        [
+          {
+            "node": "[OPERATIONAL] Audit Requirement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[OPERATIONAL] Audit Requirement": {
+      "main": [
+        [
+          {
+            "node": "[OPERATIONAL] Kill Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[OPERATIONAL] Kill Switch": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Backups and Replication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Backups and Replication": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Health and Observability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Health and Observability": {
+      "main": [
+        [
+          {
+            "node": "[FUTURE RESEARCH] Failover and Offline Mode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
+  "staticData": null,
+  "triggerCount": 0,
+  "versionId": "a0000011-0000-4000-8000-000000000999"
+}

@@ -1,0 +1,334 @@
+{
+  "name": "07 — Business Domains [PHASE 0]",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 07 — Business Domains\n\nConnect business platforms through governed adapters rather than embedding domain logic in the intelligence core.\n\n**PHASE 0 ARCHITECTURE MAP** — This workflow documents contracts and status. Architecture nodes are inert and do not call APIs, access credentials, spend funds, send messages, change production, or control hardware.",
+        "height": 260,
+        "width": 620,
+        "color": 5
+      },
+      "id": "a0000008-0000-4000-8000-000000000001",
+      "name": "Architecture Safety Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000002",
+      "name": "Inspect Architecture",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{\"status\":\"ARCHITECTURE_VISIBLE\",\"phase\":\"PHASE_0\",\"workflow\":\"07 — Business Domains\",\"purpose\":\"Connect business platforms through governed adapters rather than embedding domain logic in the intelligence core.\",\"operational_execution\":false,\"notice\":\"Architecture map only. Inert component nodes do not claim live capability.\",\"components\":[{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Shopify Adapter\",\"expected_input\":\"shopify_event_or_query\",\"expected_output\":\"normalized_commerce_result\",\"permissions_and_boundaries\":\"read-only first; writes require approval\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"Shopify response assertion\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"CJdropshipping Adapter\",\"expected_input\":\"supplier_request\",\"expected_output\":\"normalized_supplier_result\",\"permissions_and_boundaries\":\"orders and spending require approval\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"supplier response assertion\"},{\"status\":\"PLANNED\",\"name\":\"Reeds Solutions LLC Adapter\",\"expected_input\":\"business_event\",\"expected_output\":\"business_context\",\"permissions_and_boundaries\":\"organization permissions\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"source and audit record\"},{\"status\":\"PLANNED\",\"name\":\"PrimeContractorOS Adapter\",\"expected_input\":\"contracting_event\",\"expected_output\":\"contracting_context\",\"permissions_and_boundaries\":\"workspace isolation and CUI refusal\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"workspace and source validation\"},{\"status\":\"PLANNED\",\"name\":\"CRM and Contacts\",\"expected_input\":\"business_relationship_event\",\"expected_output\":\"crm_record\",\"permissions_and_boundaries\":\"role-based access\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"CRM receipt\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"AgentMail Adapter\",\"expected_input\":\"email_event\",\"expected_output\":\"thread_or_message_result\",\"permissions_and_boundaries\":\"approved sends only\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"message and thread IDs\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"GitHub Adapter\",\"expected_input\":\"repository_event\",\"expected_output\":\"versioned_change_result\",\"permissions_and_boundaries\":\"branch and review policy\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"commit or pull-request evidence\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Render Adapter\",\"expected_input\":\"deployment_event\",\"expected_output\":\"deployment_status\",\"permissions_and_boundaries\":\"production deployment approval\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"deployment ID and logs\"},{\"status\":\"OPERATIONAL\",\"name\":\"PostgreSQL Backbone\",\"expected_input\":\"database_request\",\"expected_output\":\"governed_data_result\",\"permissions_and_boundaries\":\"schema and row-level scopes\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"transaction result\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Google Drive and Sheets\",\"expected_input\":\"document_or_sheet_event\",\"expected_output\":\"normalized_file_result\",\"permissions_and_boundaries\":\"file ownership and sharing boundaries\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"file/version identifier\"},{\"status\":\"PLANNED\",\"name\":\"Accounting and Analytics\",\"expected_input\":\"business_result\",\"expected_output\":\"financial_or_performance_record\",\"permissions_and_boundaries\":\"financial permissions\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"reconciliation and source checks\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Government Portals\",\"expected_input\":\"contracting_request\",\"expected_output\":\"portal_result\",\"permissions_and_boundaries\":\"no unsupported automated submissions\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"portal confirmation\"}]}}];"
+      },
+      "id": "a0000008-0000-4000-8000-000000000003",
+      "name": "Architecture Manifest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000010",
+      "name": "[REQUIRES CREDENTIALS] Shopify Adapter",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000011",
+      "name": "[REQUIRES CREDENTIALS] CJdropshipping Adapter",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000012",
+      "name": "[PLANNED] Reeds Solutions LLC Adapter",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000013",
+      "name": "[PLANNED] PrimeContractorOS Adapter",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000014",
+      "name": "[PLANNED] CRM and Contacts",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000015",
+      "name": "[REQUIRES CREDENTIALS] AgentMail Adapter",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000016",
+      "name": "[REQUIRES CREDENTIALS] GitHub Adapter",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000017",
+      "name": "[REQUIRES CREDENTIALS] Render Adapter",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000018",
+      "name": "[OPERATIONAL] PostgreSQL Backbone",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000019",
+      "name": "[REQUIRES CREDENTIALS] Google Drive and Sheets",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000020",
+      "name": "[PLANNED] Accounting and Analytics",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000008-0000-4000-8000-000000000021",
+      "name": "[REQUIRES CREDENTIALS] Government Portals",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        260
+      ]
+    }
+  ],
+  "connections": {
+    "Inspect Architecture": {
+      "main": [
+        [
+          {
+            "node": "Architecture Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Architecture Manifest": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Shopify Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Shopify Adapter": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] CJdropshipping Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] CJdropshipping Adapter": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Reeds Solutions LLC Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Reeds Solutions LLC Adapter": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] PrimeContractorOS Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] PrimeContractorOS Adapter": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] CRM and Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] CRM and Contacts": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] AgentMail Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] AgentMail Adapter": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] GitHub Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] GitHub Adapter": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Render Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Render Adapter": {
+      "main": [
+        [
+          {
+            "node": "[OPERATIONAL] PostgreSQL Backbone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[OPERATIONAL] PostgreSQL Backbone": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Google Drive and Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Google Drive and Sheets": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Accounting and Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Accounting and Analytics": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Government Portals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
+  "staticData": null,
+  "triggerCount": 0,
+  "versionId": "a0000008-0000-4000-8000-000000000999"
+}

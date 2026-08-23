@@ -54,3 +54,16 @@ See `docs/SHOPIFY_AUTOMATION_OS_BLUEPRINT.md` for the complete 18-workflow plan.
 - `13B-agentmail-approved-reply-v1.json` sends a payload-bound approved reply to the specific AgentMail `message_id`, then validates that the response returns a message ID in the expected thread.
 
 The specialist nodes in the orchestrator are intentionally No Operation nodes until the shared Think–Authorize–Act sub-workflow, memory retrieval, memory write gate, and approval router are connected and tested. See `docs/MULTI_AGENT_SYSTEM.md`.
+
+## Phase 0 — Reeds Technology Architecture
+
+The eleven `NN-architecture-*-phase0.json` workflows make the complete owner-governed ecosystem visible in n8n without claiming unavailable capabilities. They are architectural maps, not production dispatchers. Every component is explicitly marked `OPERATIONAL`, `PLANNED`, `REQUIRES CREDENTIALS`, `REQUIRES HARDWARE`, or `FUTURE RESEARCH`.
+
+Each architecture workflow contains:
+
+- a manual inspection trigger;
+- an architecture manifest that returns expected inputs, outputs, permissions, risk, approval requirements, verification method, and implementation status;
+- inert No Operation component nodes;
+- an architecture safety notice explaining that the map performs no external action.
+
+Phase 0 workflows contain no credentials, HTTP requests, database operations, or sub-workflow execution. Existing operational workflows remain separate and unchanged.

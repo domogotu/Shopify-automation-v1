@@ -1,0 +1,268 @@
+{
+  "name": "05 — Tools and Actions [PHASE 0]",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 05 — Tools and Actions\n\nRegister, authorize, execute and verify external tools without granting models unrestricted action.\n\n**PHASE 0 ARCHITECTURE MAP** — This workflow documents contracts and status. Architecture nodes are inert and do not call APIs, access credentials, spend funds, send messages, change production, or control hardware.",
+        "height": 260,
+        "width": 620,
+        "color": 5
+      },
+      "id": "a0000006-0000-4000-8000-000000000001",
+      "name": "Architecture Safety Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000002",
+      "name": "Inspect Architecture",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{\"status\":\"ARCHITECTURE_VISIBLE\",\"phase\":\"PHASE_0\",\"workflow\":\"05 — Tools and Actions\",\"purpose\":\"Register, authorize, execute and verify external tools without granting models unrestricted action.\",\"operational_execution\":false,\"notice\":\"Architecture map only. Inert component nodes do not claim live capability.\",\"components\":[{\"status\":\"PLANNED\",\"name\":\"Tool Registry\",\"expected_input\":\"tool_definition\",\"expected_output\":\"registered_tool\",\"permissions_and_boundaries\":\"owner approval and schema requirements\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"registry validation\"},{\"status\":\"PLANNED\",\"name\":\"Capability and Credential Scope\",\"expected_input\":\"tool_request\",\"expected_output\":\"scoped_capability\",\"permissions_and_boundaries\":\"least privilege and secret isolation\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"HIGH\",\"verification_method\":\"scope assertion\"},{\"status\":\"PLANNED\",\"name\":\"Action Authorization\",\"expected_input\":\"scoped_capability\",\"expected_output\":\"allow_block_or_approve\",\"permissions_and_boundaries\":\"policy, budget and risk gates\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"authorization receipt\"},{\"status\":\"PLANNED\",\"name\":\"Idempotency Controller\",\"expected_input\":\"authorized_action\",\"expected_output\":\"idempotent_action\",\"permissions_and_boundaries\":\"duplicate-write prevention\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"idempotency lookup\"},{\"status\":\"PLANNED\",\"name\":\"Sandbox Execution\",\"expected_input\":\"safe_action\",\"expected_output\":\"tool_result\",\"permissions_and_boundaries\":\"isolated non-production environment\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"sandbox evidence\"},{\"status\":\"PLANNED\",\"name\":\"Production Execution\",\"expected_input\":\"approved_action\",\"expected_output\":\"tool_result\",\"permissions_and_boundaries\":\"human approval and production gate\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"external result receipt\"},{\"status\":\"OPERATIONAL\",\"name\":\"Tool Result Assertion\",\"expected_input\":\"tool_result\",\"expected_output\":\"safe_result_or_escalation\",\"permissions_and_boundaries\":\"content not HTTP status\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"00K assertion record\"},{\"status\":\"PLANNED\",\"name\":\"Rollback and Compensation\",\"expected_input\":\"failed_action\",\"expected_output\":\"recovery_result\",\"permissions_and_boundaries\":\"declared recovery procedure\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"post-recovery verification\"},{\"status\":\"OPERATIONAL\",\"name\":\"Audit Record\",\"expected_input\":\"decision_or_action\",\"expected_output\":\"audit_evidence\",\"permissions_and_boundaries\":\"correlation and source attribution\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"database audit identifier\"}]}}];"
+      },
+      "id": "a0000006-0000-4000-8000-000000000003",
+      "name": "Architecture Manifest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000010",
+      "name": "[PLANNED] Tool Registry",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000011",
+      "name": "[PLANNED] Capability and Credential Scope",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000012",
+      "name": "[PLANNED] Action Authorization",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000013",
+      "name": "[PLANNED] Idempotency Controller",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000014",
+      "name": "[PLANNED] Sandbox Execution",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000015",
+      "name": "[PLANNED] Production Execution",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000016",
+      "name": "[OPERATIONAL] Tool Result Assertion",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000017",
+      "name": "[PLANNED] Rollback and Compensation",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000006-0000-4000-8000-000000000018",
+      "name": "[OPERATIONAL] Audit Record",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        260
+      ]
+    }
+  ],
+  "connections": {
+    "Inspect Architecture": {
+      "main": [
+        [
+          {
+            "node": "Architecture Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Architecture Manifest": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Tool Registry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Tool Registry": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Capability and Credential Scope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Capability and Credential Scope": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Action Authorization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Action Authorization": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Idempotency Controller",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Idempotency Controller": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Sandbox Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Sandbox Execution": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Production Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Production Execution": {
+      "main": [
+        [
+          {
+            "node": "[OPERATIONAL] Tool Result Assertion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[OPERATIONAL] Tool Result Assertion": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Rollback and Compensation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Rollback and Compensation": {
+      "main": [
+        [
+          {
+            "node": "[OPERATIONAL] Audit Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
+  "staticData": null,
+  "triggerCount": 0,
+  "versionId": "a0000006-0000-4000-8000-000000000999"
+}

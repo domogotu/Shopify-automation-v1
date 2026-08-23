@@ -1,0 +1,334 @@
+{
+  "name": "06 — Digital Life [PHASE 0]",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 06 — Digital Life\n\nRepresent personal digital systems as permissioned adapters behind the universal event gateway.\n\n**PHASE 0 ARCHITECTURE MAP** — This workflow documents contracts and status. Architecture nodes are inert and do not call APIs, access credentials, spend funds, send messages, change production, or control hardware.",
+        "height": 260,
+        "width": 620,
+        "color": 5
+      },
+      "id": "a0000007-0000-4000-8000-000000000001",
+      "name": "Architecture Safety Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000002",
+      "name": "Inspect Architecture",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{\"status\":\"ARCHITECTURE_VISIBLE\",\"phase\":\"PHASE_0\",\"workflow\":\"06 — Digital Life\",\"purpose\":\"Represent personal digital systems as permissioned adapters behind the universal event gateway.\",\"operational_execution\":false,\"notice\":\"Architecture map only. Inert component nodes do not claim live capability.\",\"components\":[{\"status\":\"REQUIRES HARDWARE\",\"name\":\"Phone and Reeds Mobile\",\"expected_input\":\"mobile_event\",\"expected_output\":\"normalized_event\",\"permissions_and_boundaries\":\"device permission and owner identity\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"device attestation\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Contacts and People Graph\",\"expected_input\":\"contact_event\",\"expected_output\":\"governed_relationship\",\"permissions_and_boundaries\":\"purpose and consent boundaries\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"source attribution\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Email and Accounts\",\"expected_input\":\"email_event\",\"expected_output\":\"normalized_message\",\"permissions_and_boundaries\":\"account scope and send approval\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"provider receipt\"},{\"status\":\"REQUIRES HARDWARE\",\"name\":\"Calls Voicemail and SMS\",\"expected_input\":\"telephony_event\",\"expected_output\":\"transcript_or_message\",\"permissions_and_boundaries\":\"consent and jurisdiction rules\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"carrier receipt\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Calendar and Reminders\",\"expected_input\":\"calendar_event\",\"expected_output\":\"scheduled_record\",\"permissions_and_boundaries\":\"calendar ownership and conflict rules\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"calendar receipt\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Files Documents and OCR\",\"expected_input\":\"document_event\",\"expected_output\":\"cited_document_context\",\"permissions_and_boundaries\":\"classification and malware scanning\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"hash and OCR evidence\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Photos Music and Media\",\"expected_input\":\"media_event\",\"expected_output\":\"media_context\",\"permissions_and_boundaries\":\"copyright, privacy and storage boundaries\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"asset provenance\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Browser and Universal Search\",\"expected_input\":\"search_request\",\"expected_output\":\"cited_search_result\",\"permissions_and_boundaries\":\"domain and action restrictions\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"source citation\"},{\"status\":\"REQUIRES HARDWARE\",\"name\":\"Location Maps and Travel\",\"expected_input\":\"location_event\",\"expected_output\":\"location_context\",\"permissions_and_boundaries\":\"explicit consent and retention\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"location source evidence\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Banking and Finance\",\"expected_input\":\"financial_event\",\"expected_output\":\"financial_context\",\"permissions_and_boundaries\":\"read-only first and spending approval\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"ledger reconciliation\"},{\"status\":\"REQUIRES CREDENTIALS\",\"name\":\"Health and Fitness\",\"expected_input\":\"health_event\",\"expected_output\":\"health_context\",\"permissions_and_boundaries\":\"sensitive-data isolation and consent\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"source and freshness check\"},{\"status\":\"PLANNED\",\"name\":\"Personal Timeline\",\"expected_input\":\"verified_events\",\"expected_output\":\"temporal_summary\",\"permissions_and_boundaries\":\"scope and retention policies\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"timeline provenance\"}]}}];"
+      },
+      "id": "a0000007-0000-4000-8000-000000000003",
+      "name": "Architecture Manifest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000010",
+      "name": "[REQUIRES HARDWARE] Phone and Reeds Mobile",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000011",
+      "name": "[REQUIRES CREDENTIALS] Contacts and People Graph",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000012",
+      "name": "[REQUIRES CREDENTIALS] Email and Accounts",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000013",
+      "name": "[REQUIRES HARDWARE] Calls Voicemail and SMS",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000014",
+      "name": "[REQUIRES CREDENTIALS] Calendar and Reminders",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000015",
+      "name": "[REQUIRES CREDENTIALS] Files Documents and OCR",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000016",
+      "name": "[REQUIRES CREDENTIALS] Photos Music and Media",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000017",
+      "name": "[REQUIRES CREDENTIALS] Browser and Universal Search",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000018",
+      "name": "[REQUIRES HARDWARE] Location Maps and Travel",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000019",
+      "name": "[REQUIRES CREDENTIALS] Banking and Finance",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000020",
+      "name": "[REQUIRES CREDENTIALS] Health and Fitness",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000007-0000-4000-8000-000000000021",
+      "name": "[PLANNED] Personal Timeline",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        260
+      ]
+    }
+  ],
+  "connections": {
+    "Inspect Architecture": {
+      "main": [
+        [
+          {
+            "node": "Architecture Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Architecture Manifest": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES HARDWARE] Phone and Reeds Mobile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES HARDWARE] Phone and Reeds Mobile": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Contacts and People Graph",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Contacts and People Graph": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Email and Accounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Email and Accounts": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES HARDWARE] Calls Voicemail and SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES HARDWARE] Calls Voicemail and SMS": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Calendar and Reminders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Calendar and Reminders": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Files Documents and OCR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Files Documents and OCR": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Photos Music and Media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Photos Music and Media": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Browser and Universal Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Browser and Universal Search": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES HARDWARE] Location Maps and Travel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES HARDWARE] Location Maps and Travel": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Banking and Finance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Banking and Finance": {
+      "main": [
+        [
+          {
+            "node": "[REQUIRES CREDENTIALS] Health and Fitness",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[REQUIRES CREDENTIALS] Health and Fitness": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Personal Timeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
+  "staticData": null,
+  "triggerCount": 0,
+  "versionId": "a0000007-0000-4000-8000-000000000999"
+}

@@ -1,0 +1,290 @@
+{
+  "name": "01 — Identity and Authority [PHASE 0]",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 01 — Identity and Authority\n\nResolve people, organizations, roles, permissions, budgets and owner authority before privileged work.\n\n**PHASE 0 ARCHITECTURE MAP** — This workflow documents contracts and status. Architecture nodes are inert and do not call APIs, access credentials, spend funds, send messages, change production, or control hardware.",
+        "height": 260,
+        "width": 620,
+        "color": 5
+      },
+      "id": "a0000002-0000-4000-8000-000000000001",
+      "name": "Architecture Safety Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000002",
+      "name": "Inspect Architecture",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{\"status\":\"ARCHITECTURE_VISIBLE\",\"phase\":\"PHASE_0\",\"workflow\":\"01 — Identity and Authority\",\"purpose\":\"Resolve people, organizations, roles, permissions, budgets and owner authority before privileged work.\",\"operational_execution\":false,\"notice\":\"Architecture map only. Inert component nodes do not claim live capability.\",\"components\":[{\"status\":\"PLANNED\",\"name\":\"Dominique Root Authority\",\"expected_input\":\"identity_claim\",\"expected_output\":\"root_authority_context\",\"permissions_and_boundaries\":\"sole-owner authority cannot be delegated implicitly\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"HIGH\",\"verification_method\":\"root authority audit record\"},{\"status\":\"PLANNED\",\"name\":\"Universal Identity Resolver\",\"expected_input\":\"actor_claim\",\"expected_output\":\"resolved_identity\",\"permissions_and_boundaries\":\"source attribution and proof strength\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"identity resolution evidence\"},{\"status\":\"PLANNED\",\"name\":\"Organizations and Projects\",\"expected_input\":\"resolved_identity\",\"expected_output\":\"ownership_context\",\"permissions_and_boundaries\":\"organization and project isolation\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"membership lookup\"},{\"status\":\"PLANNED\",\"name\":\"People and Relationships\",\"expected_input\":\"identity_context\",\"expected_output\":\"relationship_context\",\"permissions_and_boundaries\":\"purpose-limited relationship access\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"relationship provenance\"},{\"status\":\"PLANNED\",\"name\":\"Roles and Permissions\",\"expected_input\":\"ownership_context\",\"expected_output\":\"permission_decision\",\"permissions_and_boundaries\":\"deny by default and least privilege\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"policy evaluation\"},{\"status\":\"PLANNED\",\"name\":\"Boundaries and Consent\",\"expected_input\":\"permission_decision\",\"expected_output\":\"bounded_authorization\",\"permissions_and_boundaries\":\"privacy and context boundaries\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"consent receipt\"},{\"status\":\"PLANNED\",\"name\":\"Budgets and Spending\",\"expected_input\":\"bounded_authorization\",\"expected_output\":\"budget_decision\",\"permissions_and_boundaries\":\"hard spending ceilings\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"HIGH\",\"verification_method\":\"ledger and approval check\"},{\"status\":\"PLANNED\",\"name\":\"Approval Policies\",\"expected_input\":\"bounded_authorization\",\"expected_output\":\"approval_requirement\",\"permissions_and_boundaries\":\"owner-defined mandatory gates\",\"approval_requirement\":\"POLICY_OR_HUMAN_APPROVAL_REQUIRED\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"policy version binding\"},{\"status\":\"PLANNED\",\"name\":\"Emergency Override\",\"expected_input\":\"root_authority_context\",\"expected_output\":\"time_limited_override\",\"permissions_and_boundaries\":\"Dominique-only emergency authority\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"immutable override audit\"},{\"status\":\"OPERATIONAL\",\"name\":\"Kill Switch Check\",\"expected_input\":\"action_request\",\"expected_output\":\"allow_or_block\",\"permissions_and_boundaries\":\"SYSTEM_KILL_SWITCH defaults to true\",\"approval_requirement\":\"DEFINED_BY_POLICY\",\"risk_classification\":\"MEDIUM\",\"verification_method\":\"environment safety assertion\"}]}}];"
+      },
+      "id": "a0000002-0000-4000-8000-000000000003",
+      "name": "Architecture Manifest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000010",
+      "name": "[PLANNED] Dominique Root Authority",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000011",
+      "name": "[PLANNED] Universal Identity Resolver",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000012",
+      "name": "[PLANNED] Organizations and Projects",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000013",
+      "name": "[PLANNED] People and Relationships",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000014",
+      "name": "[PLANNED] Roles and Permissions",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000015",
+      "name": "[PLANNED] Boundaries and Consent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000016",
+      "name": "[PLANNED] Budgets and Spending",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000017",
+      "name": "[PLANNED] Approval Policies",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000018",
+      "name": "[PLANNED] Emergency Override",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a0000002-0000-4000-8000-000000000019",
+      "name": "[OPERATIONAL] Kill Switch Check",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        260
+      ]
+    }
+  ],
+  "connections": {
+    "Inspect Architecture": {
+      "main": [
+        [
+          {
+            "node": "Architecture Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Architecture Manifest": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Dominique Root Authority",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Dominique Root Authority": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Universal Identity Resolver",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Universal Identity Resolver": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Organizations and Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Organizations and Projects": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] People and Relationships",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] People and Relationships": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Roles and Permissions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Roles and Permissions": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Boundaries and Consent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Boundaries and Consent": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Budgets and Spending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Budgets and Spending": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Approval Policies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Approval Policies": {
+      "main": [
+        [
+          {
+            "node": "[PLANNED] Emergency Override",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[PLANNED] Emergency Override": {
+      "main": [
+        [
+          {
+            "node": "[OPERATIONAL] Kill Switch Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "America/Los_Angeles"
+  },
+  "staticData": null,
+  "triggerCount": 0,
+  "versionId": "a0000002-0000-4000-8000-000000000999"
+}

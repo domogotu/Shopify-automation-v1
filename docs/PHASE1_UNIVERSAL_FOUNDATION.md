@@ -61,6 +61,28 @@ Implemented:
 - `012_universal_event_envelope.sql`
 - validation test `test-phase1-event-envelope.mjs`
 
+## Controlled Import Procedure
+
+Keep `BOOTSTRAP_WORKFLOWS=false`. Do not use the broad workflow bootstrap for Phase 1.
+
+Use the scoped Phase 1 switch for one deployment only:
+
+1. Set `RUN_DATABASE_MIGRATIONS=true`.
+2. Set `SYNC_PHASE1_ENVELOPE_ONCE=true`.
+3. Deploy once.
+4. Confirm the logs contain:
+   - `Applying migration 012_universal_event_envelope.sql`
+   - `Synchronizing Phase 1 universal event envelope workflow`
+   - `Successfully imported 1 workflow.`
+5. Set `RUN_DATABASE_MIGRATIONS=false`.
+6. Set `SYNC_PHASE1_ENVELOPE_ONCE=false`.
+7. Deploy again.
+8. Confirm the cleanup logs contain:
+   - `Database migrations disabled; preserving existing schemas`
+   - `Workflow bootstrap disabled; preserving database workflows`
+
+After import, assign the existing n8n Postgres credential to the `Persist Universal Event Envelope` node.
+
 Planned next:
 
 - Identity Resolver

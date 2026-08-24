@@ -18,6 +18,16 @@ if [ "${SYNC_PHASE0_ARCHITECTURE_ONCE:-false}" = "true" ]; then
     exit 1
   fi
   n8n import:workflow --separate --input=/tmp/reeds-technology-phase0-sync
+elif [ "${SYNC_PHASE1_ENVELOPE_ONCE:-false}" = "true" ]; then
+  echo "Synchronizing Phase 1 universal event envelope workflow"
+  mkdir -p /tmp/reeds-technology-phase1-envelope-sync
+  cp /opt/shopify-automation/workflows/00A-universal-event-envelope-v1.json /tmp/reeds-technology-phase1-envelope-sync/
+  phase1_count="$(find /tmp/reeds-technology-phase1-envelope-sync -maxdepth 1 -type f -name '00A-universal-event-envelope-v1.json' | wc -l | tr -d ' ')"
+  if [ "$phase1_count" -ne 1 ]; then
+    echo "Expected 1 Phase 1 universal event envelope workflow, found $phase1_count"
+    exit 1
+  fi
+  n8n import:workflow --separate --input=/tmp/reeds-technology-phase1-envelope-sync
 elif [ "${SYNC_MEMORY_WORKFLOWS_ONCE:-false}" = "true" ]; then
   echo "Synchronizing governed memory workflows"
   mkdir -p /tmp/shopify-automation-memory-sync

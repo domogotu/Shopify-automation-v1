@@ -5,6 +5,8 @@ import path from 'node:path';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const workflow = JSON.parse(fs.readFileSync(path.join(root, 'workflows/00A-universal-event-envelope-v1.json'), 'utf8'));
 const migration = fs.readFileSync(path.join(root, 'database/migrations/012_universal_event_envelope.sql'), 'utf8');
+const bootstrap = fs.readFileSync(path.join(root, 'scripts/bootstrap-n8n.sh'), 'utf8');
+const render = fs.readFileSync(path.join(root, 'render.yaml'), 'utf8');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -39,6 +41,10 @@ assert(persist.parameters.query.includes('automation_os.universal_event_envelope
 assert(persist.parameters.query.includes('automation_os.authority_audit_records'), 'authority audit insert must be schema-qualified');
 assert(persist.parameters.query.includes('CAST($13 AS automation_os.universal_risk_level)'), 'risk level cast must be schema-qualified');
 assert(persist.parameters.query.includes('ON CONFLICT (correlation_id)'), 'event envelope must be idempotent by correlation_id');
+
+assert(bootstrap.includes('SYNC_PHASE1_ENVELOPE_ONCE'), 'bootstrap is missing the dedicated Phase 1 envelope import switch');
+assert(bootstrap.includes('00A-universal-event-envelope-v1.json'), 'bootstrap must import only the Phase 1 envelope workflow');
+assert(/- key:\s*SYNC_PHASE1_ENVELOPE_ONCE\s*\n\s*value:\s*["']?false["']?/i.test(render), 'Phase 1 envelope import switch must default to false');
 
 for (const ddl of ['CREATE TYPE universal_event_status', 'CREATE TYPE universal_risk_level', 'CREATE TABLE universal_event_envelopes', 'CREATE TABLE authority_audit_records', 'CREATE TABLE policy_decision_records']) {
   assert(migration.includes(ddl), `migration missing ${ddl}`);

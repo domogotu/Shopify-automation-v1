@@ -78,3 +78,9 @@ The backing tables are created by `012_universal_event_envelope.sql`:
 - `universal_event_envelopes` stores accepted event contracts idempotently by `correlation_id`;
 - `authority_audit_records` records the first authority decision for the envelope;
 - `policy_decision_records` reserves the durable policy-decision ledger for the next Phase 1 gate.
+
+Deploy Phase 1 with the scoped switch only:
+
+- `RUN_DATABASE_MIGRATIONS=true` applies `012_universal_event_envelope.sql`;
+- `SYNC_PHASE1_ENVELOPE_ONCE=true` imports only `00A-universal-event-envelope-v1.json`;
+- both switches must be reset to `false` immediately after the successful import deploy.

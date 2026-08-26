@@ -1,0 +1,461 @@
+{
+  "name": "Reeds - Policy Gate and Approval v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-1",
+      "name": "Called by Action Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "INPUT CONTRACT (pass these fields when calling this workflow):\n{\n  correlation_id, event_id, action_id, tool_id,\n  description, parameters, credential_ref, destination,\n  estimated_cost, records_affected, reversible,\n  verification_method, rollback_method, requesting_agent,\n  expires_minutes (default 2880 = 48h)\n}\nOUTPUT: { approved: true|false, reason, action_hash }",
+        "height": 280,
+        "width": 420
+      },
+      "id": "note-1",
+      "name": "Contract Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const crypto = require('crypto');\nconst input = $json;\n\nconst tool_id = input.tool_id || 'unknown.tool';\nconst destination = input.destination || '';\nconst estimated_cost = Number(input.estimated_cost || 0);\nconst credential_ref = input.credential_ref || null;\n\n// --- classify action per blueprint Section 9 table ---\nlet action_class = 'internal_write';\nif (tool_id.includes('read') || tool_id.includes('get') || tool_id.includes('search')) {\n  action_class = 'read_only';\n} else if (tool_id.includes('gmail') || tool_id.includes('email') || tool_id.includes('sms') || tool_id.includes('post_public') || tool_id.includes('customer')) {\n  action_class = 'external_comm';\n} else if (tool_id.includes('pay') || tool_id.includes('quote') || tool_id.includes('purchase') || tool_id.includes('subscription')) {\n  action_class = 'spending';\n} else if (tool_id.includes('credential') || tool_id.includes('rotate') || tool_id.includes('permission')) {\n  action_class = 'credential_change';\n} else if (tool_id.includes('deploy') || tool_id.includes('publish') || tool_id.includes('schema')) {\n  action_class = 'production_change';\n} else if (tool_id.includes('delete') || tool_id.includes('cancel') || tool_id.includes('overwrite')) {\n  action_class = 'destructive';\n}\n\n// --- deterministic decision ---\nlet decision = 'allow';\nlet policy_id = 'POL-READONLY-001';\nlet reason = 'Read-only or low-sensitivity action, auto-allowed with audit.';\n\nif (action_class === 'internal_write') {\n  decision = 'allow';\n  policy_id = 'POL-INTERNAL-001';\n  reason = 'Internal reversible write within existing scoped role.';\n} else if (action_class === 'external_comm') {\n  decision = 'require_approval';\n  policy_id = 'POL-EXTCOMM-001';\n  reason = 'External communication requires Dominique approval unless a narrow preapproved template/recipient rule exists.';\n} else if (['spending','credential_change','production_change','destructive'].includes(action_class)) {\n  decision = 'require_approval';\n  policy_id = 'POL-HIGHRISK-001';\n  reason = `${action_class} always requires Dominique approval per policy.`;\n} else if (action_class === 'physical' || action_class === 'emergency') {\n  decision = 'require_approval';\n  policy_id = 'POL-PHYSICAL-001';\n  reason = 'Physical or emergency action requires separate safety gate and Dominique approval.';\n}\n\n// explicit override: caller can force approval\nif (input.requires_approval === true) {\n  decision = 'require_approval';\n  policy_id = 'POL-CALLER-FLAG-001';\n  reason = 'Caller explicitly flagged this action as requiring approval.';\n}\n\n// --- action hash (binds approval to exact parameters) ---\nconst canonical = JSON.stringify({ tool_id, parameters: input.parameters || {} });\nconst action_hash = crypto.createHash('sha256').update(canonical).digest('hex');\n\nreturn {\n  ...input,\n  action_class,\n  decision,\n  policy_id,\n  reason,\n  action_hash,\n  expires_minutes: input.expires_minutes || 2880\n};\n"
+      },
+      "id": "code-classify",
+      "name": "Deterministic Policy Gate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "policy_decisions",
+        "columns": "correlation_id,event_id,action_id,tool_id,action_class,decision,policy_id,reason,action_hash,requesting_agent,parameters",
+        "additionalFields": {}
+      },
+      "id": "pg-log-decision",
+      "name": "Log Policy Decision",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -620,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "allow",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "allow"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "deny",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "deny"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "switch-decision",
+      "name": "Route by Decision",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -360,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "approved",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "a2",
+              "name": "reason",
+              "value": "={{ $json.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "action_hash",
+              "value": "={{ $json.action_hash }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-auto-approved",
+      "name": "Approved (Auto - Low Risk)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1",
+              "name": "approved",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "b2",
+              "name": "reason",
+              "value": "={{ $json.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "b3",
+              "name": "action_hash",
+              "value": "={{ $json.action_hash }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-denied",
+      "name": "Denied (Policy)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "approval_requests",
+        "columns": "policy_decision_id,correlation_id,action_hash,description,tool_id,parameters,credential_ref,destination,estimated_cost,records_affected,reversible,verification_method,rollback_method,requesting_agent,expires_at",
+        "additionalFields": {}
+      },
+      "id": "pg-create-approval",
+      "name": "Create Approval Request",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -80,
+        480
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const base = 'https://shopify-automation-n8n.onrender.com';\nconst execId = $execution.id;\nconst hash = $json.action_hash;\nconst approveUrl = `${base}/webhook-waiting/${execId}?decision=approve&hash=${hash}`;\nconst denyUrl = `${base}/webhook-waiting/${execId}?decision=deny&hash=${hash}`;\nreturn { ...$json, approveUrl, denyUrl };\n"
+      },
+      "id": "code-build-links",
+      "name": "Build Approval Links",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "dominiquereed35@gmail.com",
+        "subject": "=Approval needed: {{ $json.description }}",
+        "message": "=ACTION REQUIRES YOUR APPROVAL\n\nWhat: {{ $json.description }}\nTool: {{ $json.tool_id }}\nParameters: {{ JSON.stringify($json.parameters) }}\nCredential ref: {{ $json.credential_ref }}\nDestination: {{ $json.destination }}\nEstimated cost: {{ $json.estimated_cost }}\nRecords affected: {{ $json.records_affected }}\nReversible: {{ $json.reversible }}\nVerification method: {{ $json.verification_method }}\nRollback method: {{ $json.rollback_method }}\nRequesting agent: {{ $json.requesting_agent }}\nPolicy: {{ $json.policy_id }} — {{ $json.reason }}\nAction hash: {{ $json.action_hash }}\nExpires in: {{ $json.expires_minutes }} minutes\n\nAPPROVE: {{ $json.approveUrl }}\nDENY: {{ $json.denyUrl }}\n\nIf you take no action before expiry, this is automatically treated as denied.",
+        "options": {}
+      },
+      "id": "gmail-approval",
+      "name": "Email Dominique - Approval Required",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        480
+      ],
+      "credentials": {
+        "gmail": {
+          "id": "REPLACE_WITH_EXISTING_GMAIL_CREDENTIAL",
+          "name": "Reeds Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {
+          "webhookSuffix": "={{ $json.action_hash }}"
+        },
+        "limitWaitTime": true,
+        "limitType": "afterTimeInterval",
+        "resumeAmount": "={{ $json.expires_minutes }}",
+        "resumeUnit": "minutes"
+      },
+      "id": "wait-approval",
+      "name": "Wait for Dominique Decision",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        480
+      ],
+      "webhookId": "reeds-approval-wait"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const q = $json.query || {};\nconst storedHash = $('Build Approval Links').first().json.action_hash;\nconst hashOk = q.hash === storedHash;\nconst status = q.decision === 'approve' && hashOk ? 'approved' : 'denied';\nconst reason = !hashOk ? 'action_hash mismatch - parameters changed since approval request, rejected' : (q.decision === 'approve' ? 'Approved by Dominique' : 'Denied by Dominique or expired with no response');\nreturn { approved: status === 'approved', status, decided_at: new Date().toISOString(), reason, action_hash: storedHash };\n"
+      },
+      "id": "code-verify-decision",
+      "name": "Verify Decision and Hash",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "approval_requests",
+        "updateKey": "action_hash",
+        "columns": "action_hash,status,decided_at",
+        "additionalFields": {}
+      },
+      "id": "pg-update-approval",
+      "name": "Update Approval Decision",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1120,
+        480
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const original = $('Deterministic Policy Gate').first().json;\nconst minutes = Number(original.expires_minutes || 2880);\nconst expiresAt = new Date(Date.now() + minutes * 60 * 1000).toISOString();\nreturn { ...original, policy_decision_id: $json.policy_decision_id, expires_at: expiresAt };\n"
+      },
+      "id": "code-restore-approval-context",
+      "name": "Restore Approval Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Called by Action Workflow": {
+      "main": [
+        [
+          {
+            "node": "Deterministic Policy Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deterministic Policy Gate": {
+      "main": [
+        [
+          {
+            "node": "Log Policy Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Policy Decision": {
+      "main": [
+        [
+          {
+            "node": "Restore Approval Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Decision": {
+      "main": [
+        [
+          {
+            "node": "Approved (Auto - Low Risk)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Denied (Policy)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Build Approval Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Approval Links": {
+      "main": [
+        [
+          {
+            "node": "Email Dominique - Approval Required",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Dominique - Approval Required": {
+      "main": [
+        [
+          {
+            "node": "Wait for Dominique Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Dominique Decision": {
+      "main": [
+        [
+          {
+            "node": "Verify Decision and Hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Decision and Hash": {
+      "main": [
+        [
+          {
+            "node": "Update Approval Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore Approval Context": {
+      "main": [
+        [
+          {
+            "node": "Route by Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "notes": "Standalone sub-workflow. Does not modify Reeds Solutions - Intake Agent Orchestrator v1. Call via Execute Workflow node from any action-taking workflow before it sends/executes."
+  }
+}

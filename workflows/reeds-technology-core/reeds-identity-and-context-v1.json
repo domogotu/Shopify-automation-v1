@@ -1,0 +1,255 @@
+{
+  "name": "Reeds - Identity and Context v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "t1",
+      "name": "Called by Event Intake",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "INPUT: { actor_type, external_key (e.g. email), source_system }\nOUTPUT: { identity_id, owner_id, organization_id, role, permissions, authenticated }\nUnknown identity => minimum_access role, never inherits Dominique's authority (blueprint Step 2 failure rule).",
+        "height": 200,
+        "width": 380
+      },
+      "id": "n1",
+      "name": "Contract Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": "public",
+        "table": "identities",
+        "where": {
+          "values": [
+            {
+              "column": "external_key",
+              "condition": "equal",
+              "value": "={{ $json.external_key }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "id": "pg1",
+      "name": "Look Up Identity",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -560,
+        200
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const rows = items.map(i => i.json);\nconst found = rows.length > 0 ? rows[0] : null;\nif (found) {\n  return [{ json: { identity_id: found.identity_id, owner_id: found.owner_id, organization_id: found.organization_id, role: found.role, permissions: found.permissions, authenticated: found.authenticated, is_new: false } }];\n}\nconst input = $('Called by Event Intake').first().json;\nreturn [{ json: { identity_id: null, owner_id: null, organization_id: null, role: 'minimum_access', permissions: [], authenticated: false, is_new: true, actor_type: input.actor_type, external_key: input.external_key } }];\n"
+      },
+      "id": "code1",
+      "name": "Resolve or Default to Minimum Access",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.is_new }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "new"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "sw1",
+      "name": "New Identity?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -80,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "identities",
+        "columns": "actor_type,external_key,authenticated,role,permissions",
+        "additionalFields": {}
+      },
+      "id": "pg2",
+      "name": "Register Minimum-Access Identity",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        160,
+        100
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "identity_id",
+              "value": "={{ $json.identity_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e2",
+              "name": "owner_id",
+              "value": "={{ $json.owner_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e3",
+              "name": "organization_id",
+              "value": "={{ $json.organization_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e4",
+              "name": "role",
+              "value": "={{ $json.role }}",
+              "type": "string"
+            },
+            {
+              "id": "e5",
+              "name": "authenticated",
+              "value": "={{ $json.authenticated }}",
+              "type": "boolean"
+            }
+          ]
+        }
+      },
+      "id": "set1",
+      "name": "Execution Context",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        320
+      ]
+    }
+  ],
+  "connections": {
+    "Called by Event Intake": {
+      "main": [
+        [
+          {
+            "node": "Look Up Identity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Look Up Identity": {
+      "main": [
+        [
+          {
+            "node": "Resolve or Default to Minimum Access",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolve or Default to Minimum Access": {
+      "main": [
+        [
+          {
+            "node": "New Identity?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Identity?": {
+      "main": [
+        [
+          {
+            "node": "Register Minimum-Access Identity",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execution Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register Minimum-Access Identity": {
+      "main": [
+        [
+          {
+            "node": "Execution Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "notes": "Standalone sub-workflow for Step 2. Unknown actors are registered with minimum_access role only, never inherit owner authority."
+  }
+}

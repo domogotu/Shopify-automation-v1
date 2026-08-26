@@ -1,0 +1,64 @@
+{
+  "name": "Reeds - Model Router v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "t1",
+      "name": "Called with Task",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -700,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "INPUT: { task_type, modality (text|vision|speech|document|code), sensitivity, max_cost }\nOUTPUT: { provider, model, reason }\nDecision order per blueprint Section 8: 1) can deterministic code do it - if so this router isn't called 2) can data leave Reeds env 3) modality 4) accuracy needed 5) cost/latency ceiling 6) provider health 7) needs second-model review.\nOnly OpenAI is currently configured (per Credential Register) - this router documents the decision even though there is only one real option today, so swapping in Claude/local later is a config change, not a rewrite.",
+        "height": 280,
+        "width": 440
+      },
+      "id": "n1",
+      "name": "Contract Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const input = $json;\nconst sensitivity = input.sensitivity || 'business_confidential';\n\nif (sensitivity === 'restricted' || sensitivity === 'secret') {\n  return { provider: null, model: null, reason: 'Sensitivity too high for any currently configured external provider - route to Dominique for manual handling.', requires_approval: true };\n}\n\n// only OpenAI is configured today\nlet model = 'gpt-4o-mini';\nif (input.task_type === 'complex_reasoning' || input.task_type === 'risk_assessment') {\n  model = 'gpt-4o';\n}\nif (input.modality === 'vision') {\n  model = 'gpt-4o';\n}\n\nreturn {\n  provider: 'openai',\n  model,\n  reason: `Only OpenAI is configured/operational (Credential Register CR-002). Selected ${model} based on task_type='${input.task_type}', modality='${input.modality}'.`,\n  requires_approval: false\n};\n"
+      },
+      "id": "code1",
+      "name": "Deterministic Model Selection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Called with Task": {
+      "main": [
+        [
+          {
+            "node": "Deterministic Model Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "notes": "Standalone sub-workflow for Step 5. Single real provider today (OpenAI); structured so adding Claude/local later only means adding a branch here, not touching callers."
+  }
+}

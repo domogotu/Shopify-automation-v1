@@ -1,0 +1,98 @@
+{
+  "name": "Reeds - Scoped Memory Retrieval v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "t1",
+      "name": "Called by Planner",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -700,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "INPUT: { owner_id, organization_id, query_text, memory_type (optional), limit (default 10) }\nOUTPUT: { results: [ {memory_id, fact_or_claim, source_id, confidence, valid_from, valid_to, memory_type} ] }\nOnly returns records scoped to owner_id/organization_id (blueprint Step 3 failure rule: missing evidence reported as unknown, never invented).",
+        "height": 220,
+        "width": 420
+      },
+      "id": "n1",
+      "name": "Contract Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT memory_id, memory_type, fact_or_claim, source_id, confidence, sensitivity, valid_from, valid_to, verification_status\nFROM memories\nWHERE owner_id = $1\n  AND ($2::text IS NULL OR organization_id = $2)\n  AND (valid_to IS NULL OR valid_to > now())\n  AND ($3::text IS NULL OR memory_type = $3)\n  AND to_tsvector('english', fact_or_claim) @@ plainto_tsquery('english', $4)\nORDER BY confidence DESC NULLS LAST, valid_from DESC\nLIMIT $5;",
+        "options": {
+          "queryReplacement": "={{ [$json.owner_id, $json.organization_id || null, $json.memory_type || null, $json.query_text, $json.limit || 10] }}"
+        }
+      },
+      "id": "pg1",
+      "name": "Retrieve Scoped Memory",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -440,
+        200
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const results = items.map(i => i.json);\nreturn [{ json: { results, count: results.length, note: results.length === 0 ? 'No permitted matching records found - report as unknown, do not invent.' : undefined } }];\n"
+      },
+      "id": "code1",
+      "name": "Package Context Package",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Called by Planner": {
+      "main": [
+        [
+          {
+            "node": "Retrieve Scoped Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Scoped Memory": {
+      "main": [
+        [
+          {
+            "node": "Package Context Package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "notes": "Standalone sub-workflow for Step 3. Uses Postgres full-text search (no pgvector yet - semantic retrieval is a later phase). Every result carries source_id and confidence for citation."
+  }
+}

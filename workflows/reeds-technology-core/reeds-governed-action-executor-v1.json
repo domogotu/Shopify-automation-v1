@@ -1,0 +1,523 @@
+{
+  "name": "Reeds - Governed Action Executor v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "t1",
+      "name": "Called by Any Action Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "INPUT CONTRACT:\n{ correlation_id, event_id, action_id, tool_id, description, parameters,\n  credential_ref, destination, estimated_cost, records_affected,\n  reversible, verification_method, rollback_method, requesting_agent }\n\nChains Steps 8-9-10-11-12 in one call:\nPolicy Gate + Approval -> Execute (only gmail.* and sheets.* wired so far) -> Verify -> Governed Memory Write.\nUnregistered tool_id => stops and reports, does not execute blindly.",
+        "height": 260,
+        "width": 460
+      },
+      "id": "n1",
+      "name": "Contract Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1400,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "REPLACE_WITH_POLICY_GATE_WORKFLOW_ID",
+          "cachedResultName": "Reeds - Policy Gate and Approval v1"
+        },
+        "options": {}
+      },
+      "id": "ex1",
+      "name": "Policy Gate and Approval",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -1140,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.approved }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "approved"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "sw1",
+      "name": "Approved?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1",
+              "name": "status",
+              "value": "denied_or_expired",
+              "type": "string"
+            },
+            {
+              "id": "d2",
+              "name": "reason",
+              "value": "={{ $json.reason }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set_denied",
+      "name": "Stop and Report",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -620,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Called by Any Action Workflow').first().json.tool_id }}",
+                    "rightValue": "gmail.",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "gmail"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Called by Any Action Workflow').first().json.tool_id }}",
+                    "rightValue": "sheets.",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "sheets"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "sw2",
+      "name": "Route by Tool",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -620,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Called by Any Action Workflow').first().json.destination }}",
+        "subject": "={{ $('Called by Any Action Workflow').first().json.parameters.subject }}",
+        "message": "={{ $('Called by Any Action Workflow').first().json.parameters.message }}",
+        "options": {}
+      },
+      "id": "gmail1",
+      "name": "Execute - Gmail Send",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -380,
+        120
+      ],
+      "credentials": {
+        "gmail": {
+          "id": "REPLACE_WITH_EXISTING_GMAIL_CREDENTIAL",
+          "name": "Reeds Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Called by Any Action Workflow').first().json.parameters.spreadsheet_id }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Called by Any Action Workflow').first().json.parameters.sheet_name }}"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData"
+        },
+        "options": {}
+      },
+      "id": "sheets1",
+      "name": "Execute - Sheets Append",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -380,
+        320
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_EXISTING_SHEETS_CREDENTIAL",
+          "name": "Reeds Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "u1",
+              "name": "status",
+              "value": "unregistered_tool",
+              "type": "string"
+            },
+            {
+              "id": "u2",
+              "name": "reason",
+              "value": "=tool_id '{{ $('Called by Any Action Workflow').first().json.tool_id }}' is not wired in this executor. Add a branch before running it live.",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set_unreg",
+      "name": "Unregistered Tool - Stop",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -380,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "tool_executions",
+        "columns": "correlation_id,action_hash,tool_id,parameters,credential_ref,status,provider_receipt,executed_at",
+        "additionalFields": {}
+      },
+      "id": "pg1",
+      "name": "Log Tool Execution",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -140,
+        220
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const original = $('Called by Any Action Workflow').first().json;\nconst receiptPackage = $('Package Tool Execution Receipt').first().json;\nconst execResult = receiptPackage.provider_receipt || {};\nconst verified = !!(execResult.id || execResult.messageId || execResult.updatedRange || execResult.threadId);\nreturn {\n  tool_execution_id: $json.tool_execution_id,\n  correlation_id: original.correlation_id,\n  result: verified ? 'verified' : 'uncertain',\n  method: original.verification_method || 'provider_response_inspection',\n  evidence: execResult\n};\n"
+      },
+      "id": "code_verify",
+      "name": "Independent Result Verification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "verification_results",
+        "columns": "tool_execution_id,correlation_id,result,method,evidence",
+        "additionalFields": {}
+      },
+      "id": "pg2",
+      "name": "Log Verification Result",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        340,
+        220
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "memories",
+        "columns": "memory_type,owner_id,organization_id,fact_or_claim,source_id,confidence,sensitivity,verification_status,created_by_actor,correlation_id",
+        "additionalFields": {}
+      },
+      "id": "pg3",
+      "name": "Governed Memory Write",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        580,
+        220
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_EXISTING_POSTGRES_CREDENTIAL",
+          "name": "Reeds Postgres (Render)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const original = $('Called by Any Action Workflow').first().json;\nreturn { ...original, status: 'success', provider_receipt: $json, executed_at: new Date().toISOString() };\n"
+      },
+      "id": "code-package-tool-receipt",
+      "name": "Package Tool Execution Receipt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const original = $('Called by Any Action Workflow').first().json;\nconst verification = $('Independent Result Verification').first().json;\nreturn {\n  memory_type: 'tool_execution',\n  owner_id: original.owner_id || 'dominique_root_owner',\n  organization_id: original.organization_id || 'reeds_solutions_llc',\n  project_id: original.project_id || 'service_intake',\n  fact_or_claim: `Tool ${original.tool_id} completed with verification result ${verification.result} for correlation ${original.correlation_id}.`,\n  source_id: verification.tool_execution_id || original.action_hash || original.action_id,\n  confidence: verification.result === 'verified' ? 0.9 : 0.5,\n  sensitivity: original.sensitivity || 'business_confidential',\n  verification_status: verification.result,\n  created_by_actor: original.requesting_agent || 'governed_action_executor',\n  correlation_id: original.correlation_id\n};\n"
+      },
+      "id": "code-prepare-governed-memory",
+      "name": "Prepare Governed Memory Write",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "Called by Any Action Workflow": {
+      "main": [
+        [
+          {
+            "node": "Policy Gate and Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Policy Gate and Approval": {
+      "main": [
+        [
+          {
+            "node": "Approved?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved?": {
+      "main": [
+        [
+          {
+            "node": "Route by Tool",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Tool": {
+      "main": [
+        [
+          {
+            "node": "Execute - Gmail Send",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute - Sheets Append",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unregistered Tool - Stop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute - Gmail Send": {
+      "main": [
+        [
+          {
+            "node": "Package Tool Execution Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute - Sheets Append": {
+      "main": [
+        [
+          {
+            "node": "Package Tool Execution Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Tool Execution": {
+      "main": [
+        [
+          {
+            "node": "Independent Result Verification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Independent Result Verification": {
+      "main": [
+        [
+          {
+            "node": "Log Verification Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Verification Result": {
+      "main": [
+        [
+          {
+            "node": "Prepare Governed Memory Write",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Package Tool Execution Receipt": {
+      "main": [
+        [
+          {
+            "node": "Log Tool Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Governed Memory Write": {
+      "main": [
+        [
+          {
+            "node": "Governed Memory Write",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "notes": "Chains Policy Gate+Approval (calls 'Reeds - Policy Gate and Approval v1' as sub-workflow - set its real workflow ID after import) with execution, read-back verification, and governed memory write. Only gmail.* and sheets.* tool_ids are wired - add branches for other tools rather than a catch-all executor, so nothing runs against an unregistered/unscoped tool."
+  }
+}

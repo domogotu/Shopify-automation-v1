@@ -9,216 +9,160 @@
       color-scheme: dark;
       --bg: #0f151c;
       --panel: #151e28;
-      --panel-2: #1c2734;
-      --line: #2d3a48;
-      --text: #f1efe8;
-      --muted: #aab3bd;
-      --gold: #d5ae62;
-      --green: #62b77e;
-      --yellow: #d9b64c;
-      --red: #c86752;
-      --blue: #6da6ff;
+      --panel-2: #1b2633;
+      --panel-3: #222f3e;
+      --line: #314151;
+      --text: #f4f1e8;
+      --muted: #aeb8c3;
+      --gold: #d6b66b;
+      --green: #66bd83;
+      --yellow: #dfbd58;
+      --red: #d57462;
+      --blue: #73aaff;
     }
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: radial-gradient(circle at top left, #1b2733, var(--bg) 42rem);
+      background: radial-gradient(circle at top left, #1b2733, var(--bg) 38rem);
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
     header {
       display: flex;
-      align-items: center;
       gap: 1rem;
-      padding: 1.15rem 1.5rem;
+      align-items: center;
+      padding: 1rem;
       border-bottom: 1px solid var(--line);
-      background: rgba(15, 21, 28, 0.92);
+      background: rgba(15, 21, 28, 0.96);
       position: sticky;
       top: 0;
-      z-index: 5;
+      z-index: 8;
       backdrop-filter: blur(16px);
     }
-
     .seal {
-      width: 2.85rem;
-      height: 2.85rem;
+      width: 3rem;
+      height: 3rem;
       border-radius: 50%;
       display: grid;
       place-items: center;
       border: 1px solid var(--gold);
       color: var(--gold);
-      font-weight: 800;
-      letter-spacing: 0.04em;
+      font-weight: 900;
       flex: 0 0 auto;
     }
-
-    h1, h2, h3 {
-      margin: 0;
-      letter-spacing: 0;
-    }
-
-    h1 {
-      font-size: clamp(1.05rem, 2vw, 1.45rem);
-    }
-
+    h1, h2, h3 { margin: 0; letter-spacing: 0; }
+    h1 { font-size: clamp(1.1rem, 4vw, 1.55rem); }
+    h2 { font-size: clamp(1.35rem, 5vw, 2rem); margin-bottom: 0.4rem; }
+    h3 { font-size: 1rem; margin-bottom: 0.45rem; }
+    a { color: var(--gold); }
     .sub {
       color: var(--muted);
-      font-size: 0.85rem;
-      margin-top: 0.15rem;
+      font-size: 0.88rem;
+      line-height: 1.35;
+      margin-top: 0.18rem;
     }
-
-    .shell {
-      display: grid;
-      grid-template-columns: 15rem minmax(0, 1fr);
-      min-height: calc(100vh - 5.2rem);
-    }
-
     nav {
-      border-right: 1px solid var(--line);
-      background: rgba(21, 30, 40, 0.88);
-      padding: 1rem 0.75rem;
+      display: flex;
+      gap: 0.35rem;
+      overflow-x: auto;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(21, 30, 40, 0.96);
       position: sticky;
-      top: 5.2rem;
-      height: calc(100vh - 5.2rem);
-      overflow: auto;
+      top: 5.05rem;
+      z-index: 7;
     }
-
     nav button {
-      width: 100%;
       border: 0;
-      border-radius: 7px;
+      border-radius: 8px;
       background: transparent;
       color: var(--muted);
-      padding: 0.72rem 0.8rem;
-      text-align: left;
+      padding: 0.72rem 0.85rem;
+      white-space: nowrap;
       cursor: pointer;
       font: inherit;
     }
-
-    nav button:hover,
     nav button.active {
-      background: var(--panel-2);
-      color: var(--text);
-    }
-
-    nav button.active {
+      background: var(--panel-3);
       color: var(--gold);
-      font-weight: 700;
+      font-weight: 800;
     }
-
-    .nav-label {
-      color: var(--muted);
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      padding: 1rem 0.8rem 0.45rem;
-    }
-
     main {
-      padding: 1.6rem;
-      max-width: 76rem;
-      width: 100%;
+      max-width: 78rem;
+      padding: 1rem;
+      margin: 0 auto;
     }
-
-    .panel {
-      display: none;
-    }
-
-    .panel.active {
-      display: block;
-    }
-
+    .panel { display: none; }
+    .panel.active { display: block; }
     .intro {
       color: var(--muted);
       line-height: 1.55;
-      max-width: 62rem;
-      margin: 0.45rem 0 1.2rem;
+      max-width: 64rem;
+      margin: 0 0 1rem;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.9rem;
+      gap: 0.85rem;
     }
-
-    .card {
-      background: rgba(21, 30, 40, 0.88);
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card, .tool, .messages {
+      background: rgba(21, 30, 40, 0.9);
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 1rem;
       min-width: 0;
     }
-
-    .card h3 {
-      font-size: 0.98rem;
-      margin-bottom: 0.35rem;
-    }
-
     .muted {
       color: var(--muted);
       line-height: 1.5;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
-
     .status {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
       border: 1px solid currentColor;
-      padding: 0.16rem 0.5rem;
+      padding: 0.16rem 0.52rem;
       font-size: 0.72rem;
-      font-weight: 800;
+      font-weight: 900;
       text-transform: uppercase;
       margin-top: 0.65rem;
     }
-
     .live { color: var(--green); }
     .tested { color: var(--blue); }
     .built { color: var(--yellow); }
     .blocked { color: var(--red); }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      background: rgba(21, 30, 40, 0.88);
+      background: rgba(21, 30, 40, 0.9);
       border: 1px solid var(--line);
       border-radius: 8px;
       overflow: hidden;
       display: block;
     }
-
     thead, tbody, tr {
       display: table;
       width: 100%;
       table-layout: fixed;
     }
-
     th, td {
       border-bottom: 1px solid var(--line);
-      padding: 0.72rem;
+      padding: 0.7rem;
       text-align: left;
       vertical-align: top;
       font-size: 0.86rem;
       overflow-wrap: anywhere;
     }
-
     th {
       color: var(--gold);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       background: rgba(28, 39, 52, 0.9);
     }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
+    tr:last-child td { border-bottom: 0; }
     code {
       background: #0c1117;
       border: 1px solid var(--line);
@@ -227,24 +171,20 @@
       font-family: "SFMono-Regular", Consolas, monospace;
       font-size: 0.86em;
     }
-
     .flow {
       display: grid;
       gap: 0.7rem;
-      max-width: 54rem;
+      max-width: 56rem;
     }
-
     .flow-step {
       display: grid;
       grid-template-columns: 2.2rem minmax(0, 1fr);
       gap: 0.8rem;
-      align-items: start;
       padding: 0.85rem;
       border: 1px solid var(--line);
-      background: rgba(21, 30, 40, 0.88);
+      background: rgba(21, 30, 40, 0.9);
       border-radius: 8px;
     }
-
     .num {
       width: 2.2rem;
       height: 2.2rem;
@@ -255,54 +195,58 @@
       background: var(--gold);
       font-weight: 900;
     }
-
+    .checklist {
+      display: grid;
+      gap: 0.55rem;
+      margin-top: 0.8rem;
+    }
+    label.check {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      color: var(--muted);
+      line-height: 1.35;
+      font-size: 0.92rem;
+    }
+    label.check input { margin-top: 0.2rem; flex: 0 0 auto; }
     .assistant {
       display: grid;
       gap: 0.8rem;
-      max-width: 58rem;
+      max-width: 62rem;
     }
-
     .messages {
-      min-height: 18rem;
-      max-height: 25rem;
+      min-height: 22rem;
+      max-height: 34rem;
       overflow: auto;
       display: grid;
       gap: 0.7rem;
       align-content: start;
-      padding: 0.8rem;
-      background: rgba(21, 30, 40, 0.88);
-      border: 1px solid var(--line);
-      border-radius: 8px;
     }
-
     .msg {
-      max-width: 82%;
+      max-width: min(86%, 42rem);
       padding: 0.72rem 0.85rem;
       border-radius: 8px;
       line-height: 1.45;
-      font-size: 0.92rem;
+      font-size: 0.94rem;
+      white-space: pre-wrap;
     }
-
     .msg.user {
       justify-self: end;
       background: var(--gold);
       color: #17110a;
     }
-
     .msg.bot {
       justify-self: start;
       background: var(--panel-2);
       border: 1px solid var(--line);
     }
-
-    .input-row {
+    .input-row, .button-row {
       display: flex;
       gap: 0.55rem;
+      flex-wrap: wrap;
     }
-
-    input {
+    input, textarea, select {
       min-width: 0;
-      flex: 1;
       background: var(--panel);
       border: 1px solid var(--line);
       color: var(--text);
@@ -310,66 +254,53 @@
       padding: 0.75rem 0.85rem;
       font: inherit;
     }
-
+    .input-row input { flex: 1 1 13rem; }
+    textarea { width: 100%; min-height: 6rem; resize: vertical; }
+    select { width: 100%; }
     .action {
       border: 0;
       border-radius: 8px;
       background: var(--gold);
       color: #17110a;
-      font-weight: 800;
+      font-weight: 900;
       padding: 0.75rem 0.95rem;
       cursor: pointer;
     }
-
     .ghost {
       background: var(--panel-2);
       border: 1px solid var(--line);
       color: var(--text);
     }
-
-    .warning {
-      border-left: 4px solid var(--red);
+    .danger {
+      background: var(--red);
+      color: #1c0f0c;
     }
-
+    .warning { border-left: 4px solid var(--red); }
+    .good { border-left: 4px solid var(--green); }
+    .small {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.4;
+      margin-top: 0.45rem;
+    }
+    .connection {
+      display: flex;
+      gap: 0.55rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 0.9rem 0;
+    }
+    .connection input { flex: 1 1 15rem; }
+    .loading { opacity: 0.7; }
     @media (max-width: 860px) {
-      header {
-        align-items: flex-start;
-      }
-
-      .shell {
-        grid-template-columns: 1fr;
-      }
-
-      nav {
-        position: static;
-        height: auto;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-        display: flex;
-        overflow-x: auto;
-        gap: 0.35rem;
-      }
-
-      .nav-label {
-        display: none;
-      }
-
-      nav button {
-        width: auto;
-        white-space: nowrap;
-      }
-
-      main {
-        padding: 1rem;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      table {
-        overflow-x: auto;
-      }
+      header { padding: 0.85rem 1rem; }
+      .seal { width: 2.8rem; height: 2.8rem; }
+      nav { top: 4.8rem; }
+      .grid, .two { grid-template-columns: 1fr; }
+      table { overflow-x: auto; }
+      thead, tbody, tr { min-width: 48rem; }
+      .msg { max-width: 94%; }
+      .action { flex: 1 1 auto; }
     }
   </style>
 </head>
@@ -378,159 +309,373 @@
     <div class="seal">RS</div>
     <div>
       <h1>Reeds Ledger Owner Control</h1>
-      <div class="sub">Downloadable UI for Dominique Reed's owner-governed intelligence ecosystem</div>
+      <div class="sub">Owner console for Dominique Reed's governed automation system</div>
     </div>
   </header>
 
-  <div class="shell">
-    <nav aria-label="Control sections">
-      <div class="nav-label">Command</div>
-      <button class="active" data-panel="overview">Overview</button>
-      <button data-panel="path">Full Path</button>
-      <button data-panel="chain">Executive Chain</button>
-      <button data-panel="security">Security Gates</button>
-      <button data-panel="credentials">Credentials</button>
-      <button data-panel="build">Build Order</button>
-      <button data-panel="assistant">Voice Guide</button>
-    </nav>
+  <nav aria-label="Control sections">
+    <button class="active" data-panel="overview">Overview</button>
+    <button data-panel="assistant">Voice Chat</button>
+    <button data-panel="path">Full Path</button>
+    <button data-panel="chain">Executive Chain</button>
+    <button data-panel="actions">Action Builder</button>
+    <button data-panel="approvals">Approvals</button>
+    <button data-panel="memory">Memory Notes</button>
+    <button data-panel="security">Security Gates</button>
+    <button data-panel="credentials">Credentials</button>
+    <button data-panel="build">Build Order</button>
+  </nav>
 
-    <main>
-      <section class="panel active" id="overview">
-        <h2>Current Real Status</h2>
-        <p class="intro">This screen is a safe control panel. It explains the system, stores the current verified map, and supports local browser voice input. It does not store API keys and does not directly perform restricted actions.</p>
-        <div class="grid">
-          <div class="card">
-            <h3>Production Intake</h3>
-            <div class="muted">The customer form reaches n8n, normalizes intake, calls OpenAI, writes to Google Sheets, emails Dominique, and returns a website confirmation.</div>
-            <span class="status live">Live</span>
-          </div>
-          <div class="card">
-            <h3>Governed Core</h3>
-            <div class="muted">Identity, memory, router, policy gate, executor, verification, and memory write workflows exist as n8n pieces. Some are tested standalone, not wired into live intake yet.</div>
-            <span class="status built">Partial</span>
-          </div>
-          <div class="card warning">
-            <h3>Safe App Rule</h3>
-            <div class="muted">A real chat agent must use a backend proxy. Browser JavaScript must never contain OpenAI, Claude, Postgres, n8n, Gmail, Shopify, or Google API secret values.</div>
-            <span class="status blocked">Required</span>
+  <main>
+    <section class="panel active" id="overview">
+      <h2>Command Overview</h2>
+      <p class="intro">This is the owner-facing control layer. Connect with your owner passphrase to use secured AI chat and view governed, read-only Postgres status. Secret values remain in Render and n8n.</p>
+      <div class="tool">
+        <h3>Secure Owner Connection</h3>
+        <div class="connection">
+          <input id="ownerPassphrase" type="password" autocomplete="current-password" placeholder="Owner passphrase">
+          <button class="action" id="connectOwner" type="button">Connect</button>
+          <button class="action ghost" id="disconnectOwner" type="button">Disconnect</button>
+        </div>
+        <div class="small" id="connectionStatus">Not connected. The passphrase stays only in this browser tab.</div>
+      </div>
+      <div class="grid">
+        <div class="card good">
+          <h3>Live Now</h3>
+          <div class="muted">n8n intake, Google Sheets tracker, Gmail report, website confirmation, and this static control app.</div>
+          <span class="status live">Live</span>
+        </div>
+        <div class="card">
+          <h3>Local App Features</h3>
+          <div class="muted">Voice input, spoken replies, text transcript, secured AI chat, governed status, memory notes, action drafts, and credential responsibility tracking.</div>
+          <span class="status tested" id="apiBadge">API Not Checked</span>
+        </div>
+        <div class="card warning">
+          <h3>Needs Backend</h3>
+          <div class="muted" id="systemCounts">Connect to load governed approvals, memory, policy, execution, and verification counts.</div>
+          <span class="status built">Read Only</span>
+        </div>
+      </div>
+      <div class="grid two" style="margin-top:0.9rem">
+        <div class="tool">
+          <h3>Owner Checklist</h3>
+          <div class="checklist" id="ownerChecklist"></div>
+        </div>
+        <div class="tool">
+          <h3>Important Links</h3>
+          <table>
+            <thead><tr><th>Place</th><th>Link</th></tr></thead>
+            <tbody>
+              <tr><td>Control App</td><td><a href="https://reeds-ledger-control-app.onrender.com">reeds-ledger-control-app.onrender.com</a></td></tr>
+              <tr><td>n8n</td><td><a href="https://shopify-automation-n8n.onrender.com">shopify-automation-n8n.onrender.com</a></td></tr>
+              <tr><td>GitHub</td><td><a href="https://github.com/domogotu/Shopify-automation-v1">domogotu/Shopify-automation-v1</a></td></tr>
+              <tr><td>Render</td><td><a href="https://dashboard.render.com">dashboard.render.com</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="assistant">
+      <h2>Voice Chat</h2>
+      <p class="intro">Tap <strong>Enable Voice</strong> first on iPhone. Every question and answer remains visible in the transcript while replies are also spoken. When securely connected, questions go through the Render API to OpenAI; if it is unavailable, the app clearly labels its limited local fallback.</p>
+      <div class="assistant">
+        <div class="button-row">
+          <button class="action" id="voiceButton" type="button">Enable Voice</button>
+          <button class="action ghost" id="micButton" type="button">Tap To Speak</button>
+          <button class="action ghost" id="exportTranscript" type="button">Download Transcript</button>
+          <button class="action ghost" id="clearTranscript" type="button">Clear Chat</button>
+        </div>
+        <div class="messages" id="messages" aria-live="polite"></div>
+        <div class="input-row">
+          <input id="question" placeholder="Ask about keys, memory, n8n, actions, build order...">
+          <button class="action" id="sendButton" type="button">Send</button>
+        </div>
+        <div class="small" id="voiceStatus">Voice is off until you tap Enable Voice. Speech support depends on the browser.</div>
+      </div>
+    </section>
+
+    <section class="panel" id="approvals">
+      <h2>Pending Approvals</h2>
+      <p class="intro">This is a read-only owner view. Approving or denying actions remains inside the payload-bound governed workflow until a separately tested approval endpoint exists.</p>
+      <div id="approvalList" class="checklist"><div class="muted">Connect to load approvals.</div></div>
+    </section>
+
+    <section class="panel" id="path">
+      <h2>Full Connection Path</h2>
+      <p class="intro">The complete system should turn every input into a governed event, route it through context and policy, then only act after verification.</p>
+      <div class="flow">
+        <div class="flow-step"><div class="num">1</div><div><strong>Inputs</strong><div class="muted">Website form, owner chat, future voice, email, SMS, files, browser actions, and Shopify events all become one standard event envelope.</div></div></div>
+        <div class="flow-step"><div class="num">2</div><div><strong>Identity And Context</strong><div class="muted">Resolve who the request is from, what project it belongs to, which permissions apply, and what prior memory is allowed.</div></div></div>
+        <div class="flow-step"><div class="num">3</div><div><strong>Planning And Agent Routing</strong><div class="muted">Planner creates tasks. Router chooses OpenAI, Claude, or a specialist. Supervisor checks evidence, gaps, risk, and owner rules.</div></div></div>
+        <div class="flow-step"><div class="num">4</div><div><strong>Policy Gate</strong><div class="muted">Anything involving money, customers, credentials, permissions, production, deletion, or external sending is blocked or approval-gated.</div></div></div>
+        <div class="flow-step"><div class="num">5</div><div><strong>Execute And Verify</strong><div class="muted">Approved actions run through n8n or backend tools. The result must return proof: message ID, row ID, file ID, commit SHA, or deployment ID.</div></div></div>
+        <div class="flow-step"><div class="num">6</div><div><strong>Memory Write</strong><div class="muted">Only verified, non-secret, correctly scoped facts become long-term memory in Postgres. Ambiguous or risky facts stay pending.</div></div></div>
+      </div>
+    </section>
+
+    <section class="panel" id="chain">
+      <h2>Executive Chain</h2>
+      <p class="intro">Each piece has one job and one safe handoff. Live traffic should be connected to these only after standalone testing passes.</p>
+      <table>
+        <thead><tr><th>Step</th><th>Component</th><th>Workflow / ID</th><th>Status</th><th>Safe Handoff</th></tr></thead>
+        <tbody id="chainRows"></tbody>
+      </table>
+    </section>
+
+    <section class="panel" id="actions">
+      <h2>Action Builder</h2>
+      <p class="intro">Use this to draft what the future backend should send to the governed executor. This does not execute anything from the browser.</p>
+      <div class="grid two">
+        <div class="tool">
+          <h3>Draft An Action Request</h3>
+          <label class="small" for="actionType">Action type</label>
+          <select id="actionType">
+            <option>send_internal_email</option>
+            <option>append_google_sheet_row</option>
+            <option>create_drive_file</option>
+            <option>run_n8n_workflow</option>
+            <option>customer_reply_for_approval</option>
+            <option>credential_change_request</option>
+          </select>
+          <label class="small" for="actionGoal">Goal</label>
+          <textarea id="actionGoal" placeholder="Example: Send Dominique the new intake report and save the request to the tracker."></textarea>
+          <label class="small" for="actionDestination">Destination</label>
+          <input id="actionDestination" placeholder="Email, Sheet tab, Drive folder, workflow ID, or approved system">
+          <div class="button-row" style="margin-top:0.75rem">
+            <button class="action" id="buildAction" type="button">Build Request</button>
+            <button class="action ghost" id="copyAction" type="button">Copy</button>
           </div>
         </div>
-      </section>
-
-      <section class="panel" id="path">
-        <h2>Full Connection Path</h2>
-        <p class="intro">Everything should move through one governed path. Live customer traffic is separate from internal owner authority, approvals, and memory writes.</p>
-        <div class="flow">
-          <div class="flow-step"><div class="num">1</div><div><strong>Input</strong><div class="muted">Website form or manual n8n test creates the intake payload. Future inputs such as voice, SMS, browser, and email should be converted into the same event envelope.</div></div></div>
-          <div class="flow-step"><div class="num">2</div><div><strong>Normalize</strong><div class="muted">n8n converts messy customer answers into a stable JSON object with request ID, contact details, service interest, urgency, budget, risk flags, and raw intake.</div></div></div>
-          <div class="flow-step"><div class="num">3</div><div><strong>Review</strong><div class="muted">AI produces Dominique's internal report and a customer-safe draft. It must never tell the customer that a plan was sent or expose internal automation logic.</div></div></div>
-          <div class="flow-step"><div class="num">4</div><div><strong>Record</strong><div class="muted">Google Sheets receives the tracker row. Postgres should receive governed event, task, decision, policy, memory, and verification records once wired.</div></div></div>
-          <div class="flow-step"><div class="num">5</div><div><strong>Gate</strong><div class="muted">Any external send, quote, credential change, production change, spending, or destructive action must pass the deterministic policy gate and owner approval path.</div></div></div>
-          <div class="flow-step"><div class="num">6</div><div><strong>Act, Verify, Remember</strong><div class="muted">Only approved actions execute. The result is checked, logged, and written to memory only when verification succeeds.</div></div></div>
+        <div class="tool">
+          <h3>Governed Request JSON</h3>
+          <textarea id="actionOutput" readonly></textarea>
+          <div class="small">A real backend must attach owner identity, policy result, approval ID, and verification rules before execution.</div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="panel" id="chain">
-        <h2>Reeds Intelligence Core</h2>
-        <p class="intro">These are the current n8n workflow names and IDs from Claude's verified Drive notes.</p>
-        <table>
-          <thead><tr><th>Step</th><th>Component</th><th>Workflow / ID</th><th>Status</th><th>What It Does</th></tr></thead>
-          <tbody id="chainRows"></tbody>
-        </table>
-      </section>
-
-      <section class="panel" id="security">
-        <h2>Failsafes And Security Measures</h2>
-        <p class="intro">The system should fail closed. If it cannot prove the action is safe, authorized, scoped, and reversible where needed, it stops and asks Dominique.</p>
-        <table>
-          <thead><tr><th>Gate</th><th>Required Check</th><th>Failure Behavior</th></tr></thead>
-          <tbody>
-            <tr><td>Root authority</td><td>Dominique Reed is final authority for restricted actions.</td><td>Stop and request owner approval.</td></tr>
-            <tr><td>Credential scope</td><td>No secret values in browser, emails, Sheets, Drive docs, prompts, or customer replies.</td><td>Deny and log as credential exposure risk.</td></tr>
-            <tr><td>Destination allowlist</td><td>Email addresses, Sheet IDs, Drive folder IDs, APIs, and domains must be explicitly approved.</td><td>Block until allowlist entry exists.</td></tr>
-            <tr><td>Policy class</td><td>Customer reply, quote, payment, production deploy, access sharing, deletion, and credential changes need approval.</td><td>Create approval request, do not execute.</td></tr>
-            <tr><td>Rollback</td><td>Destructive or production actions need rollback method and verification method.</td><td>Deny if rollback is missing.</td></tr>
-            <tr><td>Verification</td><td>Executed action must return proof such as message ID, row range, file ID, or deployment ID.</td><td>Do not write success memory.</td></tr>
-            <tr><td>Memory write</td><td>Only verified, scoped, non-secret information can become memory.</td><td>Store as candidate or reject.</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section class="panel" id="credentials">
-        <h2>Credential Responsibilities</h2>
-        <p class="intro">Save credential records by name, owner, scope, recovery method, rotation date, and where it is used. Never save the actual key value in this app, Drive docs, Sheets, GitHub, or chat.</p>
-        <table>
-          <thead><tr><th>System</th><th>Used For</th><th>Where It Belongs</th><th>Owner Action</th></tr></thead>
-          <tbody>
-            <tr><td>OpenAI API</td><td>Model review, embeddings, JSON reports.</td><td>Render env var or n8n credential only.</td><td>Keep platform account recovery and billing access.</td></tr>
-            <tr><td>Claude/Anthropic API</td><td>Future assistant backend, specialist review.</td><td>Backend env var only, never frontend.</td><td>Create only when backend proxy exists.</td></tr>
-            <tr><td>n8n API</td><td>Workflow export, activation, status checks.</td><td>Backend env var, scoped to admin tasks.</td><td>Rotate after setup and record key name only.</td></tr>
-            <tr><td>Postgres</td><td>Memory, policy, audit, tasks, approvals.</td><td>Render private env vars and n8n Postgres credential.</td><td>Use least privilege roles before expanding access.</td></tr>
-            <tr><td>Google Sheets</td><td>Customer request tracker.</td><td>n8n OAuth credential.</td><td>Allow only approved workbook and tabs.</td></tr>
-            <tr><td>Google Drive</td><td>Architecture docs, reports, exports, file storage.</td><td>n8n OAuth credential and Drive folder permissions.</td><td>Approve exact folder IDs before automation writes.</td></tr>
-            <tr><td>Gmail SMTP</td><td>Internal reports and approval emails.</td><td>n8n email credential.</td><td>Use app password; rotate if exposed.</td></tr>
-            <tr><td>Shopify/CJ/DSers</td><td>Future commerce operations.</td><td>n8n credentials, disabled until policy gate is proven.</td><td>Start read-only, then approve write scopes later.</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section class="panel" id="build">
-        <h2>Next Build Order</h2>
-        <p class="intro">This is the order that prevents repeated key setup and protects the system from unsafe shortcuts.</p>
-        <div class="grid">
-          <div class="card"><h3>1. Static App</h3><div class="muted">Commit this UI and deploy it as a Render static site. It is safe because it contains no secrets.</div><span class="status built">This commit</span></div>
-          <div class="card"><h3>2. Backend Proxy</h3><div class="muted">Add a private API service that holds secrets, checks owner session, and talks to n8n/Postgres/OpenAI/Claude.</div><span class="status built">Next</span></div>
-          <div class="card"><h3>3. Destination Allowlist</h3><div class="muted">Create tables and admin UI for approved email, Sheet, Drive, domain, and API destinations.</div><span class="status built">Next</span></div>
-          <div class="card"><h3>4. Wire Live Traffic</h3><div class="muted">Connect the live Intake Orchestrator to the new governance workflows after each standalone test passes.</div><span class="status built">After tests</span></div>
-          <div class="card"><h3>5. Full Agent Society</h3><div class="muted">Reconcile the specialist agent names, add missing Risk, Drive Filing, and Monitoring agents, then dispatch by task type.</div><span class="status built">After gate</span></div>
-          <div class="card"><h3>6. Queue Scale</h3><div class="muted">Add Redis queue mode after 10 to 20 real intake submissions pass without manual repair.</div><span class="status built">Later</span></div>
+    <section class="panel" id="memory">
+      <h2>Memory Notes</h2>
+      <p class="intro">These notes save only in this browser for now. Use them for non-secret reminders and decisions. Real cross-device memory belongs in Postgres behind the secure backend.</p>
+      <div class="grid two">
+        <div class="tool">
+          <h3>Governed Memory From Postgres</h3>
+          <div id="governedMemoryList" class="checklist"><div class="muted">Connect to load governed memory.</div></div>
         </div>
-      </section>
-
-      <section class="panel" id="assistant">
-        <h2>Voice Guide</h2>
-        <p class="intro">This is local guidance only. It can speak back and explain the saved architecture, but it does not call external AI until a secure backend exists.</p>
-        <div class="assistant">
-          <div class="messages" id="messages">
-            <div class="msg bot">Ask me what is live, what is missing, what keys are needed, or what to build next.</div>
-          </div>
-          <div class="input-row">
-            <button class="action ghost" id="micButton" type="button" title="Speak">Mic</button>
-            <input id="question" placeholder="Ask about the Reeds system...">
-            <button class="action" id="sendButton" type="button">Send</button>
+        <div class="tool">
+          <h3>Add A Non-Secret Note</h3>
+          <textarea id="memoryInput" placeholder="Example: Google Sheets credential is connected. Do not store passwords here."></textarea>
+          <div class="button-row" style="margin-top:0.75rem">
+            <button class="action" id="saveMemory" type="button">Save Note</button>
+            <button class="action ghost" id="exportMemory" type="button">Download Notes</button>
+            <button class="action danger" id="clearMemory" type="button">Clear Notes</button>
           </div>
         </div>
-      </section>
-    </main>
-  </div>
+        <div class="tool">
+          <h3>Saved Notes</h3>
+          <div id="memoryList" class="checklist"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="security">
+      <h2>Security Gates</h2>
+      <p class="intro">The system should fail closed. If safety, authority, scope, destination, or verification is missing, the action stops.</p>
+      <table>
+        <thead><tr><th>Gate</th><th>Required Check</th><th>Failure Behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Root authority</td><td>Dominique Reed is final authority for restricted actions.</td><td>Stop and request owner approval.</td></tr>
+          <tr><td>Credential scope</td><td>No secret values in browser, emails, Sheets, Drive docs, prompts, or customer replies.</td><td>Deny and log as credential exposure risk.</td></tr>
+          <tr><td>Destination allowlist</td><td>Email addresses, Sheet IDs, Drive folder IDs, APIs, and domains must be explicitly approved.</td><td>Block until allowlist entry exists.</td></tr>
+          <tr><td>Policy class</td><td>Customer reply, quote, payment, production deploy, access sharing, deletion, and credential changes need approval.</td><td>Create approval request, do not execute.</td></tr>
+          <tr><td>Rollback</td><td>Destructive or production actions need rollback and verification methods.</td><td>Deny if rollback is missing.</td></tr>
+          <tr><td>Verification</td><td>Executed action must return proof such as message ID, row range, file ID, or deployment ID.</td><td>Do not write success memory.</td></tr>
+          <tr><td>Memory write</td><td>Only verified, scoped, non-secret information can become memory.</td><td>Store as candidate or reject.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel" id="credentials">
+      <h2>Credential Responsibilities</h2>
+      <p class="intro">Track where keys belong and who controls them. Never enter actual passwords, app passwords, OAuth secrets, or API keys into this website.</p>
+      <table>
+        <thead><tr><th>System</th><th>Used For</th><th>Where It Belongs</th><th>Owner Action</th></tr></thead>
+        <tbody>
+          <tr><td>OpenAI API</td><td>Model review, embeddings, JSON reports.</td><td>Render env var or n8n credential only.</td><td>Keep account recovery and billing access.</td></tr>
+          <tr><td>Claude/Anthropic API</td><td>Future backend assistant and specialist review.</td><td>Backend env var only.</td><td>Create when backend proxy exists.</td></tr>
+          <tr><td>n8n API</td><td>Workflow export, activation, status checks.</td><td>Backend env var, scoped to admin tasks.</td><td>Rotate after setup and record key name only.</td></tr>
+          <tr><td>Postgres</td><td>Memory, policy, audit, tasks, approvals.</td><td>Render private env vars and n8n Postgres credential.</td><td>Use least privilege roles before expanding access.</td></tr>
+          <tr><td>Google Sheets</td><td>Customer request tracker.</td><td>n8n OAuth credential.</td><td>Allow only approved workbook and tabs.</td></tr>
+          <tr><td>Google Drive</td><td>Architecture docs, reports, exports, file storage.</td><td>n8n OAuth credential and folder permissions.</td><td>Approve exact folder IDs before writes.</td></tr>
+          <tr><td>Gmail SMTP</td><td>Internal reports and approval emails.</td><td>n8n email credential.</td><td>Use app password; rotate if exposed.</td></tr>
+          <tr><td>Shopify/CJ/DSers</td><td>Future commerce operations.</td><td>n8n credentials, disabled until gate is proven.</td><td>Start read-only, approve writes later.</td></tr>
+        </tbody>
+      </table>
+      <div class="tool" style="margin-top:0.9rem">
+        <h3>Backend Credential Inventory</h3>
+        <div id="credentialInventory" class="checklist"><div class="muted">Connect to confirm configured credential locations.</div></div>
+      </div>
+    </section>
+
+    <section class="panel" id="build">
+      <h2>Build Order</h2>
+      <p class="intro">This is the correct order from here so you avoid repeating credential work or wiring unsafe actions too early.</p>
+      <div class="grid">
+        <div class="card good"><h3>1. Control UI</h3><div class="muted">Static owner console, transcript, voice, local notes, and system map.</div><span class="status live">Now</span></div>
+        <div class="card"><h3>2. Backend Proxy</h3><div class="muted">Private service holding secrets, owner auth, API routing, and action guardrails.</div><span class="status built">Next</span></div>
+        <div class="card"><h3>3. Postgres Memory</h3><div class="muted">Durable transcript, facts, approvals, audit logs, and verified memory records.</div><span class="status built">Next</span></div>
+        <div class="card"><h3>4. Live Voice Agent</h3><div class="muted">Speech-to-text, AI response, text transcript, text-to-speech, memory retrieval, and safe actions.</div><span class="status built">After Backend</span></div>
+        <div class="card"><h3>5. Agent Society</h3><div class="muted">Specialist agents routed by task type, all behind policy and approval gates.</div><span class="status built">After Memory</span></div>
+        <div class="card"><h3>6. Queue Scale</h3><div class="muted">Redis/queue mode after repeated live tests prove the governed path works.</div><span class="status built">Later</span></div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    const chain = [
-      ["1", "Universal Event Intake", "Reeds Solutions - Intake AI Agent Orchestrator v1 / acV6tNXXftxH7rz9", "LIVE", "Receives website form and starts intake."],
-      ["2", "Identity & Context", "Reeds - Identity and Context v1 / d5SEsxviUhCe7Mtc", "BUILT", "Resolves actor identity with minimum-access fallback."],
-      ["3", "Scoped Memory Retrieval", "Reeds - Scoped Memory Retrieval v1 / Uazj4rJLYR5sF1lq", "BUILT", "Retrieves allowed context without inventing missing information."],
-      ["3b", "Semantic Memory Search", "Reeds - Semantic Memory Search v1 / cALOn5ZoEOlpeg2j", "TESTED", "Finds related memory using embeddings."],
-      ["4", "Goal & Mission Planner", "Reeds - Goal and Mission Planner v1 / YX62bN2oqVviUfJ2", "BUILT", "Turns requests into task records."],
-      ["5", "Model & Agent Router", "Reeds - Model Router v1 / OfR5nT2ne4apCGEU", "TESTED", "Chooses the model/agent path."],
-      ["6", "Specialist Agent Dispatcher", "Reeds - Specialist Agent Dispatcher v1 / wP7wwg1iN4OL6s2m", "TESTED", "Routes work to named specialists."],
-      ["7", "Executive Supervisor", "Reeds - Executive Supervisor v1 / ZzG78ayIbWrt5Rxn", "TESTED", "Checks plans and blocks unsafe gaps."],
-      ["8", "Policy Gate And Approval", "Reeds - Policy Gate and Approval v1 / TPI3BObw0qH4E2jJ", "TESTED", "Allows, denies, or requires Dominique approval."],
-      ["9", "Governed Action Executor", "Reeds - Governed Action Executor v1 / Q4BMvuAdpfG3Or77", "BUILT", "Executes only approved Gmail/Sheets actions so far."],
-      ["10", "Semantic Memory Write", "Reeds - Semantic Memory Write v1 / zgsolLsI2nhyDuNd", "TESTED", "Writes verified memory with embeddings."],
-      ["11", "Outcome Evaluator", "Reeds - Outcome Evaluator v1 / c8a9M3YVRZWxgIWF", "BUILT", "Logs results and proposes improvements."],
-      ["12", "Capability Gap Intake", "Reeds - Capability Gap Intake v1 / tIVFTc2p0t9aaBFf", "BUILT", "Reports missing capabilities for owner review."]
-    ];
+    const API_BASE = "https://reeds-ledger-control-api.onrender.com";
+    const ownerPassphraseInput = document.getElementById("ownerPassphrase");
+    const connectionStatus = document.getElementById("connectionStatus");
+    let ownerPassphrase = sessionStorage.getItem("reedsOwnerPassphrase") || "";
+    ownerPassphraseInput.value = ownerPassphrase;
 
-    const tbody = document.getElementById("chainRows");
+    async function apiFetch(path, options = {}) {
+      if (!ownerPassphrase) throw new Error("Enter the owner passphrase on the Overview tab first.");
+      const headers = { ...(options.headers || {}), "X-Owner-Passphrase": ownerPassphrase };
+      if (options.body) headers["Content-Type"] = "application/json";
+      const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `Request failed (${response.status}).`);
+      return data;
+    }
+
+    function countRows(group) {
+      if (!group || !group.available) return "not migrated";
+      return group.rows.reduce((sum, row) => sum + Number(row.count || 0), 0);
+    }
+
+    function renderApprovals(rows) {
+      const target = document.getElementById("approvalList");
+      target.innerHTML = "";
+      if (!rows.length) {
+        target.innerHTML = '<div class="muted">No pending approval records.</div>';
+        return;
+      }
+      rows.forEach((row) => {
+        const div = document.createElement("div");
+        div.className = "card warning";
+        div.innerHTML = `<strong>${escapeHtml(row.description || "Approval request")}</strong><div class="muted">Tool: ${escapeHtml(row.tool_id || "unknown")}<br>Destination: ${escapeHtml(row.destination || "not provided")}<br>Expires: ${row.expires_at ? new Date(row.expires_at).toLocaleString() : "not provided"}</div>`;
+        target.appendChild(div);
+      });
+    }
+
+    function renderGovernedMemory(rows) {
+      const target = document.getElementById("governedMemoryList");
+      target.innerHTML = "";
+      if (!rows.length) {
+        target.innerHTML = '<div class="muted">No non-secret governed memory records.</div>';
+        return;
+      }
+      rows.forEach((row) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<strong>${escapeHtml(row.memory_type || "memory")}</strong><div>${escapeHtml(row.fact_or_claim || "")}</div><div class="small">${escapeHtml(row.verification_status || "unknown")} · ${row.created_at ? new Date(row.created_at).toLocaleString() : ""}</div>`;
+        target.appendChild(div);
+      });
+    }
+
+    async function loadOwnerData() {
+      connectionStatus.textContent = "Connecting securely...";
+      const [health, status, approvals, memory, credentials] = await Promise.all([
+        fetch(`${API_BASE}/api/health`).then((response) => response.json()),
+        apiFetch("/api/status"),
+        apiFetch("/api/approvals"),
+        apiFetch("/api/memory"),
+        apiFetch("/api/credentials"),
+      ]);
+      connectionStatus.textContent = `Connected. Database: ${health.configured.database ? "configured" : "missing"}. AI: ${health.configured.openai ? "configured" : "missing"}.`;
+      document.getElementById("apiBadge").textContent = "API Connected";
+      document.getElementById("apiBadge").className = "status live";
+      document.getElementById("systemCounts").textContent = `Approvals: ${countRows(status.approvals)} · Memory: ${countRows(status.memories)} · Policy decisions: ${countRows(status.policyDecisions)} · Executions: ${countRows(status.executions)} · Verifications: ${countRows(status.verifications)}`;
+      renderApprovals(approvals.rows || []);
+      renderGovernedMemory(memory.rows || []);
+      const inventory = document.getElementById("credentialInventory");
+      inventory.innerHTML = (credentials.credentials || []).map((item) => `<div class="card"><strong>${escapeHtml(item.system)}</strong><div class="muted">${escapeHtml(item.location)}. Secret values are not readable here.</div></div>`).join("");
+    }
+
+    document.getElementById("connectOwner").addEventListener("click", async () => {
+      ownerPassphrase = ownerPassphraseInput.value;
+      if (!ownerPassphrase) {
+        connectionStatus.textContent = "Enter the owner passphrase first.";
+        return;
+      }
+      sessionStorage.setItem("reedsOwnerPassphrase", ownerPassphrase);
+      try {
+        await loadOwnerData();
+      } catch (error) {
+        connectionStatus.textContent = error.message;
+      }
+    });
+    document.getElementById("disconnectOwner").addEventListener("click", () => {
+      ownerPassphrase = "";
+      ownerPassphraseInput.value = "";
+      sessionStorage.removeItem("reedsOwnerPassphrase");
+      connectionStatus.textContent = "Disconnected. The passphrase was removed from this browser tab.";
+    });
+    const chain = [
+      ["1", "Universal Event Intake", "Reeds Solutions - Intake AI Agent Orchestrator v1 / acV6tNXXftxH7rz9", "LIVE", "Website and owner inputs become one standard event envelope."],
+      ["2", "Identity & Context", "Reeds - Identity and Context v1 / d5SEsxviUhCe7Mtc", "BUILT", "Resolve actor, project, permissions, and allowed context."],
+      ["3", "Scoped Memory Retrieval", "Reeds - Scoped Memory Retrieval v1 / Uazj4rJLYR5sF1lq", "BUILT", "Retrieve only memory the task is allowed to use."],
+      ["4", "Goal & Mission Planner", "Reeds - Goal and Mission Planner v1 / YX62bN2oqVviUfJ2", "BUILT", "Turn the request into task records and planned outcomes."],
+      ["5", "Model & Agent Router", "Reeds - Model Router v1 / OfR5nT2ne4apCGEU", "TESTED", "Choose OpenAI, Claude, or specialist routing."],
+      ["6", "Specialist Agent Dispatcher", "Reeds - Specialist Agent Dispatcher v1 / wP7wwg1iN4OL6s2m", "TESTED", "Dispatch named specialists by task type."],
+      ["7", "Executive Supervisor", "Reeds - Executive Supervisor v1 / ZzG78ayIbWrt5Rxn", "TESTED", "Check evidence, scope creep, missing information, and policy risk."],
+      ["8", "Policy Gate And Approval", "Reeds - Policy Gate and Approval v1 / TPI3BObw0qH4E2jJ", "TESTED", "Allow safe actions, require approval, or deny unsafe requests."],
+      ["9", "Governed Action Executor", "Reeds - Governed Action Executor v1 / Q4BMvuAdpfG3Or77", "BUILT", "Execute approved actions and return verifiable proof."],
+      ["10", "Semantic Memory Write", "Reeds - Semantic Memory Write v1 / zgsolLsI2nhyDuNd", "TESTED", "Write verified non-secret memory with scope and provenance."],
+      ["11", "Outcome Evaluator", "Reeds - Outcome Evaluator v1 / c8a9M3YVRZWxgIWF", "BUILT", "Compare intended result to actual result and record gaps."],
+      ["12", "Capability Gap Intake", "Reeds - Capability Gap Intake v1 / tIVFTc2p0t9aaBFf", "BUILT", "Capture missing capabilities for owner review."]
+    ];
+    const knowledge = {
+      live: "Live now: n8n intake, OpenAI review, Google Sheets row append, Gmail internal report, website confirmation, Render static control app, and Postgres service.",
+      backend: "The backend proxy is the next real build. It should authenticate Dominique, hold secrets in Render environment variables, call n8n and AI providers server-side, check policy, verify results, then write memory.",
+      voice: "Voice has two parts: speech recognition for what you say, and speech synthesis for what I say back. On iPhone, tap Enable Voice first because Safari requires a user action before audio can play.",
+      keys: "Never place secret values in this website, GitHub, Drive docs, Sheets, emails, or prompts. Store keys only in Render environment variables or n8n credentials. Track key names, owner, scope, recovery path, and rotation date.",
+      n8n: "n8n is the workflow engine. It should receive normalized requests, call AI, write Sheets, send Gmail, and later call the governed executor rather than sending restricted actions directly.",
+      sheets: "Google Sheets is the customer request tracker. It should receive clean fields only: request ID, customer contact, service category, status, quote status, follow-up date, and non-secret notes.",
+      drive: "Google Drive is for architecture docs, handoff notes, exports, and non-secret reports. Automated writes should use approved folder IDs only.",
+      actions: "External actions must pass root authority, destination allowlist, policy class, rollback, verification, and memory-write checks before being treated as complete.",
+      redis: "Redis and queue mode come after the governed path passes repeated live tests. Scaling comes after the safety path is proven.",
+      agents: "The full agent society should include intake, classification, missing information, planning, risk, reply draft, quote, tracker, Drive filing, monitoring, customer project, finance, operations, legal/compliance, and security reviewers."
+    };
+    const checklistItems = [
+      "Confirm the control app loads on Render.",
+      "Use Voice Chat and tap Enable Voice before speaking.",
+      "Do not type any real API key or password into this app.",
+      "Build backend proxy before real AI memory or live actions.",
+      "Create destination allowlist for Gmail, Sheets, Drive, APIs, and domains.",
+      "Wire live n8n traffic through policy gate before expanding agents."
+    ];
+    const chainRows = document.getElementById("chainRows");
     for (const row of chain) {
       const tr = document.createElement("tr");
       tr.innerHTML = row.map((cell, index) => {
         const cls = index === 3 ? ` class="${cell === "LIVE" ? "live" : cell === "TESTED" ? "tested" : "built"}"` : "";
         return `<td${cls}>${cell}</td>`;
       }).join("");
-      tbody.appendChild(tr);
+      chainRows.appendChild(tr);
     }
-
+    const ownerChecklist = document.getElementById("ownerChecklist");
+    checklistItems.forEach((item, index) => {
+      const id = `owner-check-${index}`;
+      const label = document.createElement("label");
+      label.className = "check";
+      label.innerHTML = `<input type="checkbox" id="${id}"><span>${item}</span>`;
+      ownerChecklist.appendChild(label);
+      const box = label.querySelector("input");
+      box.checked = localStorage.getItem(id) === "true";
+      box.addEventListener("change", () => localStorage.setItem(id, box.checked));
+    });
     document.querySelectorAll("nav button").forEach((button) => {
       button.addEventListener("click", () => {
         document.querySelectorAll("nav button").forEach((b) => b.classList.remove("active"));
@@ -539,70 +684,197 @@
         document.getElementById(button.dataset.panel).classList.add("active");
       });
     });
-
     const messages = document.getElementById("messages");
     const input = document.getElementById("question");
-    const send = document.getElementById("sendButton");
-    const mic = document.getElementById("micButton");
-
-    function addMessage(kind, text) {
+    const voiceStatus = document.getElementById("voiceStatus");
+    let voiceEnabled = localStorage.getItem("reedsVoiceEnabled") === "true";
+    let transcript = JSON.parse(localStorage.getItem("reedsTranscript") || "[]");
+    function saveTranscript() {
+      localStorage.setItem("reedsTranscript", JSON.stringify(transcript.slice(-100)));
+    }
+    function addMessage(kind, text, persist = true) {
       const div = document.createElement("div");
       div.className = `msg ${kind}`;
       div.textContent = text;
       messages.appendChild(div);
       messages.scrollTop = messages.scrollHeight;
+      if (persist) {
+        transcript.push({ role: kind === "user" ? "Dominique" : "Reeds Assistant", text, time: new Date().toISOString() });
+        saveTranscript();
+      }
     }
-
+    function renderTranscript() {
+      messages.innerHTML = "";
+      if (!transcript.length) {
+        addMessage("bot", "I am ready. Ask what is live, what is missing, what keys are needed, what needs memory, or what to build next.");
+        return;
+      }
+      transcript.forEach((entry) => addMessage(entry.role === "Dominique" ? "user" : "bot", entry.text, false));
+    }
+    function speak(text) {
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.98;
+      utterance.pitch = 1;
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    }
     function answer(text) {
       const q = text.toLowerCase();
-      if (q.includes("key") || q.includes("credential") || q.includes("secret")) {
-        return "Credential values belong only in Render environment variables or n8n credentials. This app can track key names, owners, scopes, rotation dates, and recovery steps, but it must never store the actual secret values.";
-      }
-      if (q.includes("live") || q.includes("working")) {
-        return "The live customer path is intake form to n8n to OpenAI review to Google Sheets to Gmail internal report to website confirmation. The newer governed core exists but is not fully wired into live traffic yet.";
-      }
-      if (q.includes("next") || q.includes("build")) {
-        return "Next is the secure backend proxy, destination allowlist, then wiring live traffic into the policy gate and governed executor after testing.";
-      }
-      if (q.includes("redis") || q.includes("queue")) {
-        return "Redis and queue mode should wait until 10 to 20 real intake tests pass through the governed path. Scaling before verification would add complexity before the core is proven.";
-      }
-      if (q.includes("agent")) {
-        return "The agent society needs name reconciliation first. The current set is missing distinct Risk, Drive Filing, and Monitoring agents from the latest target map.";
-      }
-      return "The safe rule is: input becomes a governed event, context is retrieved, the right agent plans, policy gates restricted actions, verified results are logged, and only approved non-secret facts become memory.";
+      const savedNotes = JSON.parse(localStorage.getItem("reedsMemoryNotes") || "[]");
+      if (q.includes("can you hear") || q.includes("talk back") || q.includes("voice")) return knowledge.voice;
+      if (q.includes("key") || q.includes("credential") || q.includes("secret") || q.includes("password")) return knowledge.keys;
+      if (q.includes("remember") || q.includes("memory") || q.includes("notes")) return `${knowledge.memory} You currently have ${savedNotes.length} local memory note${savedNotes.length === 1 ? "" : "s"} saved.`;
+      if (q.includes("live") || q.includes("working") || q.includes("status")) return knowledge.live;
+      if (q.includes("backend") || q.includes("proxy") || q.includes("real ai")) return knowledge.backend;
+      if (q.includes("n8n") || q.includes("workflow")) return knowledge.n8n;
+      if (q.includes("sheet") || q.includes("tracker")) return knowledge.sheets;
+      if (q.includes("drive") || q.includes("file")) return knowledge.drive;
+      if (q.includes("redis") || q.includes("queue") || q.includes("scale")) return knowledge.redis;
+      if (q.includes("agent") || q.includes("society") || q.includes("specialist")) return knowledge.agents;
+      if (q.includes("action") || q.includes("send") || q.includes("approval") || q.includes("safe")) return knowledge.actions;
+      if (q.includes("next") || q.includes("build")) return "Next: build the secure backend proxy, connect Postgres memory, connect real AI voice chat, then wire n8n actions through the policy gate.";
+      return "The correct path is: input becomes a governed event, identity and context are resolved, memory is retrieved, the right agent plans, policy gates restricted actions, approved actions execute, verification proves the result, and only non-secret verified facts become memory.";
     }
-
-    function submitQuestion() {
+    async function submitQuestion() {
       const text = input.value.trim();
       if (!text) return;
       addMessage("user", text);
       input.value = "";
-      const reply = answer(text);
-      addMessage("bot", reply);
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(reply));
+      const pending = document.createElement("div");
+      pending.className = "msg bot loading";
+      pending.textContent = ownerPassphrase ? "Thinking..." : "Using limited local guidance...";
+      messages.appendChild(pending);
+      try {
+        let reply;
+        if (ownerPassphrase) {
+          const history = transcript.slice(-20).map((entry) => ({
+            role: entry.role === "Dominique" ? "user" : "assistant",
+            content: entry.text,
+          }));
+          const data = await apiFetch("/api/chat", { method: "POST", body: JSON.stringify({ messages: history }) });
+          reply = data.reply;
+        } else {
+          reply = `Limited local guide: ${answer(text)} Connect on the Overview tab for the secured AI assistant.`;
+        }
+        pending.remove();
+        addMessage("bot", reply);
+        speak(reply);
+      } catch (error) {
+        pending.remove();
+        const reply = `Secure assistant unavailable: ${error.message} Limited local guide: ${answer(text)}`;
+        addMessage("bot", reply);
+        speak(reply);
       }
     }
-
-    send.addEventListener("click", submitQuestion);
+    document.getElementById("voiceButton").addEventListener("click", () => {
+      voiceEnabled = true;
+      localStorage.setItem("reedsVoiceEnabled", "true");
+      voiceStatus.textContent = "Voice is enabled. If iPhone still stays silent, turn off silent mode and raise media volume.";
+      speak("Voice is enabled. I will answer with text and spoken replies when the browser allows it.");
+    });
+    document.getElementById("sendButton").addEventListener("click", submitQuestion);
     input.addEventListener("keydown", (event) => {
       if (event.key === "Enter") submitQuestion();
     });
-
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
       recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.onstart = () => { voiceStatus.textContent = "Listening..."; };
+      recognition.onend = () => { voiceStatus.textContent = voiceEnabled ? "Voice is enabled." : "Voice is off until you tap Enable Voice."; };
+      recognition.onerror = () => { voiceStatus.textContent = "Speech capture failed. Type the question or tap the mic again."; };
       recognition.onresult = (event) => {
         input.value = event.results[0][0].transcript;
         submitQuestion();
       };
-      mic.addEventListener("click", () => recognition.start());
+      document.getElementById("micButton").addEventListener("click", () => recognition.start());
     } else {
-      mic.disabled = true;
-      mic.textContent = "No Mic";
+      document.getElementById("micButton").disabled = true;
+      document.getElementById("micButton").textContent = "Mic Not Supported";
+      voiceStatus.textContent = "This browser does not support speech capture. Text chat and spoken replies may still work.";
+    }
+    document.getElementById("exportTranscript").addEventListener("click", () => {
+      const lines = transcript.map((entry) => `[${entry.time}] ${entry.role}: ${entry.text}`).join("\n\n");
+      downloadText("reeds-control-transcript.txt", lines || "No transcript yet.");
+    });
+    document.getElementById("clearTranscript").addEventListener("click", () => {
+      transcript = [];
+      saveTranscript();
+      renderTranscript();
+    });
+    const actionOutput = document.getElementById("actionOutput");
+    document.getElementById("buildAction").addEventListener("click", () => {
+      const request = {
+        action_type: document.getElementById("actionType").value,
+        requested_by: "Dominique Reed",
+        goal: document.getElementById("actionGoal").value.trim(),
+        destination: document.getElementById("actionDestination").value.trim(),
+        browser_can_execute: false,
+        required_backend_checks: ["owner authentication", "destination allowlist", "policy gate", "approval if restricted", "verification evidence", "non-secret memory write"],
+        status: "draft_only"
+      };
+      actionOutput.value = JSON.stringify(request, null, 2);
+    });
+    document.getElementById("copyAction").addEventListener("click", async () => {
+      if (actionOutput.value) await navigator.clipboard.writeText(actionOutput.value);
+    });
+    const memoryInput = document.getElementById("memoryInput");
+    const memoryList = document.getElementById("memoryList");
+    function renderMemory() {
+      const notes = JSON.parse(localStorage.getItem("reedsMemoryNotes") || "[]");
+      memoryList.innerHTML = "";
+      if (!notes.length) {
+        memoryList.innerHTML = "<div class=\"muted\">No local notes saved yet.</div>";
+        return;
+      }
+      notes.slice().reverse().forEach((note) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<div>${escapeHtml(note.text)}</div><div class="small">${new Date(note.time).toLocaleString()}</div>`;
+        memoryList.appendChild(div);
+      });
+    }
+    document.getElementById("saveMemory").addEventListener("click", () => {
+      const text = memoryInput.value.trim();
+      if (!text) return;
+      if (/(sk-|api[_ -]?key|password|secret|token|client[_ -]?secret)/i.test(text)) {
+        alert("Do not save secret values here. Save only key names, scopes, locations, and recovery notes.");
+        return;
+      }
+      const notes = JSON.parse(localStorage.getItem("reedsMemoryNotes") || "[]");
+      notes.push({ text, time: new Date().toISOString() });
+      localStorage.setItem("reedsMemoryNotes", JSON.stringify(notes.slice(-200)));
+      memoryInput.value = "";
+      renderMemory();
+    });
+    document.getElementById("exportMemory").addEventListener("click", () => {
+      const notes = JSON.parse(localStorage.getItem("reedsMemoryNotes") || "[]");
+      const lines = notes.map((note) => `[${note.time}] ${note.text}`).join("\n\n");
+      downloadText("reeds-control-memory-notes.txt", lines || "No notes yet.");
+    });
+    document.getElementById("clearMemory").addEventListener("click", () => {
+      localStorage.removeItem("reedsMemoryNotes");
+      renderMemory();
+    });
+    function downloadText(filename, text) {
+      const blob = new Blob([text], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+    renderTranscript();
+    renderMemory();
+    if (ownerPassphrase) {
+      loadOwnerData().catch((error) => { connectionStatus.textContent = error.message; });
     }
   </script>
 </body>

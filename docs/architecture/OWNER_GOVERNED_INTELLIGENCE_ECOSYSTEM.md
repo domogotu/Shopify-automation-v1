@@ -1,5 +1,6 @@
 # Reeds Technology Owner-Governed Intelligence Ecosystem
-\n![Reeds Technology owner-governed intelligence ecosystem](images/reeds-owner-governed-intelligence-ecosystem.jpeg)
+
+![Reeds Technology owner-governed intelligence ecosystem](images/reeds-owner-governed-intelligence-ecosystem.jpeg)
 
 ## Production Architecture Blueprint
 

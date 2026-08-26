@@ -1,10 +1,10 @@
 # Reeds Ledger Owner Control App
 
-This repo contains a safe static control UI at `control-app/index.html`.
+This repo contains a static owner UI at `control-app/index.html` and its secured server boundary in `control-api/`.
 
 ## Purpose
 
-The control app gives Dominique Reed one place to review:
+The control app gives Dominique Reed one place to review and operate the safe local parts of the system:
 
 - the current production intake path;
 - the Reeds Intelligence Core executive chain;
@@ -12,10 +12,14 @@ The control app gives Dominique Reed one place to review:
 - credential responsibility rules;
 - security gates and failure behavior;
 - the next build order for the governed backend.
+- secured OpenAI chat with voice input, spoken replies, and a text transcript;
+- non-secret local memory notes;
+- read-only governed approvals, memory, and status from Postgres;
+- governed action request drafts for future backend execution.
 
-## Current safety boundary
+## Safety boundary
 
-The app is intentionally static. It can explain the saved architecture and use local browser speech recognition, but it must not directly execute restricted actions.
+The public UI never receives database or provider credentials. It sends owner-authenticated requests to `reeds-ledger-control-api`, which reads limited non-secret records and proxies chat to OpenAI. The app must not directly execute restricted actions. Its action builder remains draft-only.
 
 Do not place these values in browser JavaScript, Drive docs, Sheets, GitHub, emails, prompts, or customer-visible text:
 
@@ -27,31 +31,43 @@ Do not place these values in browser JavaScript, Drive docs, Sheets, GitHub, ema
 - Google OAuth client secrets;
 - Shopify, CJdropshipping, DSers, payment, or supplier credentials.
 
-## Correct live architecture
+## Live architecture
 
-The static app should later call a secure backend service. That backend service should:
+`reeds-ledger-control-app` (Render static site) calls `reeds-ledger-control-api` (Render Node web service). Render injects the database connection from `shopify-automation-postgres`. The owner enters a passphrase stored only in the current browser tab. The backend:
 
 1. authenticate Dominique as owner;
 2. load secrets only from Render environment variables;
-3. call n8n, Postgres, OpenAI, Claude, Gmail, Sheets, Drive, Shopify, or supplier APIs server-side only;
+3. currently calls Postgres and OpenAI server-side only;
 4. check the destination allowlist before every write;
 5. pass restricted actions through the policy gate;
 6. require owner approval for customer replies, quotes, access changes, production deploys, spending, destructive actions, and credential changes;
 7. verify each result before writing success memory;
 8. log every action, denial, approval, and verification result.
 
+## Required Render secrets
+
+The API service has two `sync: false` values that must be entered directly in Render:
+
+- `OPENAI_API_KEY`: use the same OpenAI project as n8n, but create a new project key if the original plaintext key is no longer available. n8n does not reveal saved secret values.
+- `OWNER_PASSPHRASE`: a unique strong passphrase saved in Dominique's password manager.
+
+Never paste either value into GitHub, Drive, Sheets, email, or chat.
+
 ## Known open gaps
 
-- The static app is not a live database dashboard yet.
+- Transcript and local notes remain browser-local. The app reads governed Postgres memory but does not yet write chat transcripts into governed memory.
+- The temporary shared passphrase gate should eventually be replaced with owner identity, short-lived sessions, and multi-factor authentication.
 - Destination allowlisting still needs a real table and UI.
 - The live intake workflow does not fully call every new governed workflow yet.
 - The specialist agent list needs reconciliation with the latest target architecture.
+- Approval decisions remain in the payload-bound n8n approval workflow; the UI is read-only.
 - Redis queue mode should wait until the governed path passes repeated live tests.
 
 ## Render deployment
 
-`render.yaml` includes a separate static service:
+`render.yaml` includes:
 
-`reeds-ledger-control-app`
+- `reeds-ledger-control-app`: static owner UI.
+- `reeds-ledger-control-api`: secured Node API with a Postgres connection and secret slots.
 
-It publishes `control-app/` and does not disturb the existing n8n service.
+These services do not replace or disturb the existing n8n service.

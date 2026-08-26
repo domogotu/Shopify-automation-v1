@@ -8,6 +8,14 @@ Shopify Automation OS is the first operational adapter and proof environment for
 
 The locked Version 1.0 architecture, complete capability inventory, connection model, governing principles, and phased roadmap are maintained in [Reeds Technology — Owner-Governed Intelligence Ecosystem](docs/REEDS_TECHNOLOGY_MASTER_ARCHITECTURE.md).
 
+## Reeds Ledger owner control app
+
+The repository includes a downloadable owner-control UI at `control-app/index.html`. It maps the current production intake path, the 12-step Reeds Intelligence Core, credential responsibilities, security gates, and the next build order.
+
+This first version is intentionally static and safe: it does not store or expose API keys, and it does not directly call OpenAI, Claude, n8n, Postgres, Gmail, Sheets, Drive, Shopify, or supplier APIs from browser JavaScript. A live chat/action version must use a server-side backend proxy with owner authentication, destination allowlisting, policy-gate checks, result verification, and audit logging.
+
+Render is configured to publish this UI as a separate static service named `reeds-ledger-control-app`, leaving the existing n8n service untouched. See [Reeds Ledger Owner Control App](docs/REEDS_LEDGER_CONTROL_APP.md).
+
 ## Current build state
 
 Milestone 1 provides a staging foundation. External writes remain disabled. The stack includes:
